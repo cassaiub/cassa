@@ -11,6 +11,7 @@ import Prose from "../../../components/immersive/Prose.astro";
 import PersonCard from "../../../components/PersonCard.astro";
 import { withBase } from "../../../data/site-nav.ts";
 import { PROFILES } from "../../../data/people/profiles.ts";
+import { personSchema, absoluteUrl } from "../../../data/seo.ts";
 
 export async function getStaticPaths() {
   const people = await getCollection("people");
@@ -39,12 +40,28 @@ const journalLink = (p: { url?: string; doi: string | null; bibcode: string }) =
   p.url ?? (p.doi ? doiLink(p.doi) : adsLink(p.bibcode));
 const scholarLink = (title: string) => `https://scholar.google.com/scholar?q=${encodeURIComponent(title)}`;
 const pct = (x: number) => { const r = Math.round(x * 100); return r === 0 && x > 0 ? "<1%" : `${r}%`; };
+
+// SEO: Person structured data, profile OG image = the portrait.
+const canonical = absoluteUrl(withBase(`/people/${entry.id}`));
+const ogImage = entry.data.photo ? absoluteUrl(entry.data.photo) : undefined;
+const personLd = personSchema({
+  name: entry.data.name,
+  url: canonical,
+  image: ogImage,
+  jobTitle: entry.data.title ?? undefined,
+  description: profile.headline,
+});
 ---
 
 <BaseLayout
   title={`${entry.data.name} — CASSA People`}
   description={`${entry.data.name} — ${profile.headline}`}
   current="/people"
+  ogType="profile"
+  ogImage={ogImage}
+  ogImageAlt={entry.data.name}
+  canonical={canonical}
+  jsonLd={personLd}
 >
   <AnimatedHero
     theme="cosmic"

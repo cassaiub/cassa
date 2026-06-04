@@ -5,6 +5,7 @@ import Prose from "../../components/immersive/Prose.astro";
 import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
+import { eventSchema, absoluteUrl } from "../../data/seo.ts";
 
 export async function getStaticPaths() {
   const events = await getCollection("events", ({ data }) => data.status !== "draft");
@@ -39,12 +40,28 @@ if (d.allDay) {
 }
 
 const seriesLabel = d.category ?? d.series;
+
+// SEO: Event structured data + canonical.
+const canonical = absoluteUrl(withBase(`/events/${entry.id}`));
+const eventLd = eventSchema({
+  title: d.title,
+  description: d.summary ?? undefined,
+  url: canonical,
+  start: d.start,
+  end: d.end ?? undefined,
+  venue: d.venue ?? undefined,
+  online: !d.venue && !!d.link,
+});
 ---
 
 <BaseLayout
   title={`${d.title} — CASSA Events`}
   description={d.summary ?? d.title}
   current="/events"
+  lang={d.lang === "bn" ? "bn" : "en"}
+  ogType="article"
+  canonical={canonical}
+  jsonLd={eventLd}
 >
   <AnimatedHero
     theme="cosmic"

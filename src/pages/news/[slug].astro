@@ -2,10 +2,11 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
 import Prose from "../../components/immersive/Prose.astro";
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 import { isBanglaSeries } from "../../data/bangla-series.ts";
+import { articleSchema, absoluteUrl } from "../../data/seo.ts";
 
 export async function getStaticPaths() {
   const news = await getCollection("news", ({ data }) => data.status !== "draft" && !isBanglaSeries(data.category));
@@ -22,12 +23,34 @@ const dateFull = (date: Date) =>
 
 const isBn = d.lang === "bn";
 const catBn = !!d.category && [...d.category].some((ch) => ch.charCodeAt(0) > 127);
+
+// SEO: use the article hero as the social image (absolute URL), else the brand card.
+const canonical = absoluteUrl(withBase(`/news/${entry.id}`));
+const ogImage = d.hero
+  ? absoluteUrl((await getImage({ src: d.hero, format: "webp", width: 1200 })).src)
+  : undefined;
+const articleLd = articleSchema({
+  title: d.title,
+  description: d.summary ?? undefined,
+  url: canonical,
+  image: ogImage,
+  datePublished: d.date,
+  authorName: d.author ?? undefined,
+});
 ---
 
 <BaseLayout
   title={`${d.title} — CASSA News`}
   description={d.summary ?? d.title}
   current="/news"
+  lang={isBn ? "bn" : "en"}
+  ogType="article"
+  ogImage={ogImage}
+  ogImageAlt={d.heroAlt ?? d.title}
+  canonical={canonical}
+  publishedTime={d.date}
+  author={d.author ?? undefined}
+  jsonLd={articleLd}
 >
   <AnimatedHero
     theme="cosmic"

@@ -1,0 +1,68 @@
+---
+// Reusable <head> SEO block: canonical, description, Open Graph, Twitter cards,
+// and optional article metadata. Used by BaseLayout; defaults cover most pages,
+// detail routes override image/type/article fields.
+import { SITE, absoluteUrl } from "../data/seo";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Canonical URL — defaults to the current page's absolute URL. */
+  canonical?: string;
+  /** OG/Twitter image — absolute URL or site-root path. Defaults to the brand card. */
+  image?: string;
+  imageAlt?: string;
+  type?: "website" | "article" | "profile";
+  lang?: "en" | "bn";
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  author?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical = new URL(Astro.url.pathname, SITE.url).href,
+  image = SITE.ogImage,
+  imageAlt = SITE.legalName,
+  type = "website",
+  lang = "en",
+  publishedTime,
+  modifiedTime,
+  author,
+  noindex = false,
+} = Astro.props;
+
+// Resolve any root-relative image path to an absolute URL (required by OG/Twitter).
+const imageUrl = image.startsWith("http") ? image : absoluteUrl(image);
+const ogLocale = lang === "bn" ? SITE.localeBn : SITE.locale;
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+{/* Open Graph */}
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={SITE.legalName} />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:alt" content={imageAlt} />
+{type === "article" && publishedTime && (
+  <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{type === "article" && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime.toISOString()} />
+)}
+{type === "article" && author && <meta property="article:author" content={author} />}
+
+{/* Twitter */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt} />
