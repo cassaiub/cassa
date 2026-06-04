@@ -45,7 +45,7 @@ jobs:
         # NOT part of this build. Keep this list in sync with scripts/deploy.sh.
         run: |
           rsync -avz --delete --human-readable \
-            -e "ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts" \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o UserKnownHostsFile=~/.ssh/known_hosts" \
             --exclude 'courses' \
             --exclude 'abekta' \
             --exclude '.well-known' \
