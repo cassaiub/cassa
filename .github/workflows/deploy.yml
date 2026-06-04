@@ -1,0 +1,57 @@
+name: Deploy to Bluehost
+
+# Builds the Astro site and rsyncs dist/ to Bluehost public_html on every
+# push to main. Manual runs are also allowed from the Actions tab.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never let two deploys race each other onto the server.
+concurrency:
+  group: deploy-bluehost
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.BLUEHOST_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.BLUEHOST_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy with rsync
+        # --delete keeps the server clean, but the excludes protect the sibling
+        # sub-sites (/courses/ast100, /abekta) and cPanel/server files that are
+        # NOT part of this build. Keep this list in sync with scripts/deploy.sh.
+        run: |
+          rsync -avz --delete --human-readable \
+            -e "ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts" \
+            --exclude 'courses' \
+            --exclude 'abekta' \
+            --exclude '.well-known' \
+            --exclude 'cgi-bin' \
+            --exclude '.htaccess' \
+            --exclude '.user.ini' \
+            --exclude '.ftpquota' \
+            dist/ \
+            "${{ secrets.BLUEHOST_USER }}@${{ secrets.BLUEHOST_HOST }}:public_html/"
