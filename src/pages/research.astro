@@ -1,0 +1,393 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../components/immersive/AnimatedBand.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import Prose from "../components/immersive/Prose.astro";
+import { withBase } from "../data/site-nav.ts";
+
+const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3rem 0 0;color:var(--ink)";
+const soft = "color:var(--ink-soft)";
+
+/* ── Research areas ───────────────────────────────────────────────────────
+   Derived from the personal sites + major first-author papers of CASSA's two
+   Directors and its Core and Associate Members. Each person is placed in their
+   primary area; the highlight names what they specifically do and cites a key
+   paper. Graduate Members are not included here. */
+const areas = [
+  {
+    n: "01",
+    id: "cosmology",
+    title: "Cosmology & the Early Universe",
+    blurb:
+      "How did the universe begin, what is it made of, and how fast is it expanding? CASSA attacks these questions from four directions at once — the radio whisper of the first hydrogen, the cosmic web traced by galaxies, the warped light of lensed quasars, and the steady beat of exploding stars.",
+    people: [
+      {
+        slug: "asad", name: "Khan Muhammad Bin Asad", role: "Director", photo: "/people/asad.webp",
+        highlight:
+          "Listens for the faint 21-cm radio signal from cosmic dawn and the Epoch of Reionization with LOFAR and MeerKAT, building the beam models that strip away the instrumental polarization leakage able to mimic the cosmological signal.",
+        paper: { title: "Polarization leakage in epoch of reionization windows – I. LOFAR observations of the 3C196 field", year: 2015, venue: "MNRAS" },
+      },
+      {
+        slug: "karim", name: "Tanveer Karim", role: "Associate Member", photo: "/people/karim.webp",
+        highlight:
+          "Weighs dark energy and the growth of cosmic structure with the DESI survey — he designed its emission-line-galaxy selection and cross-correlated those galaxies with the Planck CMB-lensing map.",
+        paper: { title: "Cosmological constraints from the cross-correlation of Planck CMB lensing and DESI-like emission-line galaxies", year: 2023, venue: "MNRAS" },
+      },
+      {
+        slug: "shajib", name: "Anowar Jaman Shajib", role: "Associate Member", photo: "/people/shajib.webp",
+        highlight:
+          "Turns gravitationally lensed quasars into cosmic clocks: his STRIDES time-delay analysis of DES J0408-5354 measured the Hubble constant to 3.9%, among the sharpest from a single lens.",
+        paper: { title: "STRIDES: a 3.9 per cent measurement of the Hubble constant from the strong lens system DES J0408-5354", year: 2020, venue: "MNRAS" },
+      },
+      {
+        slug: "uddin", name: "Syed Ashraf Uddin", role: "Director", photo: "/people/uddin.webp",
+        highlight:
+          "Charts cosmic expansion and dark energy with Type Ia supernovae, and showed how a supernova's host galaxy biases its brightness — a key systematic for precision cosmology and the Hubble tension.",
+        paper: { title: "The Influence of Host Galaxies in Type Ia Supernova Cosmology", year: 2017, venue: "ApJ" },
+      },
+    ],
+  },
+  {
+    n: "02",
+    id: "galaxies",
+    title: "Galaxies & Their Environments",
+    blurb:
+      "Galaxies are not islands. CASSA studies how they assemble their stars and structure across cosmic time, and how the groups and clusters they live in shape — and quench — their growth, from JWST snapshots of the young universe to billion-particle cosmological simulations.",
+    people: [
+      {
+        slug: "mowla", name: "Lamiya Ashraf Mowla", role: "Associate Member", photo: "/people/mowla.webp",
+        highlight:
+          "Traces galaxy growth from cosmic dawn to today with wide JWST and HST imaging, and led the discovery of the 'Sparkler' galaxy's compact sources as the most distant globular-cluster candidates yet found.",
+        paper: { title: "The Sparkler: Evolved High-redshift Globular Cluster Candidates Captured by JWST", year: 2022, venue: "ApJL" },
+      },
+      {
+        slug: "ahad", name: "Syeda Lammim Ahad", role: "Associate Member", photo: "/people/ahad.jpg",
+        highlight:
+          "Studies how galaxies quench inside groups and clusters, reading the faint intracluster light as a tracer of dark-matter halos with the Hydrangea and FLAMINGO simulations and surveys like KiDS and Euclid.",
+        paper: { title: "How to interpret measurements of diffuse light in stacked observations of groups and clusters of galaxies", year: 2023, venue: "MNRAS" },
+      },
+    ],
+  },
+  {
+    n: "03",
+    id: "black-holes",
+    title: "Black Holes, AGN & Accretion",
+    blurb:
+      "At the hearts of galaxies and in stellar binaries, matter spiralling onto black holes powers the brightest engines in the cosmos. CASSA measures how these black holes feed, grow, and launch relativistic jets — across the full sweep of black-hole mass.",
+    people: [
+      {
+        slug: "ananna", name: "Tonima Tasnim Ananna", role: "Associate Member", photo: "/people/ananna.webp",
+        highlight:
+          "Measures how supermassive black holes grew across cosmic time; her 'Accretion History of AGN' population-synthesis model found that roughly half of nearby active black holes are hidden behind Compton-thick obscuration.",
+        paper: { title: "The Accretion History of AGNs. I. Supermassive Black Hole Population Synthesis Model", year: 2019, venue: "ApJ" },
+      },
+      {
+        slug: "saikia", name: "Payaswini Saikia", role: "Associate Member", photo: "/people/saikia.jpg",
+        highlight:
+          "Tracks accretion and jets in black-hole X-ray binaries from radio to X-ray, and established the optical 'fundamental plane of black hole activity' linking black holes across the mass scale.",
+        paper: { title: "The Fundamental Plane of black hole activity in the optical band", year: 2015, venue: "MNRAS" },
+      },
+    ],
+  },
+  {
+    n: "04",
+    id: "stars-sun",
+    title: "Stars, Planets & the Sun",
+    blurb:
+      "Why do stars have the masses they do, and how does our own star heat its atmosphere to millions of degrees? CASSA models the birth of stars and planets and decodes the magnetic violence of the solar corona.",
+    people: [
+      {
+        slug: "tanvir", name: "Tabassum Shahriar Tanvir", role: "Associate Member", photo: "/people/tanvir.jpeg",
+        highlight:
+          "Runs radiation-magnetohydrodynamic simulations to learn what sets the masses of stars — how radiation, protostellar outflows, and metallicity sculpt the stellar initial mass function — and now models magnetized planet-forming disks.",
+        paper: { title: "The metallicity dependence of the stellar initial mass function", year: 2024, venue: "MNRAS" },
+      },
+      {
+        slug: "bahauddin", name: "Shah Mohammad Bahauddin", role: "Associate Member", photo: "/people/bahauddin.webp",
+        highlight:
+          "Attacks the coronal-heating problem with NASA's IRIS spectrograph; his Nature Astronomy study traced solar transient brightenings to magnetic reconnection — among the first complete evidence for nanoflare-scale heating.",
+        paper: { title: "The origin of reconnection-mediated transient brightenings in the solar transition region", year: 2021, venue: "Nature Astronomy" },
+      },
+    ],
+  },
+  {
+    n: "05",
+    id: "theory",
+    title: "Theoretical & Applied Physics",
+    blurb:
+      "Underneath the observations lies physics — the mathematics of fields and gravity, and the engineering of light itself. CASSA's theorists probe quantum gravity and black-hole entropy, while its photonics work designs nanostructures that bend light for sensing and solar energy.",
+    people: [
+      {
+        slug: "momen", name: "M Arshad Momen", role: "Core Member", photo: "/people/momen.webp",
+        highlight:
+          "Works at the foundations of quantum field theory and gravitation; his studies of boundary 'edge states' in gravity show how degrees of freedom on a horizon can account for black-hole entropy.",
+        paper: { title: "Edge dynamics for BF theories and gravity", year: 1997, venue: "Physics Letters B" },
+      },
+      {
+        slug: "chowdhury", name: "Mustafa Habib Chowdhury", role: "Core Member", photo: "/people/chowdhury.webp",
+        highlight:
+          "Designs metal nanostructures that steer light with FDTD electromagnetics — pioneering aluminum nanoparticles for ultraviolet biosensing, and now optimizing plasmonics for thin-film solar cells.",
+        paper: { title: "Aluminum Nanoparticles as Substrates for Metal-Enhanced Fluorescence in the Ultraviolet for the Label-Free Detection of Biomolecules", year: 2009, venue: "Analytical Chemistry" },
+      },
+    ],
+  },
+];
+
+const scholar = (title: string) => `https://scholar.google.com/scholar?q=${encodeURIComponent(title)}`;
+
+const infrastructure = [
+  { name: "Timaeus", kind: "High-performance computing", desc: "CASSA's HPC — SLURM-scheduled with 3-2-1 backups, built to scale toward a supercomputing facility." },
+  { name: "IUB CORE", kind: "Campus observatory", desc: "Campus Observatory for Research and Education: a rooftop facility with optical telescopes and the STAR Telescope." },
+  { name: "IUB Observatory", kind: "Research observatory", desc: "A 0.5 m optical telescope in an autotracking dome at the Kaliakair campus." },
+  { name: "STAR Telescope", kind: "Radio telescope", desc: "Small Transient Array Radio Telescope — CASSA's radio instrument." },
+];
+
+const roadmap = [
+  "Build international collaborations for access to leading ground-based and space telescopes.",
+  "Secure research funding through grants from national and international sources.",
+  "Upgrade the HPC regularly to grow computing capacity.",
+  "Support IUB departments in recruiting A&A / SPSE faculty.",
+  "Promote postdoctoral research fellowships within CASSA.",
+  "Develop, with IUB, a PhD programme roadmap for A&A / SPSE.",
+  "Campaign for IUB CORE and the IUB Observatory at Kaliakair.",
+  "Advance Bangladesh's space economy and international mission partnerships.",
+  "Organize regular seminars, symposia, talks and conferences.",
+];
+---
+
+<BaseLayout title="Research Areas — CASSA" description="The research areas of CASSA — from 21-cm cosmology and gravitational lensing to black-hole accretion, galaxy evolution, solar physics, star formation and theoretical physics — and the scientists behind each." current="/research">
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Research"
+    title="Research Areas"
+    lede="From the radio whisper of cosmic dawn to the magnetic violence of the Sun — the questions CASSA's scientists pursue, and the people pursuing them."
+  />
+
+  <!-- ── Intro + jump strip ──────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The breadth of the work</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>Five areas, twelve scientists, one centre</h2>
+          <p>
+            CASSA's science is carried out by its two <strong>Directors</strong>
+            and its <strong>Core and Associate Members</strong> — astronomers and
+            physicists based at IUB and at leading institutions across the world.
+            Their work, published in journals from <em>MNRAS</em> and <em>ApJ</em>
+            to <em>Nature Astronomy</em>, clusters into five research areas. Each
+            below names what every member actually does, with a key paper.
+          </p>
+        </Prose>
+      </Reveal>
+      <Reveal delay={120}>
+        <nav class="jump" aria-label="Jump to a research area">
+          {areas.map((a) => (
+            <a href={`#${a.id}`}>{a.title}</a>
+          ))}
+        </nav>
+      </Reveal>
+    </div>
+  </section>
+
+  <AnimatedBand theme="galaxy">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">What we study</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">From cosmic dawn to the Sun's corona</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── The research areas ──────────────────────────────────────────────── -->
+  {areas.map((a, i) => (
+    <section class:list={["section", "area", { "section--elev": i % 2 === 1 }]} id={a.id}>
+      <div class="wrap">
+        <Reveal>
+          <p class="eyebrow">Area {a.n} · {a.people.length} {a.people.length === 1 ? "scientist" : "scientists"}</p>
+        </Reveal>
+        <Reveal delay={60}><h2 style={h2}>{a.title}</h2></Reveal>
+        <Reveal delay={100}><p class="area-blurb">{a.blurb}</p></Reveal>
+
+        <div class="area-people">
+          {a.people.map((p, j) => (
+            <Reveal class="rcard" delay={120 + j * 70}>
+              <img class="rcard__photo" src={withBase(p.photo)} alt={`Photo of ${p.name}`} loading="lazy" decoding="async" width="64" height="64" />
+              <div class="rcard__body">
+                <h3 class="rcard__name"><a href={withBase(`/people#${p.slug}`)}>{p.name}</a></h3>
+                <p class="rcard__role">{p.role}</p>
+                <p class="rcard__what">{p.highlight}</p>
+                <p class="rcard__paper">
+                  <span class="rcard__paper-label">Key paper</span>
+                  <a href={scholar(p.paper.title)} target="_blank" rel="noopener noreferrer"><cite>{p.paper.title}</cite></a>
+                  <span class="rcard__cite">{p.paper.year} · {p.paper.venue}</span>
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- ── Infrastructure ──────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Infrastructure</p></Reveal>
+      <Reveal delay={60}><h2 style={h2}>The instruments and the machine</h2></Reveal>
+      <div style="display:grid;gap:1.1rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));margin-top:2rem">
+        {infrastructure.map((f, i) => (
+          <Reveal class="card" delay={(i % 4) * 70}>
+            <p class="eyebrow" style="font-size:.68rem">{f.kind}</p>
+            <h3 style="font-size:1.25rem;margin-top:.4rem">{f.name}</h3>
+            <p style={`${soft};margin-top:.6rem;font-size:.96rem`}>{f.desc}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Roadmap ─────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Where we're going</p></Reveal>
+      <Reveal delay={60}><h2 style={h2}>Research roadmap</h2></Reveal>
+      <Reveal delay={110}>
+        <ol style="max-width:72ch;margin:2rem auto 0;padding:0;list-style:none">
+          {roadmap.map((r, i) => (
+            <li style="display:flex;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--line)">
+              <span style="color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums;min-width:1.6em">{i + 1}</span>
+              <span style={`${soft};line-height:1.6`}>{r}</span>
+            </li>
+          ))}
+        </ol>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── Who does the research ───────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal>
+        <Prose>
+          <h2>Who does the research</h2>
+          <p>
+            CASSA's scientific direction is reviewed by an external
+            <strong> Scientific Advisory Board</strong>. The research itself is
+            carried out by the two Directors, Core and Associate Members, Graduate
+            Members, Research Affiliates, and student Research Assistants and
+            Interns. Meet them on the <a href={withBase("/people")}>People</a> page,
+            or browse the full output on <a href={withBase("/research/publications")}>Publications</a>.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .area-blurb {
+    color: var(--ink-soft);
+    max-width: 72ch;
+    margin-top: 1rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+
+  .area-people {
+    display: grid;
+    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
+    margin-top: 2.4rem;
+  }
+
+  .rcard {
+    display: flex;
+    gap: 1.05rem;
+    align-items: flex-start;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.3rem;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .section--elev .rcard { background: var(--bg-elev-2); }
+  .rcard:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    transform: translateY(-2px);
+  }
+  :global([data-theme="light"]) .rcard {
+    box-shadow: 0 1px 2px rgba(12, 18, 34, 0.05), 0 10px 26px rgba(12, 18, 34, 0.05);
+  }
+
+  .rcard__photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top center;
+    flex-shrink: 0;
+    border: 2px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+
+  .rcard__body { min-width: 0; }
+  .rcard__name { margin: 0; font-size: 1.12rem; line-height: 1.2; letter-spacing: -0.01em; }
+  .rcard__name a { color: var(--ink); transition: color 0.2s; }
+  .rcard__name a:hover { color: var(--accent); }
+  .rcard__role {
+    margin: 0.22rem 0 0;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .rcard__what {
+    margin: 0.65rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .rcard__paper {
+    margin: 0.8rem 0 0;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+  .rcard__paper-label {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-right: 0.4em;
+  }
+  .rcard__paper a {
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .rcard__paper a:hover { color: var(--accent); }
+  .rcard__paper cite { font-style: italic; }
+  .rcard__cite { display: block; margin-top: 0.2rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+  /* Anchor offset so jump links clear the fixed nav */
+  .area { scroll-margin-top: 84px; }
+
+  /* Jump strip */
+  .jump { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.8rem; }
+  .jump a {
+    font-size: 0.82rem;
+    padding: 0.42rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .jump a:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    color: var(--accent);
+  }
+</style>

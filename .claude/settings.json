@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ss -tlnp 2>/dev/null | grep -q ':4321' || (cd /home/asad/Software/cassa && nohup npm run dev >> /tmp/cassa-dev.log 2>&1 &)",
+            "async": true,
+            "statusMessage": "Checking dev server..."
+          }
+        ]
+      }
+    ]
+  }
+}

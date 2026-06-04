@@ -1,0 +1,111 @@
+---
+const lastName = (n: string) => n.trim().split(/\s+/).at(-1) ?? n;
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import PersonCard from "../../components/PersonCard.astro";
+import { getCollection } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+
+/* ── Data ─────────────────────────────────────────────────────────────── */
+const rawAlumni = await getCollection(
+  "people",
+  ({ data }) => data.tier === "Alumni" && data.status === "published"
+);
+const alumni = rawAlumni.sort(
+  (a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name))
+);
+
+/* ── Subpage nav ──────────────────────────────────────────────────────── */
+const CURRENT_HREF = "/people/alumni";
+const subNav = [
+  { href: "/people/directors",       label: "Directors" },
+  { href: "/people/core-associate",  label: "Core & Associate" },
+  { href: "/people/grad-affiliates", label: "Graduate & Affiliates" },
+  { href: "/people/staff",           label: "Staff" },
+  { href: "/people/student-ras",     label: "Research Assistants" },
+  { href: "/people/interns",         label: "Interns" },
+];
+---
+
+<BaseLayout
+  title="Alumni — CASSA People"
+  description="Former members who trained and collaborated with CASSA — now making their mark across the world."
+  current="/people"
+>
+  <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="People · Alumni"
+    title="CASSA Alumni"
+    lede="Former members who trained and collaborated with CASSA — now making their mark across the world."
+  />
+
+  <!-- ── Subpage navigation pill-strip ────────────────────────────────── -->
+  <nav style="border-bottom:1px solid var(--line);background:var(--bg-elev)">
+    <div class="wrap" style="display:flex;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/people')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← All People</a>
+      {subNav.map(s => (
+        <a
+          href={withBase(s.href)}
+          style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${
+            s.href === CURRENT_HREF
+              ? 'background:var(--accent);color:#1a1206;font-weight:600'
+              : 'color:var(--ink-soft);border:1px solid var(--line)'
+          }`}
+        >{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ── Alumni grid ────────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Former Members</p></Reveal>
+      <Reveal delay={60}>
+        <h2 style="font-size:clamp(1.6rem,3.4vw,2.3rem);letter-spacing:-.015em;margin:.3rem 0 0;color:var(--ink)">
+          {alumni.length > 0 ? `${alumni.length} alumnus${alumni.length > 1 ? '/ae' : ''}` : "Alumni"}
+        </h2>
+      </Reveal>
+
+      {alumni.length > 0 ? (
+        <div class="pg">
+          {alumni.map((p, i) => (
+            <Reveal delay={(i % 3) * 80}>
+              <PersonCard
+                name={p.data.name}
+                tier={p.data.tier}
+                interests={p.data.interests}
+                institution={p.data.institution}
+                email={p.data.email}
+                photo={p.data.photo}
+                links={p.data.links}
+              />
+            </Reveal>
+          ))}
+        </div>
+      ) : (
+        <Reveal delay={80}>
+          <p style="color:var(--ink-soft);margin-top:2rem">Alumni records are being compiled.</p>
+        </Reveal>
+      )}
+
+      <Reveal delay={160}>
+        <p style="color:var(--ink-faint);font-size:.85rem;margin-top:2.5rem;max-width:65ch">
+          Note: Graduate Members currently pursuing PhDs abroad (Istiak Hossain Akib, Md Redyan Ahmed) remain active CASSA members and are listed on the <a href={withBase('/people/grad-affiliates')} style="color:var(--accent)">Graduate Members page</a>.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+.pg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.2rem;
+}
+@media (max-width: 860px) { .pg { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .pg { grid-template-columns: 1fr; } }
+</style>

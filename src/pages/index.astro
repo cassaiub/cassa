@@ -1,0 +1,396 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import Prose from "../components/immersive/Prose.astro";
+import AnimatedBand from "../components/immersive/AnimatedBand.astro";
+import FeatureSlider, { type Slide } from "../components/FeatureSlider.tsx";
+import { Image } from "astro:assets";
+import { withBase } from "../data/site-nav";
+import { getCollection } from "astro:content";
+import { isBanglaSeries } from "../data/bangla-series.ts";
+
+// ── Hero slider ─────────────────────────────────────────────────────────────
+// Top recent research / colloquia feature stories. Each slide's background is an
+// ORIGINAL, code-generated animation (SkyCanvas), thematically tied to the story
+// — never a static photo (rules 16 & 17).
+const fallbackSlides: Slide[] = [
+  {
+    theme: "cosmic",
+    eyebrow: "Cosmology · April 2026",
+    title: "A 1% Measurement of the Universe's Expansion",
+    excerpt:
+      "A global collaboration — including CASSA's Syed Ashraf Uddin — wove many independent distance indicators into one network, sharpening H₀ and deepening the Hubble tension.",
+    href: "https://cassa.site/local-expansion-rate/",
+  },
+  {
+    theme: "lensing",
+    eyebrow: "Gravitational Lensing · February 2026",
+    title: "The Hubble Constant from a Lensed Quasar",
+    excerpt:
+      "In TDCOSMO XXIII, CASSA's Anowar J. Shajib and collaborators time the flicker of the doubly lensed quasar HE 1104−1805 to clock how fast the Universe expands.",
+    href: "https://cassa.site/paic-2026/",
+  },
+  {
+    theme: "galaxy",
+    eyebrow: "Early Galaxies · May 2025",
+    title: "Starbursting Clumps in a Protocluster at z = 7.88",
+    excerpt:
+      "With JWST, CASSA's Anowar J. Shajib and collaborators resolve sub-kiloparsec starbursts enriching a galaxy protocluster just 650 million years after the Big Bang.",
+    href: "https://cassa.site/morishita-2025/",
+  },
+];
+
+const featured = (await getCollection("news", ({ data }) => data.status !== "draft" && data.featured === true))
+  .sort((a, b) => +b.data.date - +a.data.date);
+const monthYear = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", month: "long", year: "numeric" }).format(d);
+const featuredSlides: Slide[] = featured.map((p) => ({
+  theme: p.data.theme ?? "cosmic",
+  eyebrow: `${p.data.category ?? "News"} · ${monthYear(p.data.date)}`,
+  title: p.data.title,
+  excerpt: p.data.summary ?? "",
+  href: withBase(`/news/${p.id}`),
+}));
+const slides: Slide[] = featuredSlides.length > 0 ? featuredSlides : fallbackSlides;
+
+// ── Latest strip: next 3 upcoming events + latest 3 news ─────────────────────
+const nowD = new Date();
+const allEvents = await getCollection("events", ({ data }) => data.status !== "draft");
+const endOf = (e: (typeof allEvents)[number]) => e.data.end ?? e.data.start;
+const upcomingEvents = allEvents
+  .filter((e) => endOf(e) >= nowD)
+  .sort((a, b) => +a.data.start - +b.data.start)
+  .slice(0, 3);
+
+// Latest institutional news — same feed as /news (excludes the Bengali series and Durbin updates).
+const recentNews = (await getCollection("news", ({ data }) =>
+  data.status !== "draft" && !isBanglaSeries(data.category) && data.category !== "Durbin"))
+  .sort((a, b) => +b.data.date - +a.data.date)
+  .slice(0, 3);
+
+const TZ = "Asia/Dhaka";
+const fmt = (d: Date, o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("en-GB", { timeZone: TZ, ...o }).format(d);
+const dDay = (d: Date) => fmt(d, { day: "2-digit" });
+const dMon = (d: Date) => fmt(d, { month: "short" });
+const dTime = (d: Date) => fmt(d, { hour: "numeric", minute: "2-digit", hour12: true });
+const newsDate = (d: Date) => fmt(d, { day: "numeric", month: "short", year: "numeric" });
+const seriesLabel = (e: (typeof allEvents)[number]) => e.data.category ?? e.data.series;
+
+// ── Key stats — derived live from the people roster (stay accurate as it grows);
+// the research-area count and Timaeus HPC spec are constants.
+const people = await getCollection("people", ({ data }) => data.status !== "draft");
+const tier = (t: string) => people.filter((p) => p.data.tier === t).length;
+const STATS: { n: number; label: string; sub?: string }[] = [
+  { n: 5, label: "Research areas", sub: "radio, cosmology & time-domain" },
+  { n: tier("Director"), label: "Directors" },
+  { n: tier("Core Member"), label: "Core members" },
+  { n: tier("Associate Member"), label: "Associate members" },
+  { n: people.length, label: "Members & affiliates" },
+  { n: 32, label: "Timaeus HPC cores", sub: "64 threads · RTX A4000 GPU" },
+];
+
+// The three missions (Constitution cl. 30) — each routes to its hub.
+const MISSIONS = [
+  {
+    k: "Research",
+    d: "Research spanning radio astronomy, cosmology and time-domain astronomy — across simulation, instrumentation, theory and observation.",
+    href: withBase("/research"),
+    go: "Explore research",
+  },
+  {
+    k: "Teaching",
+    d: "IUB's UGC-approved Minor in Astronomy & Astrophysics and the AST 100 general-education course, plus summer and winter schools.",
+    href: withBase("/teaching"),
+    go: "Teaching at CASSA",
+  },
+  {
+    k: "Outreach",
+    d: "Durbin — astrophotography and science communication — and the Bangladesh Olympiad on Astronomy & Astrophysics (BDOAA).",
+    href: withBase("/outreach"),
+    go: "Outreach & Durbin",
+  },
+];
+---
+
+<BaseLayout title="CASSA — Center for Astronomy, Space Science and Astrophysics" current="/">
+  <!-- 1 · HERO — fullscreen research-story carousel over living SkyCanvas backdrops -->
+  <FeatureSlider slides={slides} client:load />
+
+  <!-- 2 · WHAT IS CASSA — identity intro + the three missions (elevated after the hero, rule 19) -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">What is CASSA</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>Astronomy, astrophysics &amp; space science — pursued from Bangladesh</h2>
+          <p>
+            The Center for Astronomy, Space Science and Astrophysics (CASSA) is an
+            autonomous, multidisciplinary research center of
+            <a href="https://iub.ac.bd/" target="_blank" rel="noopener">Independent University, Bangladesh</a>,
+            working directly under the Office of the Vice Chancellor. Founded in 2025,
+            it grew out of the Astronomy Research Group, IUB (2020) and the
+            Computational and Observational Astronomy Lab (2023).
+          </p>
+          <p>
+            Its work runs on three missions — <strong>research, teaching, and
+            outreach</strong> — with the vision to be a pathfinder in Bangladesh,
+            impactful in South Asia, and part of the international community in these
+            fields.
+          </p>
+        </Prose>
+      </Reveal>
+      <Reveal delay={120}>
+        <p class="hp-about"><a class="btn" href={withBase("/about")}>The full CASSA story <span aria-hidden="true">→</span></a></p>
+      </Reveal>
+
+      <ul class="hp-missions">
+        {MISSIONS.map((m, i) => (
+          <li>
+            <a class="hp-mission" href={m.href} data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <span class="hp-mission__k">{m.k}</span>
+              <span class="hp-mission__d">{m.d}</span>
+              <span class="hp-mission__go">{m.go} <span aria-hidden="true">→</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 · STRENGTH IN NUMBERS — immersive count-up stats over the animated sky -->
+  <AnimatedBand theme="cosmic">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">By the numbers</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">The strength of CASSA</h2>
+    </Reveal>
+    <ul class="stats">
+      {STATS.map((s, i) => (
+        <li class="stat" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+          <span class="stat__n" data-count={s.n}>{s.n}</span>
+          <span class="stat__label">{s.label}</span>
+          {s.sub && <span class="stat__sub">{s.sub}</span>}
+        </li>
+      ))}
+    </ul>
+    <div class="stats-cta" data-reveal style="--reveal-delay:480ms">
+      <a class="btn-dark" href={withBase('/people')}>Meet the team <span aria-hidden="true">→</span></a>
+      <a class="btn-dark" href={withBase('/research')}>Explore the research <span aria-hidden="true">→</span></a>
+    </div>
+  </AnimatedBand>
+
+  <!-- 4 · LATEST — upcoming events (left) + recent news (right) -->
+  <section class="section">
+    <div class="wrap">
+      <div class="hp-duo">
+        <section class="hp-col" aria-labelledby="hp-events-h" data-reveal>
+          <div class="hp-col__head">
+            <p class="eyebrow">What's on</p>
+            <h2 id="hp-events-h" class="hp-col__h">Upcoming events</h2>
+          </div>
+          {upcomingEvents.length > 0 ? (
+            <ol class="hp-list">
+              {upcomingEvents.map((e) => (
+                <li>
+                  <a class="hp-row" href={withBase(`/events/${e.id}`)}>
+                    <span class="hp-date">
+                      <span class="hp-date__d">{dDay(e.data.start)}</span>
+                      <span class="hp-date__m">{dMon(e.data.start)}</span>
+                    </span>
+                    <span class="hp-row__body">
+                      <span class="hp-row__meta">
+                        <span class="hp-tag">{seriesLabel(e)}</span>
+                        <span class="hp-row__sub">{e.data.allDay ? "All day" : dTime(e.data.start)}</span>
+                      </span>
+                      <span class="hp-row__title">{e.data.title}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="hp-empty">No upcoming events are scheduled right now — check back soon.</p>
+          )}
+          <a class="hp-more" href={withBase('/events')}>All events <span aria-hidden="true">→</span></a>
+        </section>
+
+        <section class="hp-col" aria-labelledby="hp-news-h" data-reveal style="--reveal-delay:90ms">
+          <div class="hp-col__head">
+            <p class="eyebrow">Latest</p>
+            <h2 id="hp-news-h" class="hp-col__h">Recent news</h2>
+          </div>
+          {recentNews.length > 0 ? (
+            <ol class="hp-list">
+              {recentNews.map((p) => (
+                <li>
+                  <a class="hp-row" href={withBase(`/news/${p.id}`)}>
+                    {p.data.hero ? (
+                      <span class="hp-thumb"><Image src={p.data.hero} alt={p.data.heroAlt ?? ""} width={160} loading="lazy" /></span>
+                    ) : (
+                      <span class="hp-date">
+                        <span class="hp-date__d">{dDay(p.data.date)}</span>
+                        <span class="hp-date__m">{dMon(p.data.date)}</span>
+                      </span>
+                    )}
+                    <span class="hp-row__body">
+                      <span class="hp-row__meta">
+                        {p.data.category && <span class="hp-tag">{p.data.category}</span>}
+                        <span class="hp-row__sub">{newsDate(p.data.date)}</span>
+                      </span>
+                      <span class="hp-row__title">{p.data.title}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="hp-empty">News will appear here soon.</p>
+          )}
+          <a class="hp-more" href={withBase('/news')}>All news <span aria-hidden="true">→</span></a>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · GET INVOLVED — closing band over a living SkyCanvas galaxy (rule 17) -->
+  <AnimatedBand theme="galaxy">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Get involved</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.8rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:18ch">The sky belongs to everyone</h2>
+      <p style="color:rgba(255,255,255,.86);max-width:54ch;margin-top:1rem">
+        From public astronomy nights and the national olympiad to research
+        assistantships and volunteering — there's a way in for students,
+        educators and collaborators across Bangladesh.
+      </p>
+      <div class="stats-cta">
+        <a class="btn-dark" href={withBase('/outreach')}>Outreach &amp; Durbin <span aria-hidden="true">→</span></a>
+        <a class="btn-dark" href={withBase('/opportunities')}>Opportunities <span aria-hidden="true">→</span></a>
+        <a class="btn-dark" href={withBase('/about')}>Get in touch <span aria-hidden="true">→</span></a>
+      </div>
+    </Reveal>
+  </AnimatedBand>
+</BaseLayout>
+
+<style>
+  /* ── What is CASSA — the three mission cards ───────────────────────────── */
+  .hp-about { margin-top: 1.8rem; }
+  .hp-missions {
+    list-style: none; margin: 2.8rem 0 0; padding: 0;
+    display: grid; gap: 1.2rem; grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 760px) { .hp-missions { grid-template-columns: 1fr; } }
+  .hp-mission {
+    display: flex; flex-direction: column; gap: .55rem; height: 100%;
+    background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.5rem; transition: border-color .2s, transform .2s;
+  }
+  .hp-mission::before {
+    content: ""; display: block; width: 30px; height: 3px; border-radius: 2px;
+    background: var(--accent); margin-bottom: .5rem; opacity: .9;
+  }
+  .hp-mission:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); transform: translateY(-3px); }
+  [data-theme="light"] .hp-mission { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 10px 24px rgba(12,18,34,.05); }
+  .hp-mission__k { font-size: 1.25rem; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+  .hp-mission__d { font-size: .95rem; color: var(--ink-soft); line-height: 1.6; flex: 1; }
+  .hp-mission__go { font-size: .86rem; font-weight: 600; color: var(--accent); margin-top: .3rem; }
+  .hp-mission:hover .hp-mission__go { text-decoration: underline; }
+
+  /* ── Latest — two side-by-side panels (events left, news right) ─────────── */
+  .hp-duo { display: grid; gap: 1.6rem; grid-template-columns: 1fr 1fr; align-items: start; }
+  @media (max-width: 760px) { .hp-duo { grid-template-columns: 1fr; gap: 2.6rem; } }
+
+  .hp-col__h { font-size: clamp(1.3rem, 2.6vw, 1.7rem); letter-spacing: -.015em; margin: .25rem 0 0; color: var(--ink); }
+
+  .hp-list { list-style: none; margin: 1.3rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .7rem; }
+
+  .hp-row {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 14px;
+    padding: .9rem 1rem; transition: border-color .2s, transform .2s;
+  }
+  .hp-row:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); transform: translateY(-2px); }
+  [data-theme="light"] .hp-row { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+
+  .hp-date {
+    flex-shrink: 0; width: 46px; text-align: center; display: flex; flex-direction: column;
+    line-height: 1.05; padding-top: .15rem; font-variant-numeric: tabular-nums;
+  }
+  .hp-date__d { font-size: 1.4rem; font-weight: 700; color: var(--ink); }
+  .hp-date__m { font-size: .66rem; text-transform: uppercase; letter-spacing: .12em; color: var(--accent); font-weight: 700; margin-top: .1rem; }
+
+  .hp-thumb {
+    flex-shrink: 0; width: 64px; height: 64px; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--line); background: var(--bg-elev);
+  }
+  .hp-thumb :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .hp-row__body { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+  .hp-row__meta { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+  .hp-tag {
+    font-size: .58rem; letter-spacing: .13em; text-transform: uppercase; font-weight: 700;
+    padding: .28em .7em; border-radius: 999px; color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); white-space: nowrap;
+  }
+  .hp-row__sub { font-size: .76rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .hp-row__title { font-size: 1rem; color: var(--ink); line-height: 1.34; font-weight: 600; }
+  .hp-row:hover .hp-row__title { color: var(--accent); }
+
+  .hp-empty { color: var(--ink-soft); margin-top: 1.3rem; line-height: 1.7; }
+  .hp-more { display: inline-block; margin-top: 1.2rem; color: var(--accent); font-weight: 600; font-size: .9rem; }
+  .hp-more:hover { opacity: .75; }
+
+  /* ── Strength in numbers — count-up stats over the animated sky ─────────── */
+  .stats {
+    list-style: none; margin: 2.6rem 0 0; padding: 0;
+    display: grid; gap: 1.8rem 1.6rem; grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 760px) { .stats { grid-template-columns: 1fr 1fr; gap: 1.6rem 1.1rem; } }
+
+  .stat::before {
+    content: ""; display: block; width: 34px; height: 3px; border-radius: 2px;
+    background: var(--accent); margin-bottom: .85rem; opacity: .9;
+  }
+  .stat__n {
+    display: block; font-size: clamp(2.6rem, 6vw, 4rem); font-weight: 700; line-height: 1;
+    letter-spacing: -.02em; color: #fff; font-variant-numeric: tabular-nums;
+  }
+  .stat__label { display: block; margin-top: .5rem; font-size: 1rem; font-weight: 600; color: rgba(255,255,255,.92); }
+  .stat__sub { display: block; margin-top: .2rem; font-size: .8rem; color: rgba(255,255,255,.62); }
+
+  /* CTA buttons used on the dark bands (stats + closing) */
+  .stats-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2.8rem; }
+  .btn-dark {
+    display: inline-block; padding: .6rem 1.15rem; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.4); color: #fff; font-weight: 600; font-size: .92rem;
+    transition: background .2s, border-color .2s;
+  }
+  .btn-dark:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); }
+</style>
+
+<script>
+  // Count-up the key-stats numbers when the band scrolls into view.
+  // Reduced motion → show the final value immediately (meaningful static state).
+  const nums = Array.from(document.querySelectorAll<HTMLElement>(".stat__n[data-count]"));
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) {
+    nums.forEach((n) => (n.textContent = n.dataset.count ?? n.textContent));
+  } else {
+    nums.forEach((n) => (n.textContent = "0"));
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const el = e.target as HTMLElement;
+        io.unobserve(el);
+        const target = Number(el.dataset.count ?? 0);
+        const dur = 1100, t0 = performance.now();
+        const tick = (t: number) => {
+          const p = Math.min(1, (t - t0) / dur);
+          el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = String(target);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.4 });
+    nums.forEach((n) => io.observe(n));
+  }
+</script>

@@ -1,0 +1,142 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { withBase } from "../../data/site-nav.ts";
+---
+
+<BaseLayout
+  title="IUB CORE — CASSA Research"
+  description="Campus Observatory for Research and Education — CASSA's rooftop facility on the main academic building, housing optical telescopes, the STAR Telescope, and educational instruments."
+  current="/research/core"
+>
+  <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Research · Facilities"
+    title="IUB CORE"
+    lede="Campus Observatory for Research and Education — CASSA's rooftop facility on the main academic building, housing optical telescopes, the STAR Telescope, and educational instruments."
+  />
+
+  <!-- ── Facility sub-nav strip ───────────────────────────────────────── -->
+  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/research')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Research</a>
+      {[
+        { href: "/research/observatory", label: "IUB Observatory" },
+        { href: "/research/core",        label: "IUB CORE" },
+        { href: "/research/hpc",         label: "Timaeus HPC" },
+        { href: "/research/star",       label: "STAR Telescope" },
+      ].map(s => (
+        <a href={withBase(s.href)} style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${s.href === '/research/core' ? 'background:var(--accent);color:#1a1206;font-weight:600' : 'color:var(--ink-soft);border:1px solid var(--line)'}`}>{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ── Section 1: Overview ──────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Campus Facility</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>About IUB CORE</h2>
+          <p>
+            IUB CORE (Campus Observatory for Research and Education) is CASSA's
+            rooftop observatory on the Main Academic Building of Independent
+            University, Bangladesh. It hosts both the optical instruments and
+            the STAR Telescope. IUB
+            CORE serves both research and educational purposes, providing
+            students and CASSA members with hands-on access to working
+            astronomical instruments in the heart of the Bashundhara campus.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="pg">
+        <Reveal class="card" delay={0}>
+          <p class="eyebrow" style="font-size:.68rem">Location</p>
+          <h3 style="font-size:1.25rem;margin-top:.45rem">Main Academic Building rooftop</h3>
+          <p style="color:var(--ink-soft);margin-top:.8rem;font-size:.97rem;line-height:1.65">IUB Bashundhara RA, Dhaka</p>
+        </Reveal>
+        <Reveal class="card" delay={110}>
+          <p class="eyebrow" style="font-size:.68rem">Management</p>
+          <h3 style="font-size:1.25rem;margin-top:.45rem">CASSA-managed</h3>
+          <p style="color:var(--ink-soft);margin-top:.8rem;font-size:.97rem;line-height:1.65">Optical and radio instruments</p>
+        </Reveal>
+        <Reveal class="card" delay={220}>
+          <p class="eyebrow" style="font-size:.68rem">Purpose</p>
+          <h3 style="font-size:1.25rem;margin-top:.45rem">Research + education</h3>
+          <p style="color:var(--ink-soft);margin-top:.8rem;font-size:.97rem;line-height:1.65">Optical and radio observations</p>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Animated band ─────────────────────────────────────────────────── -->
+  <AnimatedBand theme="lensing">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Instruments</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">What's on the Roof</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Section 2: Instruments ───────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Instruments &amp; Equipment</p></Reveal>
+      <Reveal delay={60}><h2 class="section-h2">Instruments at IUB CORE</h2></Reveal>
+      <div class="pg pg--2">
+        <Reveal class="card" delay={0}>
+          <p class="eyebrow" style="font-size:.68rem">Optical</p>
+          <h3 style="font-size:1.25rem;margin-top:.45rem">Main Optical Telescope</h3>
+          <p style="font-size:.85rem;color:var(--ink-faint);margin-top:.25rem">11–14 inch primary optical telescope (planned)</p>
+          <p style="color:var(--ink-soft);margin-top:.8rem;font-size:.97rem;line-height:1.65">Imaging, photometry, and outreach use</p>
+        </Reveal>
+        <Reveal class="card" delay={110}>
+          <p class="eyebrow" style="font-size:.68rem">Radio</p>
+          <h3 style="font-size:1.25rem;margin-top:.45rem">STAR Telescope</h3>
+          <p style="font-size:.85rem;color:var(--ink-faint);margin-top:.25rem">Small Transient Array Radio Telescope</p>
+          <p style="color:var(--ink-soft);margin-top:.8rem;font-size:.97rem;line-height:1.65">
+            Designed by Shoaib Mirza ·{" "}
+            <a href={withBase('/research/star')} style="color:var(--accent)">See the STAR Telescope page</a>
+          </p>
+        </Reveal>
+        <Reveal class="card" delay={220}>
+          <p class="eyebrow" style="font-size:.68rem">Shared · Outreach</p>
+          <h3 style="font-size:1.25rem;margin-top:.45rem">Portable Optical Telescopes</h3>
+          <p style="font-size:.85rem;color:var(--ink-faint);margin-top:.25rem">Ashvin 1 &amp; 2 (110 mm), 200 mm reflector, 80 mm refractor</p>
+          <p style="color:var(--ink-soft);margin-top:.8rem;font-size:.97rem;line-height:1.65">Shared use for outreach and student training</p>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 3: Access ─────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Usage</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>Access and use</h2>
+          <p>
+            IUB CORE is accessible to certified CASSA members, supervised
+            students, and (for educational sessions) IUB course students under
+            faculty supervision. Access is governed by the CASSA Observatory
+            Manual. Environmental safety thresholds apply as defined in
+            Constitution Appendix G.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+.pg { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+.pg--2 { grid-template-columns:repeat(2,1fr); }
+@media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:540px) { .pg { grid-template-columns:1fr; } }
+.section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+</style>

@@ -1,0 +1,154 @@
+---
+import "../styles/global.css";
+import SiteNav from "../components/SiteNav.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  current?: string;
+  lang?: "en" | "bn";
+  altHref?: string;
+}
+const {
+  title,
+  description = "Center for Astronomy, Space Science and Astrophysics — an autonomous research center of Independent University, Bangladesh.",
+  current = "",
+  lang = "en",
+  altHref,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {/* Bangla webfont — Noto Serif Bengali. unicode-range (from Google) limits
+        it to the Bengali block, so it only loads on pages with Bangla text and
+        Latin glyphs keep using the system stack. */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap"
+    />
+    {/* Set theme before first paint — dark is the default — to avoid a flash. */}
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem("cassa-theme");
+          document.documentElement.dataset.theme =
+            t === "light" || t === "dark" ? t : "dark";
+        } catch (e) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <SiteNav current={current} lang={lang} altHref={altHref} />
+    <main id="main"><slot /></main>
+    <Footer />
+
+    {/* Lightbox for article images (any image inside a .prose-cassa body). */}
+    <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image viewer">
+      <button class="lightbox__close" type="button" aria-label="Close image">&times;</button>
+      <figure class="lightbox__fig">
+        <img class="lightbox__img" alt="" />
+        <figcaption class="lightbox__cap"></figcaption>
+      </figure>
+    </div>
+
+    <script>
+      // Reveal-on-scroll. Reduced motion → show everything immediately.
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      if (reduce || !("IntersectionObserver" in window)) {
+        els.forEach((el) => el.classList.add("is-in"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-in");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          // threshold 0 (reveal on any intersection): a fixed ratio like 0.12 is
+          // unreachable for elements taller than ~8× the viewport (e.g. long
+          // articles), leaving them stuck at opacity:0. isIntersecting + rootMargin
+          // handles every size.
+          { rootMargin: "0px 0px -10% 0px", threshold: 0 },
+        );
+        els.forEach((el) => io.observe(el));
+      }
+    </script>
+
+    <script>
+      // Scroll-emerge for in-article figures (rehype-built .article-figure).
+      // Arm the hidden→reveal state ONLY when JS is live AND motion is allowed;
+      // otherwise leave figures fully visible (no-JS / no-IO / reduced-motion).
+      const figReduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const figs = document.querySelectorAll<HTMLElement>(".prose-cassa .article-figure");
+      if (figs.length) {
+        if (figReduce || !("IntersectionObserver" in window)) {
+          figs.forEach((f) => f.classList.add("is-emerged"));
+        } else {
+          document.documentElement.classList.add("fig-armed");
+          const figIo = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((e) => {
+                if (e.isIntersecting) {
+                  e.target.classList.add("is-emerged");
+                  figIo.unobserve(e.target);
+                }
+              });
+            },
+            { rootMargin: "0px 0px -12% 0px", threshold: 0 },
+          );
+          figs.forEach((f) => figIo.observe(f));
+        }
+      }
+    </script>
+
+    <script>
+      // Click-to-enlarge lightbox for in-article images (.prose-cassa img).
+      const lb = document.getElementById("lightbox");
+      if (lb) {
+        const lbImg = lb.querySelector<HTMLImageElement>(".lightbox__img")!;
+        const lbCap = lb.querySelector<HTMLElement>(".lightbox__cap")!;
+        const open = (img: HTMLImageElement) => {
+          lbImg.src = img.currentSrc || img.src;
+          const cap = img.getAttribute("alt") || "";
+          lbCap.textContent = cap;
+          lbCap.style.display = cap ? "" : "none";
+          lb.classList.add("is-open");
+          lb.setAttribute("aria-hidden", "false");
+          document.body.style.overflow = "hidden";
+        };
+        const close = () => {
+          lb.classList.remove("is-open");
+          lb.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+          lbImg.removeAttribute("src");
+        };
+        document.querySelectorAll<HTMLImageElement>(".prose-cassa img").forEach((img) =>
+          img.addEventListener("click", () => open(img)),
+        );
+        // Click anywhere in the lightbox (the enlarged image, backdrop, or ×) closes it.
+        lb.addEventListener("click", () => close());
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && lb.classList.contains("is-open")) close();
+        });
+      }
+    </script>
+  </body>
+</html>

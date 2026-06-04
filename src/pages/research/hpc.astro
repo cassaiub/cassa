@@ -1,0 +1,264 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { withBase } from "../../data/site-nav.ts";
+
+const specCards = [
+  {
+    label: "Custodian",
+    value: "Khan Muhammad Bin Asad",
+    sub: "CASSA Director",
+  },
+  {
+    label: "Day-to-day Operations",
+    value: "Muhammad Jobair Hasan",
+    sub: "Manager, Science",
+  },
+  {
+    label: "Job Scheduler",
+    value: "SLURM",
+    sub: "Fair-share scheduling · 72-hour default job limit · 60-day scratch purge",
+  },
+  {
+    label: "Backup Policy",
+    value: "3-2-1 backup regime",
+    sub: "3 copies, 2 media types, 1 offsite",
+  },
+];
+
+const useCases = [
+  {
+    title: "21-cm Cosmology",
+    desc: "Runs 21cmFAST and related simulation codes for CHronOS research on the epoch of reionization",
+  },
+  {
+    title: "Radio Pipeline",
+    desc: "Processes radio interferometry data from LOFAR, SKA, and the STAR Telescope; primary beam characterisation and calibration",
+  },
+  {
+    title: "X-ray Analysis",
+    desc: "Chandra cluster analysis pipelines and machine learning workflows for the GATE and RAIN research areas",
+  },
+  {
+    title: "Optical & Statistical",
+    desc: "Light curve modeling, spectral analysis pipelines, and photometric data reduction for time-domain and supernova projects",
+  },
+  {
+    title: "Galaxy Simulations",
+    desc: "Cosmological hydrodynamical simulation analysis for galaxy evolution studies",
+  },
+  {
+    title: "Machine Learning",
+    desc: "Deep learning workflows for astronomical image classification and source detection",
+  },
+];
+
+// Hardware (Supermicro SuperServer SYS-740A-T), per the live spec sheet + current upgrades.
+const hwStats = [
+  { n: "32",  label: "CPU cores" },
+  { n: "64",  label: "Threads" },
+  { n: "192", unit: "GB", label: "RAM" },
+  { n: "16",  unit: "GB", label: "GPU memory" },
+  { n: "24",  unit: "TB", label: "HDD storage" },
+  { n: "2",   unit: "TB", label: "SSD" },
+];
+
+const hwTable = [
+  { comp: "Server",   model: "Supermicro SuperServer SYS-740A-T", config: "Tower / 4U workstation chassis" },
+  { comp: "CPU",      model: "Intel Xeon Silver 4314",            config: "2 × 16 cores → 32 cores / 64 threads" },
+  { comp: "GPU",      model: "NVIDIA Quadro RTX A4000 (Leadtek)", config: "16 GB GDDR6" },
+  { comp: "Memory",   model: "DDR4-3200 MHz ECC",                 config: "192 GB" },
+  { comp: "OS drive", model: "Enterprise SSD",                    config: "2 TB" },
+  { comp: "Storage",  model: "Seagate 3.5″ HDD",                  config: "24 TB (8 TB + 16 TB)" },
+];
+---
+
+<BaseLayout
+  title="Timaeus HPC — CASSA Research Facilities"
+  description="CASSA's high-performance computing cluster — shared infrastructure supporting simulation, data reduction, and analysis across all of CASSA's research."
+  current="/research/hpc"
+>
+  <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Research · Facilities"
+    title="Timaeus HPC"
+    lede="CASSA's high-performance computing cluster — shared infrastructure supporting simulation, data reduction, and analysis across all of CASSA's research."
+  />
+
+  <!-- ── Facility sub-nav strip ───────────────────────────────────────── -->
+  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/research')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Research</a>
+      {[
+        { href: "/research/observatory", label: "IUB Observatory" },
+        { href: "/research/core", label: "IUB CORE" },
+        { href: "/research/hpc", label: "Timaeus HPC" },
+        { href: "/research/star", label: "STAR Telescope" },
+      ].map(s => (
+        <a href={withBase(s.href)} style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${s.href === '/research/hpc' ? 'background:var(--accent);color:#1a1206;font-weight:600' : 'color:var(--ink-soft);border:1px solid var(--line)'}`}>{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ── Section 1: Overview ──────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Shared HPC Infrastructure</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2 class="section-h2">About Timaeus</h2>
+          <p>
+            Timaeus is CASSA's high-performance computing cluster, providing computational resources across all of
+            CASSA's research. Designed to scale toward a future supercomputing facility, Timaeus supports simulation
+            workloads (21cmFAST, galaxy formation simulations), radio interferometry reduction pipelines, X-ray data
+            analysis, and machine learning workflows. The cluster is a Supermicro workstation procured through IBSS,
+            the authorized Supermicro importer in Bangladesh.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="pg">
+        {specCards.map((c, i) => (
+          <Reveal class="card" delay={i * 100}>
+            <p class="eyebrow" style="font-size:.68rem">{c.label}</p>
+            <h3 style="font-size:1.15rem;margin-top:.5rem;color:var(--ink)">{c.value}</h3>
+            <p style="color:var(--ink-soft);font-size:.9rem;margin-top:.4rem;line-height:1.6">{c.sub}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section: Hardware ────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Hardware</p></Reveal>
+      <Reveal delay={60}><h2 class="section-h2">Inside the machine</h2></Reveal>
+      <Reveal delay={100}>
+        <p style="color:var(--ink-soft);max-width:72ch;margin-top:.8rem;line-height:1.7">
+          Timaeus is a single Supermicro <strong>SuperServer SYS-740A-T</strong> workstation,
+          configured for the memory- and compute-heavy astrophysical workloads CASSA runs and
+          upgraded over time as demand has grown — most recently to 192&nbsp;GB of RAM, a 2&nbsp;TB
+          enterprise SSD, and 24&nbsp;TB of bulk disk.
+        </p>
+      </Reveal>
+
+      <div class="hw-stats">
+        {hwStats.map((s, i) => (
+          <Reveal class="hw-stat" delay={i * 60}>
+            <span class="hw-stat__n">{s.n}{s.unit && <span class="hw-stat__u">{s.unit}</span>}</span>
+            <span class="hw-stat__l">{s.label}</span>
+          </Reveal>
+        ))}
+      </div>
+
+      <Reveal delay={120}>
+        <div class="hw-table-wrap">
+          <table class="hw-table">
+            <thead><tr><th>Component</th><th>Model</th><th>Configuration</th></tr></thead>
+            <tbody>
+              {hwTable.map((r) => (
+                <tr>
+                  <td class="hw-comp">{r.comp}</td>
+                  <td>{r.model}</td>
+                  <td class="hw-config">{r.config}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Reveal>
+
+      <Reveal delay={150}>
+        <p style="color:var(--ink-faint);font-size:.83rem;margin-top:1.2rem">
+          Procured through IBSS, the authorized Supermicro importer in Bangladesh; arrived 25 Sep 2023.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── Animated band ─────────────────────────────────────────────────── -->
+  <AnimatedBand theme="cosmic">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Access</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">Using Timaeus</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Section 2: Access & Policy ───────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">HPC Access</p></Reveal>
+      <Reveal delay={60}><h2 class="section-h2">Access and usage policy</h2></Reveal>
+
+      <Reveal delay={110}>
+        <Prose>
+          <p>
+            Timaeus is shared infrastructure accessible to <strong>all CASSA members</strong>.
+            Access is granted by the HPC Custodian to CASSA members and their supervised students.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <Reveal delay={170}>
+        <div class="card" style="margin-top:2rem;max-width:72ch;border-left:3px solid var(--accent)">
+          <p class="eyebrow" style="font-size:.68rem">Acknowledgement requirement</p>
+          <p style="color:var(--ink-soft);font-size:.97rem;margin-top:.7rem;line-height:1.7">
+            All papers, theses, and reports making use of Timaeus computational resources must include the designated
+            CASSA HPC acknowledgement string as specified in Constitution Appendix H. Contact the HPC Custodian for
+            the current acknowledgement text.
+          </p>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── Section 3: Use cases ─────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Scientific Use</p></Reveal>
+      <Reveal delay={60}><h2 class="section-h2">What Timaeus powers</h2></Reveal>
+
+      <div class="pg">
+        {useCases.map((u, i) => (
+          <Reveal class="card" delay={i * 90}>
+            <h3 style="font-size:1.1rem;color:var(--ink);margin-top:.1rem">{u.title}</h3>
+            <p style="color:var(--ink-soft);font-size:.95rem;margin-top:.6rem;line-height:1.65">{u.desc}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+.pg { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+@media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:540px) { .pg { grid-template-columns:1fr; } }
+.section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+/* ── Hardware stat row ───────────────────────────────────────────────── */
+.hw-stats { display:grid; grid-template-columns:repeat(6,1fr); gap:1rem; margin-top:2.2rem; }
+@media (max-width:860px) { .hw-stats { grid-template-columns:repeat(3,1fr); } }
+@media (max-width:540px) { .hw-stats { grid-template-columns:repeat(2,1fr); } }
+.hw-stat { background:var(--bg-elev); border:1px solid var(--line); border-radius:14px; padding:1.2rem 1rem; display:flex; flex-direction:column; gap:.35rem; }
+[data-theme="light"] .hw-stat { box-shadow:0 1px 2px rgba(12,18,34,.06), 0 8px 18px rgba(12,18,34,.04); }
+.hw-stat__n { font-size:clamp(1.7rem,4vw,2.5rem); font-weight:700; letter-spacing:-.03em; color:var(--accent); line-height:1; }
+.hw-stat__u { font-size:.5em; font-weight:600; margin-left:.12em; }
+.hw-stat__l { font-size:.7rem; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-faint); font-weight:600; }
+
+/* ── Hardware spec table ─────────────────────────────────────────────── */
+.hw-table-wrap { margin-top:2rem; overflow-x:auto; border:1px solid var(--line); border-radius:14px; }
+.hw-table { width:100%; border-collapse:collapse; font-size:.95rem; }
+.hw-table thead { background:var(--bg-elev); border-bottom:1px solid var(--line-strong); }
+.hw-table th { text-align:left; padding:.8rem 1.1rem; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; white-space:nowrap; }
+.hw-table td { padding:.78rem 1.1rem; border-bottom:1px solid var(--line); color:var(--ink-soft); }
+.hw-table tr:last-child td { border-bottom:none; }
+.hw-comp { color:var(--ink); font-weight:600; white-space:nowrap; }
+.hw-config { color:var(--ink); }
+[data-theme="light"] .hw-table-wrap { box-shadow:0 1px 2px rgba(12,18,34,.06), 0 8px 20px rgba(12,18,34,.04); }
+</style>

@@ -1,0 +1,105 @@
+---
+const lastName = (n: string) => n.trim().split(/\s+/).at(-1) ?? n;
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import PersonCard from "../../components/PersonCard.astro";
+import { withBase } from "../../data/site-nav.ts";
+
+/* ── Content ──────────────────────────────────────────────────────────── */
+const interns = (
+  await getCollection("people", ({ data }) =>
+    (data.tier === "Research Intern" || data.tier === "Undergraduate Research Assistant" || data.tier === "Outreach Ambassador") &&
+    data.status === "published"
+  )
+).sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
+
+/* ── Subpage nav ──────────────────────────────────────────────────────── */
+const CURRENT_HREF = "/people/interns";
+const subNav = [
+  { href: "/people/directors",       label: "Directors" },
+  { href: "/people/core-associate",  label: "Core & Associate" },
+  { href: "/people/grad-affiliates", label: "Graduate & Affiliates" },
+  { href: "/people/staff",           label: "Staff" },
+  { href: "/people/student-ras",     label: "Research Assistants" },
+  { href: "/people/interns",         label: "Interns & Undergraduates" },
+];
+---
+
+<BaseLayout
+  title="Research Interns & Undergraduates — CASSA People"
+  description="Undergraduate research assistants, research interns, and outreach ambassadors contributing to CASSA's science and engagement."
+  current="/people"
+>
+  <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="People · Interns & Undergraduates"
+    title="Research Interns & Undergraduates"
+    lede="Undergraduate research assistants, research interns, and outreach ambassadors contributing to CASSA's science and public engagement."
+  />
+
+  <!-- ── Subpage navigation pill-strip ────────────────────────────────── -->
+  <nav style="border-bottom:1px solid var(--line);background:var(--bg-elev)">
+    <div class="wrap" style="display:flex;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/people')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← All People</a>
+      {subNav.map(s => (
+        <a
+          href={withBase(s.href)}
+          style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${
+            s.href === CURRENT_HREF
+              ? 'background:var(--accent);color:#1a1206;font-weight:600'
+              : 'color:var(--ink-soft);border:1px solid var(--line)'
+          }`}
+        >{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ── Interns & Ambassadors section ────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Interns & Undergraduates</p></Reveal>
+      <Reveal delay={60}>
+        <h2 style="font-size:clamp(1.6rem,3.4vw,2.3rem);letter-spacing:-.015em;margin:.3rem 0 0;color:var(--ink)">
+          Research Interns & Undergraduates
+        </h2>
+      </Reveal>
+
+      <div class="pg">
+        {interns.map((p, i) => (
+          <Reveal delay={i * 100}>
+            <PersonCard
+              name={p.data.name}
+              title={p.data.title}
+              tier={p.data.tier}
+              interests={p.data.interests}
+              institution={p.data.institution}
+              email={p.data.email}
+              photo={p.data.photo}
+              links={p.data.links}
+            />
+          </Reveal>
+        ))}
+      </div>
+
+      <Reveal delay={160}>
+        <p style="color:var(--ink-faint);font-size:.85rem;margin-top:1.8rem;max-width:65ch">
+          Includes Undergraduate Research Assistants (URA), Undergraduate Research Interns (URI), and Outreach Ambassadors (OA). Positions are open to undergraduate students from IUB and partner institutions.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+.pg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.2rem;
+}
+@media (max-width: 860px) { .pg { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .pg { grid-template-columns: 1fr; } }
+</style>

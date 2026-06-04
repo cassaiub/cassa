@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import { getCollection } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+import { BANGLA_SERIES, isBanglaSeries } from "../../data/bangla-series.ts";
+
+const posts = (await getCollection("news", ({ data }) => data.status !== "draft" && isBanglaSeries(data.category)))
+  .sort((a, b) => +b.data.date - +a.data.date);
+
+const inSeries = (name: string) => posts.filter((p) => p.data.category === name);
+
+// Bengali date formatting for the Bangla section.
+const fmtDate = (d: Date) =>
+  new Intl.DateTimeFormat("bn-BD", { timeZone: "Asia/Dhaka", day: "numeric", month: "long", year: "numeric" }).format(d);
+---
+
+<BaseLayout
+  title="CASSA in Bangla — Outreach"
+  description="CASSA's Bengali-language popular-astronomy writing: নতুন কথা, দূরের কথা, সহজ কথা and ক্লাসিকেল কথা."
+  current="/outreach"
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Outreach · In Bangla"
+    title="বাংলায় কাসা"
+    lede="Astronomy written for a Bengali-reading public — four series, from fresh research to the classics."
+  />
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The series</p></Reveal>
+      <Reveal delay={60}><h2 class="nf-h2" lang="bn">চারটি ধারা</h2></Reveal>
+      <Reveal delay={100}>
+        <nav class="bn-nav" aria-label="Jump to a series">
+          {BANGLA_SERIES.map((s) => (
+            <a class="pill" href={`#${s.id}`} lang="bn">{s.name}</a>
+          ))}
+        </nav>
+      </Reveal>
+    </div>
+  </section>
+
+  {BANGLA_SERIES.map((s, idx) => {
+    const items = inSeries(s.name);
+    return (
+      <section class:list={["section", { "section--elev": idx % 2 === 1 }]} id={s.id} style="scroll-margin-top:90px">
+        <div class="wrap">
+          <Reveal><p class="eyebrow">{s.roman}</p></Reveal>
+          <Reveal delay={60}><h2 class="nf-h2" lang="bn">{s.name}</h2></Reveal>
+          <Reveal delay={100}><p class="bn-desc">{s.desc}</p></Reveal>
+          {items.length === 0 ? (
+            <p class="nf-empty">আরও লেখা শীঘ্রই আসছে।</p>
+          ) : (
+            <ol class="nflist">
+              {items.map((p, i) => (
+                <li>
+                  <a class="nfrow nf-series" href={withBase(`/outreach/bangla/${p.id}`)} lang="bn" data-reveal style={`--reveal-delay:${Math.min(i, 6) * 40}ms`}>
+                    <span class="nfrow__meta">
+                      <time class="nfrow__date" datetime={p.data.date.toISOString()}>{fmtDate(p.data.date)}</time>
+                    </span>
+                    <span class="nfrow__title">{p.data.title}</span>
+                    {p.data.summary && <span class="nfrow__sum">{p.data.summary}</span>}
+                    <span class="nfrow__more" lang="bn">পড়ুন <span aria-hidden="true">→</span></span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </section>
+    );
+  })}
+</BaseLayout>
+
+<style>
+  .nf-h2 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); letter-spacing: -.015em; margin: .3rem 0 0; color: var(--ink); }
+  .bn-nav { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.4rem; }
+  .bn-desc { color: var(--ink-soft); line-height: 1.7; margin: 1rem 0 0; max-width: 62ch; }
+</style>

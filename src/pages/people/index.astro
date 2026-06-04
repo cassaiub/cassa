@@ -1,0 +1,230 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import { withBase } from "../../data/site-nav.ts";
+import { personalSite } from "../../data/people/personal-site.ts";
+import PersonDrawer from "../../components/PersonDrawer.astro";
+
+/* ── Helpers ─────────────────────────────────────────────────────────── */
+const lastName = (name: string) => name.trim().split(/\s+/).at(-1) ?? name;
+
+const tierLabel = (tier: string) => {
+  if (tier === "Staff" || tier === "Alumni") return tier;
+  if (tier === "Research Intern" || tier === "Undergraduate Research Assistant" || tier === "Outreach Ambassador") return "Research Interns & Undergraduates";
+  return tier + "s";
+};
+
+/* ── People directory ────────────────────────────────────────────────── */
+const TIER_ORDER = [
+  "Director",
+  "Core Member",
+  "Associate Member",
+  "Graduate Member",
+  "Affiliate",
+  "Staff",
+  "Research Assistant",
+  "Research Intern",
+  "Outreach Ambassador",
+  "Alumni",
+];
+
+const allPeople = (
+  await getCollection("people", ({ data }) => data.status === "published")
+).sort((a, b) => {
+  const td = TIER_ORDER.indexOf(a.data.tier) - TIER_ORDER.indexOf(b.data.tier);
+  return td !== 0 ? td : lastName(a.data.name).localeCompare(lastName(b.data.name));
+});
+
+const grouped = [
+  ...["Director","Core Member","Associate Member","Graduate Member","Affiliate","Staff","Research Assistant"].map(tier => ({
+    label: tierLabel(tier),
+    people: allPeople.filter((p) => p.data.tier === tier),
+  })),
+  {
+    label: "Research Interns & Undergraduates",
+    people: allPeople.filter((p) => p.data.tier === "Research Intern" || p.data.tier === "Undergraduate Research Assistant" || p.data.tier === "Outreach Ambassador"),
+  },
+  {
+    label: "Alumni",
+    people: allPeople.filter((p) => p.data.tier === "Alumni"),
+  },
+].filter((g) => g.people.length > 0);
+
+const hasAnyPeople = allPeople.length > 0;
+
+/* Everyone in the directory gets a clickable name that opens their card in the drawer. */
+const drawerPeople = allPeople
+  .map((p) => ({
+    slug: p.id,
+    name: p.data.name,
+    title: p.data.title,
+    tier: p.data.tier,
+    interests: p.data.interests,
+    institution: p.data.institution,
+    education: p.data.education,
+    research: p.data.research,
+    email: p.data.email,
+    photo: p.data.photo,
+    links: p.data.links,
+    website: personalSite(p.id, p.data),
+  }));
+---
+
+<BaseLayout title="People — CASSA" description="Directors, members, affiliates, staff, and student researchers — the community making CASSA's science happen." current="/people">
+
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="People"
+    title="The CASSA Community"
+    lede="Directors, members, affiliates, staff, and student researchers — the community making CASSA's science happen."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Full directory</p></Reveal>
+      <Reveal delay={60}>
+        <h2 class="section-h2">All Personnel</h2>
+      </Reveal>
+
+      {hasAnyPeople ? (
+        <Reveal delay={110}>
+          <div class="table-wrap">
+            <table class="people-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>CASSA Role</th>
+                  <th>Email</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                {grouped.map(({ label, people }) => (
+                  <>
+                    <tr class="tier-header-row">
+                      <td colspan="4">
+                        <span class="eyebrow tier-header-label">{label}</span>
+                      </td>
+                    </tr>
+                    {people.map((p) => (
+                      <tr class="people-row" id={p.id}>
+                        <td class="col-name">
+                          <button type="button" class="name-link" data-person={p.id} aria-haspopup="dialog">{p.data.name}</button>
+                        </td>
+                        <td class="col-role">
+                          <span class="pill">{p.data.tier}</span>
+                        </td>
+                        <td class="col-email">
+                          {p.data.email ? (
+                            <a href={`mailto:${p.data.email}`} class="email-link">
+                              {p.data.email}
+                            </a>
+                          ) : (
+                            <span class="no-email">—</span>
+                          )}
+                        </td>
+                        <td class="col-duration">
+                          {p.data.duration
+                            ? <span class="duration-val">{p.data.duration}</span>
+                            : <span class="no-email">—</span>
+                          }
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Reveal>
+      ) : (
+        <Reveal delay={80}>
+          <p class="empty-note">People profiles will appear here once they are published.</p>
+        </Reveal>
+      )}
+    </div>
+  </section>
+
+  <PersonDrawer people={drawerPeople} />
+</BaseLayout>
+
+<style>
+  .section-h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    letter-spacing: -0.015em;
+    margin: 0.3rem 0 0;
+    color: var(--ink);
+  }
+
+  .table-wrap {
+    margin-top: 2rem;
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+  }
+
+  .people-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .people-table thead {
+    background: var(--bg-elev);
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .people-table th {
+    text-align: left;
+    padding: 0.85rem 1.1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .people-table td {
+    padding: 0.75rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+    color: var(--ink-soft);
+  }
+
+  .people-table tr:last-child td { border-bottom: none; }
+
+  .tier-header-row td {
+    background: color-mix(in srgb, var(--bg-elev-2) 60%, transparent);
+    padding: 0.55rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tier-header-label { font-size: 0.68rem; letter-spacing: 0.2em; }
+
+  .people-row { transition: background-color 0.15s ease; scroll-margin-top: 90px; }
+  .people-row:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  /* Highlight a row when linked from the publications page (no-JS fallback target) */
+  .people-row:target { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+
+  .col-name  { font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .name-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; border-bottom: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); transition: color .2s, border-color .2s; }
+  .name-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .col-role  { white-space: nowrap; }
+  .col-email    { font-size: 0.88rem; }
+  .col-duration { font-size: 0.85rem; white-space: nowrap; }
+  .duration-val { color: var(--ink-soft); }
+
+  .email-link { color: var(--accent); transition: opacity 0.2s; word-break: break-all; }
+  .email-link:hover { opacity: 0.75; }
+  .no-email { color: var(--ink-faint); }
+
+  .empty-note { color: var(--ink-faint); font-size: 0.95rem; margin-top: 2rem; max-width: 60ch; }
+
+  :global([data-theme="light"]) .people-table thead { background: var(--bg-elev-2); }
+  :global([data-theme="light"]) .table-wrap {
+    box-shadow: 0 1px 2px rgba(12,18,34,.06), 0 8px 20px rgba(12,18,34,.04);
+  }
+</style>

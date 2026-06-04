@@ -1,0 +1,242 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import EventsCalendar from "../components/EventsCalendar.tsx";
+import { getCollection } from "astro:content";
+import { Image, getImage } from "astro:assets";
+import { withBase } from "../data/site-nav.ts";
+
+const all = await getCollection("events", ({ data }) => data.status !== "draft");
+
+// Pre-render an optimized square-ish thumbnail per event so the React calendar
+// island (which only takes serializable props) can show it as a plain <img>.
+const heroThumb = new Map<string, string>();
+for (const e of all) {
+  if (e.data.hero) {
+    const img = await getImage({ src: e.data.hero, width: 400 });
+    heroThumb.set(e.id, img.src);
+  }
+}
+
+// Serializable payload for the React island (ISO strings, pre-computed href, null-normalized).
+const calendarEvents = all.map((e) => ({
+  slug: e.id,
+  title: e.data.title,
+  start: e.data.start.toISOString(),
+  end: e.data.end ? e.data.end.toISOString() : null,
+  allDay: e.data.allDay,
+  venue: e.data.venue ?? null,
+  organizer: e.data.organizer ?? null,
+  series: e.data.series,
+  category: e.data.category ?? null,
+  summary: e.data.summary ?? null,
+  hero: heroThumb.get(e.id) ?? null,
+  lang: e.data.lang,
+  href: withBase(`/events/${e.id}`),
+}));
+
+const now = new Date();
+const endOf = (e: (typeof all)[number]) => e.data.end ?? e.data.start;
+const upcoming = all
+  .filter((e) => endOf(e) >= now)
+  .sort((a, b) => +a.data.start - +b.data.start);
+const past = all
+  .filter((e) => endOf(e) < now)
+  .sort((a, b) => +b.data.start - +a.data.start);
+
+// All date/time display pinned to Asia/Dhaka so days never shift for other-TZ visitors.
+const TZ = "Asia/Dhaka";
+const f = (d: Date, o: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, ...o }).format(d);
+const dayNum = (d: Date) => f(d, { day: "2-digit" });
+const monShort = (d: Date) => f(d, { month: "short" });
+const yearNum = (d: Date) => f(d, { year: "numeric" });
+const timeLabel = (d: Date) => f(d, { hour: "numeric", minute: "2-digit", hour12: true });
+
+// Group past events by year (newest year first) for an archive feel.
+const pastByYear = new Map<string, typeof past>();
+for (const e of past) {
+  const y = yearNum(e.data.start);
+  if (!pastByYear.has(y)) pastByYear.set(y, []);
+  pastByYear.get(y)!.push(e);
+}
+const pastYears = [...pastByYear.keys()].sort((a, b) => Number(b) - Number(a));
+
+type Ev = (typeof all)[number];
+const seriesLabel = (e: Ev) => e.data.category ?? e.data.series;
+---
+
+<BaseLayout
+  title="Events — CASSA"
+  description="Colloquia, journal talks, workshops and public astronomy nights at the Center for Astronomy, Space Science and Astrophysics (CASSA), IUB — browse the full calendar and archive."
+  current="/events"
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Events"
+    title="Events & Calendar"
+    lede="Colloquia, journal talks, workshops and public astronomy nights at CASSA — browse the live calendar and the full archive."
+  />
+
+  <!-- Interactive calendar island. Elevated section right after the dark hero (rule 19). -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">What's on</p></Reveal>
+      <Reveal delay={60}><h2 class="ev-h2">Calendar</h2></Reveal>
+      <Reveal delay={110}>
+        <EventsCalendar events={calendarEvents} client:visible />
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- No-JS / SEO fallback: always in the DOM, hidden once the calendar island mounts. -->
+  <div class="ev-fallback">
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">What's on</p></Reveal>
+      <Reveal delay={60}><h2 class="ev-h2">Upcoming</h2></Reveal>
+
+      {upcoming.length > 0 ? (
+        <ol class="evlist" aria-label="Upcoming events">
+          {upcoming.map((e, i) => (
+            <li>
+              <a class="evrow" href={withBase(`/events/${e.id}`)} data-reveal style={`--reveal-delay:${Math.min(i, 6) * 50}ms`}>
+                <span class="evrow__date">
+                  <span class="evrow__d">{dayNum(e.data.start)}</span>
+                  <span class="evrow__m">{monShort(e.data.start)}</span>
+                  <span class="evrow__y">{yearNum(e.data.start)}</span>
+                </span>
+                {e.data.hero && (
+                  <span class="evrow__thumb">
+                    <Image src={e.data.hero} alt={e.data.heroAlt ?? ""} width={120} height={120} loading="lazy" />
+                  </span>
+                )}
+                <span class="evrow__body">
+                  <span class="evrow__meta">
+                    <span class:list={["evtag", `evtag--${e.data.series}`]}>{seriesLabel(e)}</span>
+                    <span class="evrow__time">{e.data.allDay ? "All day" : timeLabel(e.data.start)}</span>
+                  </span>
+                  <span class="evrow__title">{e.data.title}</span>
+                  {e.data.venue && <span class="evrow__venue">{e.data.venue}</span>}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <Reveal delay={90}>
+          <p class="ev-empty">No upcoming events are scheduled right now — explore the archive below, and check back soon.</p>
+        </Reveal>
+      )}
+    </div>
+  </section>
+
+  <!-- Archive -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Archive</p></Reveal>
+      <Reveal delay={60}><h2 class="ev-h2">Past events</h2></Reveal>
+
+      {pastYears.map((yr) => (
+        <div class="evyear">
+          <Reveal><h3 class="evyear__h">{yr}</h3></Reveal>
+          <ol class="evlist">
+            {pastByYear.get(yr)!.map((e) => (
+              <li>
+                <a class="evrow evrow--past" href={withBase(`/events/${e.id}`)}>
+                  <span class="evrow__date">
+                    <span class="evrow__d">{dayNum(e.data.start)}</span>
+                    <span class="evrow__m">{monShort(e.data.start)}</span>
+                  </span>
+                  {e.data.hero && (
+                    <span class="evrow__thumb">
+                      <Image src={e.data.hero} alt={e.data.heroAlt ?? ""} width={120} height={120} loading="lazy" />
+                    </span>
+                  )}
+                  <span class="evrow__body">
+                    <span class="evrow__meta">
+                      <span class:list={["evtag", `evtag--${e.data.series}`]}>{seriesLabel(e)}</span>
+                      <span class="evrow__time">{e.data.allDay ? "All day" : timeLabel(e.data.start)}</span>
+                    </span>
+                    <span class="evrow__title">{e.data.title}</span>
+                    {e.data.venue && <span class="evrow__venue">{e.data.venue}</span>}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+
+      {all.length === 0 && (
+        <p class="ev-empty">Events will appear here once they are published.</p>
+      )}
+    </div>
+  </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .ev-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+  .evlist { list-style:none; margin:1.8rem 0 0; padding:0; display:flex; flex-direction:column; gap:.7rem; }
+
+  .evrow {
+    display:flex; gap:1.1rem; align-items:flex-start;
+    background:var(--bg-elev-2); border:1px solid var(--line); border-radius:14px;
+    padding:1rem 1.2rem; transition:border-color .2s, transform .2s;
+  }
+  .evrow:hover { border-color:color-mix(in srgb,var(--accent) 40%,transparent); transform:translateY(-2px); }
+  [data-theme="light"] .evrow { box-shadow:0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .evrow--past { opacity:.82; }
+  .evrow--past:hover { opacity:1; }
+
+  .evrow__date {
+    flex-shrink:0; width:54px; text-align:center; display:flex; flex-direction:column;
+    line-height:1.05; padding-top:.15rem; font-variant-numeric:tabular-nums;
+  }
+  .evrow__d { font-size:1.5rem; font-weight:700; color:var(--ink); }
+  .evrow__m { font-size:.72rem; text-transform:uppercase; letter-spacing:.12em; color:var(--accent); font-weight:700; margin-top:.1rem; }
+  .evrow__y { font-size:.7rem; color:var(--ink-faint); margin-top:.05rem; }
+
+  .evrow__thumb {
+    flex-shrink:0; width:72px; height:72px; border-radius:10px; overflow:hidden;
+    border:1px solid var(--line); background:var(--bg-elev-2);
+  }
+  .evrow__thumb :global(img) { width:100%; height:100%; object-fit:cover; display:block; }
+
+  .evrow__body { display:flex; flex-direction:column; gap:.3rem; min-width:0; }
+  .evrow__meta { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; }
+  .evrow__time { font-size:.78rem; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+  .evrow__title { font-size:1.04rem; color:var(--ink); line-height:1.35; font-weight:600; }
+  .evrow:hover .evrow__title { color:var(--accent); }
+  .evrow__venue { font-size:.82rem; color:var(--ink-soft); line-height:1.5; }
+
+  /* Series tag — colour-coded from the two site accents + neutral */
+  .evtag {
+    font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    padding:.28em .7em; border-radius:999px; border:1px solid var(--line-strong); color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .evtag--colloquium   { color:var(--accent);   border-color:color-mix(in srgb,var(--accent) 55%,transparent); }
+  .evtag--journal-talk { color:var(--accent-2); border-color:color-mix(in srgb,var(--accent-2) 55%,transparent); }
+  .evtag--workshop     { color:var(--accent);   border-color:color-mix(in srgb,var(--accent) 38%,transparent); }
+  .evtag--outreach     { color:var(--ink-soft); border-color:var(--line-strong); }
+  .evtag--other        { color:var(--ink-faint); border-color:var(--line); }
+
+  .evyear { margin-top:2.4rem; }
+  .evyear__h {
+    font-size:1.05rem; color:var(--ink-faint); font-weight:700; letter-spacing:.02em;
+    margin:0 0 .9rem; padding-bottom:.5rem; border-bottom:1px solid var(--line);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .ev-empty { color:var(--ink-soft); margin-top:1.4rem; line-height:1.7; max-width:60ch; }
+
+  @media (max-width:520px) {
+    .evrow { gap:.85rem; padding:.9rem 1rem; }
+    .evrow__date { width:42px; }
+    .evrow__d { font-size:1.25rem; }
+  }
+</style>

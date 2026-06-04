@@ -1,0 +1,570 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../components/immersive/AnimatedBand.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import Prose from "../components/immersive/Prose.astro";
+import { withBase } from "../data/site-nav.ts";
+
+// Contact map. We embed the roadmap variant (`5e0`) so the dark CSS filter in dark
+// theme produces a sensible dark map; Google's own embed control lets visitors
+// switch to satellite. MAP_SATELLITE (the `5e1` original) is kept only to derive it.
+const MAP_SATELLITE =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4976.098095598574!2d90.42477237635083!3d23.81542878627478!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c70045aadfcf%3A0x327b4affe1d1835!2sCenter%20for%20Astronomy%2C%20Space%20Science%20and%20Astrophysics%20(CASSA)!5e1!3m2!1sen!2sbd!4v1768342546781!5m2!1sen!2sbd";
+const MAP_ROADMAP = MAP_SATELLITE.replace("!5e1!", "!5e0!");
+
+// The genesis timeline, ordered earliest → latest, with concise context per milestone.
+// Founding-era dates/titles are verbatim from the live About page (XML); later
+// milestones are appended as the Center grows.
+const timeline = [
+  { date: "7 Jan 2020",  era: "ARGI",   title: "Asad joins IUB and starts ARGI", body: "Khan Muhammad Bin Asad joins Independent University, Bangladesh and founds the Astronomy Research Group, IUB (ARGI)." },
+  { date: "Jun 2020",    era: "ARGI",   title: "First national research grant", body: "A 10-lakh BDT grant from the PTIT Ministry of Bangladesh supports the young astronomy programme." },
+  { date: "15 Jan 2021", era: "ARGI",   title: "Key paper on the MeerKAT antenna beam", body: "A sparse model of the MeerKAT primary beam is published — foundational to the later PrimaBERA project." },
+  { date: "May 2021",    era: "ARGI",   title: "IUB research grant", body: "A 10-lakh BDT grant from IUB further builds the group's research capacity." },
+  { date: "2 Feb 2022",  era: "ARGI",   title: "Key paper on the Galactic Center", body: "A MeerKAT study of the Galactic Center draws international press attention." },
+  { date: "Sep 2022",    era: "ARGI",   title: "IUB research grant", body: "A 6-lakh BDT grant from IUB." },
+  { date: "Nov 2022",    era: "ARGI",   title: "Asad visits the Dunlap Institute", body: "A visit to the Dunlap Institute for Astronomy & Astrophysics, University of Toronto, seeds the Durbin outreach partnership." },
+  { date: "Feb 2023",    era: "ARGI",   title: "Two eQuinox telescopes arrive", body: "Two Unistellar eQuinox telescopes arrive from the Dunlap Institute — the beginning of CASSA's outreach astrophotography." },
+  { date: "9 Mar 2023",  era: "ARGI",   title: "Inauguration of Durbin", body: "Durbin — the astrophotography and science-communication outreach programme — is launched." },
+  { date: "28 May 2023", era: "ARGI",   title: "Minor in A&A begins at IUB", body: "The first Minor in Astronomy & Astrophysics in Bangladesh admits its inaugural students." },
+  { date: "31 Aug 2023", era: "ARGI",   title: "First student publication", body: "A group student co-authors a peer-reviewed paper for the first time — the radio-galaxy classification (RGC) work." },
+  { date: "25 Sep 2023", era: "ARGI",   title: "The computing server Timaeus arrives", body: "The group's first high-performance computing server, Timaeus, is installed." },
+  { date: "7 Dec 2023",  era: "COALab", title: "ARGI becomes COALab", body: "The Astronomy Research Group is reconstituted as the Computational and Observational Astronomy Lab (COALab)." },
+  { date: "11 Nov 2024", era: "CASSA",  title: "COALab becomes CASSA", body: "At the 159th Planning & Development Committee meeting — chaired by Trustee Mr. Lutfe M Ayub — COALab is set on the path to a full research center." },
+  { date: "1 Dec 2024",  era: "CASSA",  title: "Board of Trustees presentation", body: "Khan Asad presents the CASSA proposal to the 95th meeting of the Board of Trustees, presided by Chairman Mr. Didar A Husain." },
+  { date: "9 Jul 2025",  era: "CASSA",  title: "Academic Council endorsement", body: "The detailed proposal and constitution are endorsed at the 106th IUB Academic Council, presided by Vice Chancellor Prof. M. Tamim." },
+  { date: "17 Jul 2025", era: "CASSA",  title: "Syndicate approval", body: "The proposal and constitution are approved at the 104th meeting of the IUB Syndicate, presided by Prof. M. Tamim." },
+  { date: "14 Aug 2025", era: "CASSA",  title: "Official beginning", body: "CASSA receives final approval through a Vice Chancellor's Office Order — the Center is born.", climax: true },
+  { date: "18 Nov 2025", era: "CASSA",  title: "IUB launches TART", body: "TART, the first radio telescope, is launched at IUB — bringing radio-astronomy observation on-site at the Center." },
+  { date: "4 Jan 2026",  era: "CASSA",  title: "S. A. Uddin joins IUB and CASSA", body: "S. A. Uddin joins Independent University, Bangladesh and CASSA as an Associate Professor." },
+];
+---
+
+<BaseLayout
+  title="About — CASSA"
+  description="CASSA is an autonomous multidisciplinary research center of Independent University, Bangladesh, dedicated to astronomy & astrophysics and space & planetary science & engineering. Established 14 August 2025."
+  current="/about"
+>
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="About"
+    title="About CASSA"
+    lede="An autonomous research center of Independent University, Bangladesh — for astronomy & astrophysics and space & planetary science & engineering."
+  />
+
+  <!-- ── Identity ───────────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Who we are</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>The Center for Astronomy, Space Science and Astrophysics</h2>
+          <p>
+            CASSA is an <strong>autonomous, multidisciplinary research center</strong> of
+            <a href="https://iub.ac.bd/" target="_blank" rel="noopener">Independent University, Bangladesh</a>
+            (IUB), dedicated to the intermingled fields of astronomy and astrophysics (A&amp;A), and
+            space and planetary science and engineering (SPaSE). It was established on
+            <strong>14 August 2025</strong>.
+          </p>
+          <p>
+            CASSA's autonomy means it is administratively independent, working directly under the
+            Office of the Vice Chancellor; an academic department of IUB may hold academic
+            affiliation with the Center for its educational activities related to A&amp;A and SPaSE.
+          </p>
+          <p>
+            CASSA grew from two predecessors: the <strong>Astronomy Research Group, IUB (ARGI)</strong>,
+            founded in mid-2020, and its successor the <strong>Computational and Observational
+            Astronomy Lab (COALab)</strong>, established in late 2023.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <!-- Founding documents (local copies) -->
+      <div class="docs">
+        <Reveal class="doc-wrap" delay={100}>
+          <a class="doc" href={withBase('/docs/CASSA_Detailed_Proposal.pdf')} target="_blank" rel="noopener">
+            <span class="doc__ic" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+            </span>
+            <span class="doc__txt"><strong>Detailed Proposal</strong><span class="doc__sub">The founding proposal submitted to IUB · PDF ↗</span></span>
+          </a>
+        </Reveal>
+        <Reveal class="doc-wrap" delay={160}>
+          <a class="doc" href={withBase('/docs/CASSA_Constitution_v2.0.pdf')} target="_blank" rel="noopener">
+            <span class="doc__ic" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+            </span>
+            <span class="doc__txt"><strong>Constitution v2.0</strong><span class="doc__sub">The governing constitution of CASSA · PDF ↗</span></span>
+          </a>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Band ───────────────────────────────────────────────────────────── -->
+  <AnimatedBand theme="cosmic">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Five years in the making</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">From a research group to a Center</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Immersive timeline ─────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Origins</p></Reveal>
+      <Reveal delay={60}><h2 class="section-h2">The genesis of the Center</h2></Reveal>
+      <Reveal delay={100}>
+        <p class="tl-intro">From a one-person research group in 2020 to an autonomous research center in 2025 — the road to CASSA, across the ARGI, COALab, and CASSA eras.</p>
+      </Reveal>
+
+      <!-- Era legend -->
+      <Reveal delay={140}>
+        <div class="tlh-legend">
+          <span class="tlh-legend__item tlh-legend__item--argi">
+            <span class="tlh-legend__dot tlh-legend__dot--argi"></span>ARGI era
+          </span>
+          <span class="tlh-legend__item tlh-legend__item--coalab">
+            <span class="tlh-legend__dot tlh-legend__dot--coalab"></span>COALab era
+          </span>
+          <span class="tlh-legend__item tlh-legend__item--cassa">
+            <span class="tlh-legend__dot tlh-legend__dot--cassa"></span>CASSA era
+          </span>
+          <span class="tlh-legend__hint">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            scroll or use arrows
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </div>
+      </Reveal>
+
+      <!-- Horizontal carousel -->
+      <div class="tlh-outer" id="tlh-outer">
+        <button class="tlh-btn" id="tlh-prev" aria-label="Earlier events" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="tlh-scroll" id="tlh-scroll" tabindex="0" aria-label="CASSA genesis timeline, scroll left for older events">
+          <div class="tlh-track" id="tlh-track">
+            {timeline.map((m) => (
+              <div class="tlh__col" data-era={m.era}>
+                <div class="tlh__above">
+                  <span class="tlh__era">{m.era}</span>
+                  <span class="tlh__date">{m.date}</span>
+                </div>
+                <div class:list={["tlh__node", { "tlh__node--climax": m.climax }]}></div>
+                <div class:list={["tlh__card", { "tlh__card--climax": m.climax }]}>
+                  <h3 class="tlh__title">{m.title}</h3>
+                  {m.body && <p class="tlh__body">{m.body}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button class="tlh-btn" id="tlh-next" aria-label="Later events">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Scrollbar indicator -->
+      <div class="tlh-bar" aria-hidden="true">
+        <div class="tlh-bar__thumb" id="tlh-bar-thumb"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Get in touch</p></Reveal>
+      <Reveal delay={60}><h2 class="section-h2">Contact</h2></Reveal>
+      <!-- Panels are plain divs with `data-reveal` (NOT the <Reveal> component):
+           a <Reveal> root carries Reveal.astro's scoped cid, not this page's, so
+           scoped rules like `.contact__map iframe {}` would never match. Authoring
+           the divs + iframe directly here keeps this page's cid on every node. -->
+      <div class="contact">
+
+        <!-- Info card -->
+        <div class="card contact__info" data-reveal style="--reveal-delay:90ms">
+          <div class="contact__entry">
+            <span class="contact__ic" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </span>
+            <div class="contact__detail">
+              <p class="contact__lbl">Manager (Science)</p>
+              <a href="mailto:cassa@iub.edu.bd" class="contact__email">cassa@iub.edu.bd</a>
+            </div>
+          </div>
+
+          <div class="contact__entry">
+            <span class="contact__ic" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </span>
+            <div class="contact__detail">
+              <p class="contact__lbl">Director</p>
+              <a href="mailto:director.cassa@iub.edu.bd" class="contact__email">director.cassa@iub.edu.bd</a>
+            </div>
+          </div>
+
+          <div class="contact__entry contact__entry--addr">
+            <span class="contact__ic contact__ic--pin" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
+            <div class="contact__detail">
+              <p class="contact__lbl">Affiliation</p>
+              <p class="contact__addr">Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh, Dhaka 1245, Bangladesh.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map — much larger panel, fills its grid cell. Roadmap embed, dark-filtered
+             in dark theme; Google's own embed control handles map/satellite switching. -->
+        <div class="contact__map" data-reveal style="--reveal-delay:150ms">
+          <iframe
+            src={MAP_ROADMAP}
+            title="CASSA on Google Maps"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const scroll  = document.getElementById("tlh-scroll") as HTMLElement | null;
+  const track   = document.getElementById("tlh-track")  as HTMLElement | null;
+  const prev    = document.getElementById("tlh-prev")   as HTMLButtonElement | null;
+  const next    = document.getElementById("tlh-next")   as HTMLButtonElement | null;
+  const thumb   = document.getElementById("tlh-bar-thumb") as HTMLElement | null;
+
+  if (scroll && prev && next) {
+    // Approximate visible-column count for the scroll jump amount
+    const COL_W = 284; // px — matches CSS column width
+    const JUMP  = COL_W * 3;
+
+    /* ── Arrow clicks ─────────────────────────────────────────── */
+    prev.addEventListener("click", () => scroll.scrollBy({ left: -JUMP, behavior: "smooth" }));
+    next.addEventListener("click", () => scroll.scrollBy({ left:  JUMP, behavior: "smooth" }));
+
+    /* ── Keyboard (when scroll container is focused) ─────────── */
+    scroll.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft")  { e.preventDefault(); scroll.scrollBy({ left: -JUMP, behavior: "smooth" }); }
+      if (e.key === "ArrowRight") { e.preventDefault(); scroll.scrollBy({ left:  JUMP, behavior: "smooth" }); }
+    });
+
+    /* ── Vertical wheel → horizontal scroll ──────────────────── */
+    scroll.addEventListener("wheel", (e) => {
+      if (Math.abs(e.deltaX) > 4) return; // already panning horizontally
+      e.preventDefault();
+      scroll.scrollBy({ left: e.deltaY * 1.4, behavior: "smooth" });
+    }, { passive: false });
+
+    /* ── Drag-to-scroll ───────────────────────────────────────── */
+    let isDragging = false, dragStartX = 0, dragScrollLeft = 0;
+    scroll.addEventListener("mousedown", (e) => {
+      isDragging = true; dragStartX = e.pageX; dragScrollLeft = scroll.scrollLeft;
+      scroll.style.cursor = "grabbing";
+    });
+    window.addEventListener("mouseup",   () => { isDragging = false; scroll.style.cursor = ""; });
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      scroll.scrollLeft = dragScrollLeft - (e.pageX - dragStartX);
+    });
+
+    /* ── Update UI (arrows + progress thumb) ─────────────────── */
+    const updateUI = () => {
+      const max = scroll.scrollWidth - scroll.clientWidth;
+      prev.disabled = scroll.scrollLeft <= 1;
+      next.disabled = scroll.scrollLeft >= max - 1;
+
+      if (thumb && max > 0) {
+        const ratio   = scroll.clientWidth / scroll.scrollWidth;
+        const pos     = scroll.scrollLeft / max;
+        const thumbW  = ratio * 100;
+        const thumbL  = pos * (100 - thumbW);
+        thumb.style.width = thumbW + "%";
+        thumb.style.left  = thumbL + "%";
+      }
+    };
+
+    scroll.addEventListener("scroll", updateUI, { passive: true });
+    window.addEventListener("resize",  updateUI, { passive: true });
+
+    /* ── Spine fill animation on first reveal ─────────────────── */
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (track) {
+      if (reduced) {
+        track.style.setProperty("--tlh-fill", "100%");
+      } else {
+        const obs = new IntersectionObserver(([entry]) => {
+          if (!entry.isIntersecting) return;
+          obs.disconnect();
+          let start: number | null = null;
+          const DURATION = 1800;
+          const animate = (ts: number) => {
+            if (start === null) start = ts;
+            const pct = Math.min(100, ((ts - start) / DURATION) * 100);
+            track.style.setProperty("--tlh-fill", pct + "%");
+            if (pct < 100) requestAnimationFrame(animate);
+          };
+          requestAnimationFrame(animate);
+        }, { threshold: 0.25 });
+        obs.observe(track);
+      }
+    }
+
+    /* ── Start positioned at most-recent (right end) ─────────── */
+    // Use requestAnimationFrame so layout has settled before we read scrollWidth
+    requestAnimationFrame(() => {
+      scroll.scrollLeft = scroll.scrollWidth - scroll.clientWidth;
+      updateUI();
+    });
+  }
+</script>
+
+<style>
+  .section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+  /* ── Founding-document cards ─────────────────────────────────────────── */
+  .docs { display:grid; grid-template-columns:repeat(2,1fr); gap:1.1rem; margin-top:2.4rem; max-width:820px; }
+  @media (max-width:620px) { .docs { grid-template-columns:1fr; } }
+  .doc { display:flex; align-items:center; gap:1rem; background:var(--bg-elev-2); border:1px solid var(--line); border-radius:14px; padding:1.1rem 1.25rem; transition:border-color .2s, transform .2s; }
+  .doc:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .doc__ic { display:grid; place-items:center; width:44px; height:44px; flex-shrink:0; border-radius:11px; background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent); }
+  .doc__txt { display:flex; flex-direction:column; }
+  .doc__txt strong { color:var(--ink); font-size:1.02rem; }
+  .doc__sub { color:var(--ink-faint); font-size:.84rem; margin:0; }
+
+  /* ── Timeline intro + legend ─────────────────────────────────────────── */
+  .tl-intro { color:var(--ink-soft); max-width:66ch; margin:1rem 0 0; line-height:1.7; }
+
+  .tlh-legend { display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .tlh-legend__item { display:flex; align-items:center; gap:.45rem; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--ink-faint); }
+  .tlh-legend__dot { width:9px; height:9px; border-radius:50%; border:2px solid; flex-shrink:0; }
+  .tlh-legend__dot--argi   { border-color:var(--accent-2); }
+  .tlh-legend__dot--coalab { border-color:var(--accent); }
+  .tlh-legend__dot--cassa  { background:var(--accent); border-color:var(--accent); }
+  .tlh-legend__hint { display:flex; align-items:center; gap:.35rem; font-size:.72rem; color:var(--ink-faint); opacity:.55; margin-left:auto; }
+
+  /* ── Horizontal carousel outer wrapper ───────────────────────────────── */
+  .tlh-outer {
+    display:flex; align-items:center; gap:10px;
+    margin-top:2.4rem;
+  }
+
+  /* Arrow buttons */
+  .tlh-btn {
+    flex-shrink:0; width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line-strong); background:var(--bg-elev-2);
+    color:var(--ink); cursor:pointer; display:grid; place-items:center;
+    transition:border-color .2s, transform .15s, opacity .2s;
+    z-index:4;
+  }
+  .tlh-btn:hover:not(:disabled) { border-color:var(--accent); transform:scale(1.1); }
+  .tlh-btn:disabled { opacity:.22; cursor:default; transform:none; }
+  [data-theme="light"] .tlh-btn { box-shadow:0 1px 4px rgba(12,18,34,.08); }
+
+  /* Scroll container */
+  .tlh-scroll {
+    flex:1; overflow-x:auto; overflow-y:hidden;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch;
+    cursor:grab; outline:none; border-radius:4px;
+  }
+  .tlh-scroll::-webkit-scrollbar { display:none; }
+  .tlh-scroll:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+
+  /* Inner track (full width of all columns) */
+  .tlh-track {
+    display:flex; align-items:flex-start;
+    position:relative;
+    padding:0 32px;   /* half-card breathing room at each end */
+    --tlh-fill:0%;
+  }
+
+  /* Spine background line — spans full track width */
+  .tlh-track::before {
+    content:""; position:absolute;
+    top:78px; left:0; right:0; height:2px;
+    background:var(--line-strong); z-index:0;
+  }
+  /* Animated fill line (left→right = old→new) */
+  .tlh-track::after {
+    content:""; position:absolute;
+    top:78px; left:0; width:var(--tlh-fill); height:2px;
+    background:linear-gradient(to right, var(--accent-2), var(--accent));
+    box-shadow:0 0 14px color-mix(in srgb,var(--accent) 55%,transparent);
+    z-index:1; transition:none;
+  }
+
+  /* Individual event column */
+  .tlh__col {
+    width:260px; flex-shrink:0; padding:0 12px;
+    display:flex; flex-direction:column; align-items:center;
+    position:relative;
+  }
+
+  /* Above-spine area: era badge + date — fixed height keeps all nodes on same baseline */
+  .tlh__above {
+    height:72px; width:100%;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:flex-end;
+    gap:.2rem; padding-bottom:13px;
+    text-align:center; flex-shrink:0;
+  }
+  .tlh__era {
+    font-size:.58rem; letter-spacing:.18em; text-transform:uppercase;
+    font-weight:700; color:var(--accent);
+  }
+  .tlh__col[data-era="ARGI"] .tlh__era { color:var(--accent-2); }
+  .tlh__date { font-size:.76rem; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+
+  /* Spine node */
+  .tlh__node {
+    width:14px; height:14px; border-radius:50%; flex-shrink:0;
+    background:var(--bg); border:2px solid var(--accent);
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent);
+    position:relative; z-index:2;
+    transition:transform .2s;
+  }
+  .tlh__col[data-era="ARGI"] .tlh__node {
+    border-color:var(--accent-2);
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--accent-2) 15%,transparent);
+  }
+  .tlh__node--climax {
+    width:20px; height:20px;
+    background:var(--accent); border-color:var(--accent);
+    animation:tlpulse 2.6s ease-in-out infinite;
+  }
+  .tlh__col:hover .tlh__node { transform:scale(1.25); }
+  @keyframes tlpulse {
+    0%,100% { box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent); }
+    50%      { box-shadow:0 0 0 12px color-mix(in srgb,var(--accent) 0%,transparent); }
+  }
+
+  /* Event card (below spine) */
+  .tlh__card {
+    margin-top:14px; width:100%;
+    background:var(--bg-elev-2); border:1px solid var(--line);
+    border-radius:14px; padding:.95rem 1.05rem;
+    transition:border-color .2s, transform .2s;
+  }
+  .tlh__col:hover .tlh__card {
+    border-color:color-mix(in srgb,var(--accent) 35%,transparent);
+    transform:translateY(-2px);
+  }
+  .tlh__col[data-era="ARGI"]:hover .tlh__card {
+    border-color:color-mix(in srgb,var(--accent-2) 35%,transparent);
+  }
+  .tlh__card--climax { border-color:color-mix(in srgb,var(--accent) 30%,transparent); }
+  [data-theme="light"] .tlh__card { box-shadow:0 1px 3px rgba(12,18,34,.05), 0 6px 16px rgba(12,18,34,.04); }
+  .tlh__title { font-size:.98rem; color:var(--ink); margin:0; line-height:1.35; }
+  .tlh__body  { color:var(--ink-soft); font-size:.84rem; line-height:1.6; margin:.5rem 0 0; }
+
+  /* Progress scrollbar indicator */
+  .tlh-bar {
+    position:relative; height:3px; margin-top:14px;
+    background:var(--line); border-radius:2px; overflow:hidden;
+  }
+  .tlh-bar__thumb {
+    position:absolute; top:0; height:100%;
+    background:var(--accent); border-radius:2px;
+    transition:left .1s linear, width .1s linear;
+  }
+
+  /* Mobile */
+  @media (max-width:600px) {
+    .tlh__col { width:210px; padding:0 8px; }
+    .tlh-track { padding:0 16px; }
+    .tlh-btn { width:36px; height:36px; }
+    .tlh-legend__hint { display:none; }
+  }
+  @media (max-width:400px) {
+    .tlh-btn { display:none; }
+    .tlh-outer { gap:0; }
+  }
+
+  /* ── Contact ─────────────────────────────────────────────────────────── */
+  /* The 30/70 split is defined by grid-template-columns on the CONTAINER
+     (which carries this page's scoped cid), so column widths are enforced
+     regardless of the children. Both panels are plain divs authored on this
+     page, so the iframe-fill rule below actually matches. */
+  .contact {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,2.4fr);
+    gap:1.5rem;
+    margin-top:2.6rem;
+    height:clamp(440px, 58vh, 560px);
+  }
+  @media (max-width:900px) {
+    .contact { grid-template-columns:1fr; height:auto; }
+    .contact__map { min-height:360px; }
+  }
+
+  /* Info card — entries split the height evenly, content vertically centered */
+  .contact__info {
+    padding:0; min-width:0; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .contact__entry {
+    flex:1; display:flex; align-items:center; gap:1rem;
+    padding:1.3rem 1.7rem;
+    border-bottom:1px solid var(--line);
+    transition:background-color .2s ease;
+  }
+  .contact__entry:last-child { border-bottom:none; }
+  .contact__entry:hover { background:color-mix(in srgb,var(--accent) 5%,transparent); }
+
+  /* Icon bubble */
+  .contact__ic {
+    flex-shrink:0; width:38px; height:38px;
+    border-radius:10px; display:grid; place-items:center;
+    background:color-mix(in srgb,var(--accent) 13%,transparent);
+    color:var(--accent);
+    transition:transform .2s ease;
+  }
+  .contact__ic--pin {
+    background:color-mix(in srgb,var(--accent-2) 13%,transparent);
+    color:var(--accent-2);
+  }
+  .contact__entry:hover .contact__ic { transform:scale(1.08); }
+
+  .contact__detail { display:flex; flex-direction:column; gap:.42rem; min-width:0; overflow:hidden; }
+  .contact__lbl {
+    font-size:.58rem; letter-spacing:.16em; text-transform:uppercase;
+    font-weight:700; color:var(--ink-faint); margin:0; line-height:1;
+  }
+  .contact__email {
+    color:var(--accent); font-size:.94rem; font-weight:500;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    transition:opacity .2s ease; display:block;
+  }
+  .contact__email:hover { opacity:.72; }
+  .contact__addr { color:var(--ink-soft); font-size:.87rem; line-height:1.65; margin:0; }
+
+  /* Map — large immersive panel, fills its grid cell */
+  .contact__map {
+    position:relative;
+    min-width:0; display:flex;
+    border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    background:var(--bg-elev);
+  }
+  .contact__map iframe { flex:1; width:100%; height:100%; border:0; display:block; transition:filter .3s ease; }
+
+  /* Dark theme + roadmap view → approximate dark map by inverting the iframe.
+     Default (dark) applies it; light theme removes it; satellite view is never
+     filtered (inverted aerial imagery looks wrong). */
+  /* Dark theme inverts the roadmap embed to an approximate dark map; light theme
+     shows it normally. :global() so the cid isn't bound to [data-theme=light]
+     (which lives on <html>, not this page's tree). */
+  .contact__map iframe { filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.92); }
+  :global([data-theme="light"]) .contact__map iframe { filter:none; }
+
+  [data-theme="light"] .contact__map  { box-shadow:0 2px 4px rgba(12,18,34,.05), 0 12px 32px rgba(12,18,34,.07); }
+  [data-theme="light"] .contact__info { box-shadow:0 1px 3px rgba(12,18,34,.05), 0 8px 20px rgba(12,18,34,.05); }
+</style>

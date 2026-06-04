@@ -1,0 +1,219 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { withBase, EXTERNAL } from "../../data/site-nav.ts";
+
+const CURRICULUM_DOC = "https://drive.google.com/file/d/1o0a9BaHrmE9aakHVxTM4J3Qbr5rPXa4B/view";
+const abekta = (code: string) => withBase(`${EXTERNAL.abekta}/courses/${code}/`);
+
+const facts = [
+  { n: "15", label: "Credits" },
+  { n: "3", label: "Credits / course" },
+  { n: "5", label: "Semesters" },
+  { n: "UGC", label: "Approved", raw: true },
+];
+
+// Course numbers, titles, prerequisites and descriptions follow the live site
+// (the authoritative XML); the docx course outlines enrich the theory courses.
+const core = [
+  {
+    code: "AST 201", title: "Introduction to Astronomy", prereq: "None", tracks: ["A&A", "SPS"], slug: "ast201",
+    desc: "The full observational pipeline of modern astronomy — the history of the field, the physics of light, coordinate systems and statistical uncertainty, telescope optics, the technology of CCD and infrared detectors, and hands-on digital image processing.",
+  },
+  {
+    code: "AST 301", title: "Introduction to Astrophysics", prereq: "Calculus", tracks: ["A&A", "SPS"], slug: "ast301",
+    desc: "Where observation meets theory — the standard model of cosmology via the Friedmann–Lemaître equations, the thermal history of the universe, structure and dark-matter halo formation, and the 21-cm hydrogen line at the frontier of radio astrophysics.",
+  },
+];
+
+const electives = [
+  {
+    code: "AST 401", title: "Planets and Planetary Systems", prereq: "None", tracks: ["SPS"], slug: "ast401",
+    desc: "Our cosmic neighbourhood and its counterparts: planet formation from disk to world, the solar system, the five methods of exoplanet detection, and astrobiology — including habitable environments on Titan and Europa.",
+  },
+  {
+    code: "AST 402", title: "Stars and Interstellar Medium", prereq: "MAT 104", tracks: ["A&A"], slug: "ast402",
+    desc: "The life of stars: binary dynamics and the Hertzsprung–Russell diagram, stellar interiors and nucleosynthesis, a dedicated treatment of the Sun, the interstellar medium, and the physics of star formation.",
+  },
+  {
+    code: "AST 403", title: "Galaxies and Intergalactic Medium", prereq: "MAT 104", tracks: ["A&A"], slug: "ast403",
+    desc: "Galaxies and the cosmic web: the Milky Way, galaxy types and scaling relations (Tully–Fisher, Faber–Jackson), AGN and quasars, galaxy-formation theory, and the intergalactic medium at cosmic dawn.",
+  },
+  {
+    code: "AST 410", title: "Radio Astronomy", prereq: "None", tracks: ["A&A", "SPS"], slug: "ast410",
+    desc: "Listening to the invisible universe: radio-radiation physics and Stokes parameters, telescope and receiver engineering, interferometry and aperture synthesis (ALMA, SKA), and the 21-cm HI radio sky.",
+  },
+  {
+    code: "PHY 424", title: "Atmospheric and Space Physics", prereq: "Calculus", tracks: ["SPS"], slug: "phy424",
+    desc: "Earth and its space environment: atmospheric structure and meteorology, charged-particle motion and drifts, Earth's magnetosphere and ionosphere, and auroral electrodynamics. Renumbered from PHY 434.",
+  },
+];
+
+---
+
+<BaseLayout
+  title="Minor in Astronomy & Astrophysics — CASSA Teaching"
+  description="The first and only Minor in Astronomy & Astrophysics in Bangladesh — a 15-credit, UGC-approved programme at IUB's Department of Physical Sciences."
+  current="/teaching"
+>
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="lensing"
+    eyebrow="Teaching · Minor"
+    title="Minor in Astronomy & Astrophysics"
+    lede="A rigorous yet accessible 15-credit programme — the first and only of its kind in Bangladesh — open to any student grounded in the natural sciences and mathematics."
+  />
+
+  <!-- ── Sub-nav strip ──────────────────────────────────────────────────── -->
+  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/teaching')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Teaching</a>
+      <a href={withBase('/teaching/minor')} style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;background:var(--accent);color:#1a1206;font-weight:600">Minor in A&amp;A</a>
+      <a href={withBase(EXTERNAL.abekta)} style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">Abekta ↗</a>
+    </div>
+  </nav>
+
+  <!-- ── Overview ───────────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Overview</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>Situate your major within the largest possible context</h2>
+          <p>
+            Offered by IUB's <strong>Department of Physical Sciences</strong>, the Minor in
+            Astronomy &amp; Astrophysics is a rigorous yet accessible 15-credit programme. Anchored
+            by two mandatory core courses — <strong>Introduction to Astronomy (AST 201)</strong> and
+            <strong>Introduction to Astrophysics (AST 301)</strong> — and complemented by electives
+            spanning planetary systems, stellar evolution, galaxies, radio astronomy, and space
+            physics, it equips curious minds with the conceptual and observational tools to grapple
+            with the universe's grandest questions. Designed to be completed within five semesters,
+            it complements majors in physics, mathematics, engineering, and computer science.
+          </p>
+          <p>
+            <strong>CASSA is a contributor to the Minor</strong>, assisting with its research
+            components; every course is taught by a CASSA member or Director.
+          </p>
+          <p style="font-size:.95rem">
+            The curriculum is approved by the <strong>University Grants Commission (UGC)</strong> of
+            Bangladesh — see <a href={CURRICULUM_DOC} target="_blank" rel="noopener" style="color:var(--accent)">page 18 of the curriculum document ↗</a>.
+            Full syllabi and lecture materials are published openly on
+            <a href={withBase(EXTERNAL.abekta)} target="_blank" rel="noopener" style="color:var(--accent)">Abekta ↗</a>.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="facts">
+        {facts.map((f, i) => (
+          <Reveal class="fact" delay={i * 70}>
+            <span class="fact__n">{f.n}</span>
+            <span class="fact__l">{f.label}</span>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Core courses ───────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Mandatory</p></Reveal>
+      <Reveal delay={60}><h2 class="section-h2">Two core courses</h2></Reveal>
+
+      <div class="pg pg--2" style="margin-top:2.2rem">
+        {core.map((c, i) => (
+          <Reveal class="course" delay={i * 90}>
+            <div class="course__head">
+              <span class="course__code">{c.code}</span>
+              <div class="course__tracks">{c.tracks.map((t) => <span class="pill pill--accent" style="font-size:.66rem">{t}</span>)}</div>
+            </div>
+            <h3 class="course__title">{c.title}</h3>
+            <p class="course__meta">3 credits · Prerequisite: {c.prereq}</p>
+            <p class="course__desc">{c.desc}</p>
+            <a href={abekta(c.slug)} target="_blank" rel="noopener" class="course__link">Course page on Abekta ↗</a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Band ───────────────────────────────────────────────────────────── -->
+  <AnimatedBand theme="galaxy">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Build your path</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">Electives across three tracks</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Electives ──────────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Electives</p></Reveal>
+      <Reveal delay={60}>
+        <h2 class="section-h2">Choose your concentration</h2>
+      </Reveal>
+      <Reveal delay={100}>
+        <p style="color:var(--ink-soft);margin-top:.8rem;max-width:72ch;line-height:1.7">
+          Electives are organised into two tracks — <strong>A&amp;A</strong> (Astronomy &amp;
+          Astrophysics) and <strong>SPS</strong> (Space &amp; Planetary Science). A course may
+          belong to both tracks; its tags are shown on each card.
+        </p>
+      </Reveal>
+
+      <div class="pg" style="margin-top:2.2rem">
+        {electives.map((c, i) => (
+          <Reveal class="course" delay={(i % 3) * 80}>
+            <div class="course__head">
+              <span class="course__code">{c.code}</span>
+              <div class="course__tracks">{c.tracks.map((t) => <span class="pill" style="font-size:.66rem">{t}</span>)}</div>
+            </div>
+            <h3 class="course__title">{c.title}</h3>
+            <p class="course__meta">3 credits · Prerequisite: {c.prereq}</p>
+            <p class="course__desc">{c.desc}</p>
+            {c.slug && <a href={abekta(c.slug)} target="_blank" rel="noopener" class="course__link">Course page on Abekta ↗</a>}
+          </Reveal>
+        ))}
+      </div>
+
+      <Reveal delay={140}>
+        <p style="color:var(--ink-faint);font-size:.85rem;margin-top:2rem;max-width:74ch">
+          Every course in the Minor is taught by a <strong>CASSA member or Director</strong> — the
+          Directors Khan Muhammad Bin Asad and Syed Ashraf Uddin among them. The necessary
+          mathematics and physics are introduced from the ground up, keeping the courses accessible
+          to students from the physical and life sciences, electrical engineering, and computer science.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+  .facts { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:2.2rem; max-width:760px; }
+  @media (max-width:540px) { .facts { grid-template-columns:repeat(2,1fr); } }
+  .fact { background:var(--bg-elev-2); border:1px solid var(--line); border-radius:14px; padding:1.3rem 1rem; display:flex; flex-direction:column; gap:.3rem; }
+  .fact__n { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:700; letter-spacing:-.03em; color:var(--accent); line-height:1; }
+  .fact__l { font-size:.72rem; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-faint); font-weight:600; }
+
+  .pg { display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
+  .pg--2 { grid-template-columns:repeat(2,1fr); }
+  @media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } .pg--2 { grid-template-columns:1fr; } }
+  @media (max-width:540px) { .pg { grid-template-columns:1fr; } }
+
+  .course { background:var(--bg-elev); border:1px solid var(--line); border-radius:14px; padding:1.4rem; display:flex; flex-direction:column; transition:border-color .2s; }
+  .section--elev .course { background:var(--bg-elev-2); }
+  .course:hover { border-color:color-mix(in srgb, var(--accent) 40%, transparent); }
+  [data-theme="light"] .course { box-shadow:0 1px 2px rgba(12,18,34,.05), 0 6px 16px rgba(12,18,34,.04); }
+  .course__head { display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+  .course__code { font-weight:700; color:var(--accent); font-size:.9rem; letter-spacing:.03em; }
+  .course__tracks { display:flex; gap:.3rem; flex-wrap:wrap; }
+  .course__title { font-size:1.12rem; color:var(--ink); margin:.55rem 0 0; line-height:1.3; }
+  .course__meta { font-size:.78rem; color:var(--ink-faint); margin:.45rem 0 0; }
+  .course__desc { color:var(--ink-soft); font-size:.93rem; line-height:1.6; margin:.7rem 0 0; flex:1; }
+  .course__link { margin-top:1rem; font-size:.83rem; font-weight:600; color:var(--accent-2); transition:opacity .2s; }
+  .course__link:hover { opacity:.75; }
+</style>

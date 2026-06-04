@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import OpportunityCirculars from "../../components/OpportunityCirculars.astro";
+import { getCollection } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+
+const items = (await getCollection("opportunities", ({ data }) => data.status !== "draft" && data.kind === "volunteer"))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<BaseLayout
+  title="Volunteerships — CASSA Opportunities"
+  description="Volunteer with Durbin and CASSA outreach — telescope operators, public astronomy nights and science communication at the Center for Astronomy, Space Science and Astrophysics (CASSA), IUB."
+  current="/opportunities/volunteerships"
+>
+  <AnimatedHero
+    theme="lensing"
+    eyebrow="Opportunities · Volunteerships"
+    title="Volunteerships"
+    lede="Bring astronomy to the public — volunteer with Durbin, operate telescopes at Astronomy Nights, and help run CASSA's outreach."
+  />
+
+  <!-- Volunteering (elevated, right after the dark hero — rule 19) -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Give your time</p></Reveal>
+      <Reveal delay={60}><h2 class="op-h2">Volunteer with Durbin</h2></Reveal>
+      <Reveal delay={100}>
+        <Prose>
+          <p>
+            Most volunteering at CASSA runs through <strong>Durbin</strong>, the Center's volunteer-based
+            astronomy outreach initiative — built around astrophotography, public
+            <strong> Astronomy Nights</strong>, school visits and immersive science communication.
+            Volunteers operate telescopes at public events and remote imaging camps, and form fixed teams
+            each cycle to develop lasting materials from Durbin's deep-sky imagery.
+          </p>
+          <p>
+            No prior experience is required — selected volunteers receive structured training before
+            handling equipment, and those who complete a cycle receive a <strong>Letter of
+            Experience</strong>. All outreach involving minors follows CASSA's safeguarding policy.
+          </p>
+          <p>
+            Learn more about the programme on the <a href={withBase('/outreach')}>Outreach</a> page and the
+            <a href={withBase('/outreach/durbin/volunteers')}> Durbin volunteers</a> page.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+
+  <AnimatedBand theme="lensing">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Volunteer calls</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">Open calls &amp; past volunteer drives</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <OpportunityCirculars items={items}>
+    <Fragment slot="empty">
+      There are no open volunteer calls right now. Durbin recruits in cycles — watch the
+      <a href={withBase('/news')}> news feed</a>, follow the
+      <a href={withBase('/outreach/durbin/volunteers')}> Durbin volunteers</a> page, or write to
+      <a href="mailto:cassa@iub.edu.bd">cassa@iub.edu.bd</a> to be notified of the next drive.
+    </Fragment>
+  </OpportunityCirculars>
+</BaseLayout>

@@ -1,0 +1,91 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../../components/immersive/Reveal.astro";
+import { withBase } from "../../../data/site-nav.ts";
+import { current, past } from "../../../data/durbin-volunteers.ts";
+---
+
+<BaseLayout
+  title="Durbin Volunteers — CASSA"
+  description="The volunteers who power CASSA's Durbin astronomy-outreach programme across Bangladesh — the 2026 cohort and past volunteers."
+  current="/outreach"
+>
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Outreach · Durbin"
+    title="Durbin Volunteers"
+    lede="The people who power CASSA's astronomy outreach across Bangladesh."
+  />
+
+  <!-- Current cohort -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">2026 cohort</p></Reveal>
+      <Reveal delay={60}><h2 class="v-h2">Durbin Volunteers 2026</h2></Reveal>
+      <Reveal delay={100}>
+        <p class="v-intro">
+          {current.length} volunteers from across the country. How volunteer teams are formed and
+          recognised is set out in the <a href={withBase("/outreach/durbin/manual")}>Durbin Manual</a>.
+        </p>
+      </Reveal>
+      <Reveal delay={140}>
+        <div class="v-wrap">
+          <table class="vtable">
+            <thead>
+              <tr><th>Name</th><th>Region</th><th>Institution</th></tr>
+            </thead>
+            <tbody>
+              {current.map((v) => (
+                <tr><td>{v.name}</td><td>{v.region}</td><td>{v.institution}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- Past volunteers -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Alumni</p></Reveal>
+      <Reveal delay={60}><h2 class="v-h2">Past volunteers</h2></Reveal>
+      <Reveal delay={100}>
+        <p class="v-intro">With gratitude to those who volunteered in earlier Durbin cycles.</p>
+      </Reveal>
+      <Reveal delay={140}>
+        <div class="v-wrap">
+          <table class="vtable">
+            <thead>
+              <tr><th>Name</th><th>Region</th><th>Duration <span class="v-th-note">(and special roles)</span></th></tr>
+            </thead>
+            <tbody>
+              {past.map((v) => (
+                <tr><td>{v.name}</td><td>{v.region}</td><td>{v.duration}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .v-h2 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); letter-spacing: -.015em; margin: .3rem 0 0; color: var(--ink); }
+  .v-intro { color: var(--ink-soft); line-height: 1.7; margin: 1rem 0 0; max-width: 66ch; }
+
+  .v-wrap { margin-top: 1.8rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+  [data-theme="light"] .v-wrap { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+
+  .vtable { width: 100%; border-collapse: collapse; font-size: .95rem; min-width: 440px; }
+  .vtable th, .vtable td { text-align: left; padding: .8rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .vtable thead th { font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); font-weight: 700; background: var(--bg-elev-2); }
+  .v-th-note { text-transform: none; letter-spacing: 0; font-weight: 500; opacity: .8; }
+  .vtable tbody tr:last-child td { border-bottom: 0; }
+  .vtable tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .vtable td { color: var(--ink); }
+  .vtable td:first-child { font-weight: 600; }
+  .vtable td:nth-child(2), .vtable td:nth-child(3) { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+</style>

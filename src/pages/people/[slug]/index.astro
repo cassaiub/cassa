@@ -1,0 +1,487 @@
+---
+/* Generic person-profile page. Renders any person registered in PROFILES
+   (src/data/people/profiles.ts); every section is optional. Identity + the
+   biography (markdown body) come from the people collection; rich extras come
+   from the registered ProfileData. To add a person, see profiles.ts. */
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../../components/immersive/Reveal.astro";
+import Prose from "../../../components/immersive/Prose.astro";
+import PersonCard from "../../../components/PersonCard.astro";
+import { withBase } from "../../../data/site-nav.ts";
+import { PROFILES } from "../../../data/people/profiles.ts";
+
+export async function getStaticPaths() {
+  const people = await getCollection("people");
+  return Object.keys(PROFILES)
+    .map((slug) => people.find((p) => p.id === slug))
+    .filter((e): e is NonNullable<typeof e> => Boolean(e))
+    .map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const profile = PROFILES[entry.id];
+const { Content } = await render(entry);
+
+/* Publications (optional, frozen snapshot) — derived totals + default order. */
+const pub = profile.publications;
+const pubs = pub ? [...pub.papers].sort((a, b) => b.year - a.year || b.adsCites - a.adsCites) : [];
+const adsTotal = pubs.reduce((s, p) => s + p.adsCites, 0);
+
+/* Google Scholar "Cited by" histogram — citations received per calendar year. */
+const citesByYear = pub?.citesByYear ?? {};
+const cyYears = Object.keys(citesByYear).map(Number).sort((a, b) => a - b);
+const maxCy = Math.max(1, ...Object.values(citesByYear));
+const adsLink = (b: string) => `https://ui.adsabs.harvard.edu/abs/${encodeURIComponent(b)}`;
+const doiLink = (doi: string) => (doi.startsWith("http") ? doi : `https://doi.org/${doi}`);
+const journalLink = (p: { url?: string; doi: string | null; bibcode: string }) =>
+  p.url ?? (p.doi ? doiLink(p.doi) : adsLink(p.bibcode));
+const scholarLink = (title: string) => `https://scholar.google.com/scholar?q=${encodeURIComponent(title)}`;
+const pct = (x: number) => { const r = Math.round(x * 100); return r === 0 && x > 0 ? "<1%" : `${r}%`; };
+---
+
+<BaseLayout
+  title={`${entry.data.name} — CASSA People`}
+  description={`${entry.data.name} — ${profile.headline}`}
+  current="/people"
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow={profile.eyebrow}
+    title={entry.data.name}
+    lede={`${entry.data.title ? entry.data.title + " · " : ""}${profile.headline}`}
+  />
+
+  <!-- ── Back-link strip ──────────────────────────────────────────────── -->
+  <nav style="border-bottom:1px solid var(--line);background:var(--bg-elev)">
+    <div class="wrap" style="display:flex;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/people')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← All People</a>
+    </div>
+  </nav>
+
+  <!-- ── Profile section ──────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="profile">
+        <!-- LEFT: identity card -->
+        <Reveal class="profile__aside">
+          <div class="profile__card">
+            <PersonCard
+              name={entry.data.name}
+              title={entry.data.title}
+              tier={entry.data.tier}
+              interests={entry.data.interests}
+              institution={entry.data.institution}
+              education={entry.data.education}
+              research={entry.data.research}
+              email={entry.data.email}
+              photo={entry.data.photo}
+              links={profile.links ?? {}}
+            />
+          </div>
+        </Reveal>
+
+        <!-- RIGHT: biography + sections -->
+        <div class="profile__main">
+          <Reveal>
+            <Prose>
+              {profile.roleEyebrow && <p class="eyebrow">{profile.roleEyebrow}</p>}
+              <h2>Biography</h2>
+              <Content />
+            </Prose>
+          </Reveal>
+
+          {profile.programs && profile.programs.length > 0 && (
+            <Reveal delay={60}>
+              <Prose>
+                <h2>Research programs</h2>
+                {profile.programsIntro && <p>{profile.programsIntro}</p>}
+              </Prose>
+              <div class="link-table-wrap">
+                <table class="link-table"><tbody>
+                  {profile.programs.map((row) => (
+                    <tr><td>
+                      <a class="link-row" href={withBase(row.href)}>
+                        <span class="link-row__text">
+                          <span class="link-row__title">{row.title}</span>
+                          <span class="link-row__desc">{row.desc}</span>
+                        </span>
+                        <span class="link-row__chev" aria-hidden="true">→</span>
+                      </a>
+                    </td></tr>
+                  ))}
+                </tbody></table>
+              </div>
+            </Reveal>
+          )}
+
+          {profile.engagements && profile.engagements.length > 0 && (
+            <Reveal delay={100}>
+              <Prose>
+                <h2>Teaching &amp; outreach</h2>
+              </Prose>
+              <div class="link-table-wrap">
+                <table class="link-table"><tbody>
+                  {profile.engagements.map((row) => (
+                    <tr><td>
+                      <a class="link-row" href={withBase(row.href)}>
+                        <span class="link-row__text">
+                          <span class="link-row__title">{row.title}</span>
+                          <span class="link-row__desc">{row.desc}</span>
+                        </span>
+                        <span class="link-row__chev" aria-hidden="true">→</span>
+                      </a>
+                    </td></tr>
+                  ))}
+                </tbody></table>
+              </div>
+            </Reveal>
+          )}
+
+          {profile.workEducation && profile.workEducation.length > 0 && (
+            <Reveal delay={120}>
+              <Prose>
+                <h2>Work &amp; education</h2>
+              </Prose>
+              <div class="we-wrap">
+                <table class="we-table">
+                  <thead>
+                    <tr>
+                      <th class="we-years">Years</th>
+                      <th>Role / Qualification</th>
+                      <th>Institution</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {profile.workEducation.map(({ group, rows }) => (
+                      <>
+                        <tr class="we-group-row">
+                          <td colspan="3"><span class="eyebrow">{group}</span></td>
+                        </tr>
+                        {rows.map((r) => (
+                          <tr>
+                            <td class="we-years">{r.years}</td>
+                            <td class="we-role">
+                              <span class="we-role-name">{r.role}</span>
+                              {r.thesisTitle && (
+                                <span class="we-thesis">
+                                  Thesis:{" "}
+                                  {r.thesisUrl ? (
+                                    <a href={withBase(r.thesisUrl)} target="_blank" rel="noopener noreferrer">{r.thesisTitle}</a>
+                                  ) : (
+                                    <em>{r.thesisTitle}</em>
+                                  )}
+                                  {r.supervisor && <span class="we-sup"> · Supervisor: {r.supervisor}</span>}
+                                </span>
+                              )}
+                            </td>
+                            <td class="we-org">
+                              {r.org.map((part) =>
+                                typeof part === "string" ? (
+                                  part
+                                ) : /^https?:\/\//.test(part.url) ? (
+                                  <a href={part.url} target="_blank" rel="noopener noreferrer">{part.name}</a>
+                                ) : (
+                                  <a href={withBase(part.url)}>{part.name}</a>
+                                )
+                              )}
+                              {r.place && <span class="we-place"> · {r.place}</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Reveal>
+          )}
+
+          {pub && (
+            <Reveal delay={180}>
+              <Prose>
+                <h2>Publications</h2>
+                <p>
+                  Complete list of {pubs.length} papers, combining
+                  {" "}<a href={pub.adsAuthorUrl} target="_blank" rel="noopener noreferrer">NASA ADS</a>
+                  {" "}and
+                  {" "}<a href={pub.scholarUrl} target="_blank" rel="noopener noreferrer">Google Scholar</a>
+                  {" "}— sortable by ADS citations, Scholar citations, or {pub.shareLabel}. Totals:
+                  {" "}{adsTotal.toLocaleString()} ADS citations · {pub.scholarTotalCites.toLocaleString()} Scholar
+                  citations · <em>h</em>-index {pub.scholarHIndex}. Snapshot {pub.snapshot}.
+                </p>
+              </Prose>
+
+              <!-- Citations received per year (Google Scholar) + indices -->
+              {cyYears.length > 0 && (
+                <div class="cite-panel">
+                  <div class="cite-indices">
+                    <div class="cidx">
+                      <span class="cidx__src">All</span>
+                      <span><b>{pub.scholarTotalCites.toLocaleString()}</b> citations · <em>h</em> {pub.scholarHIndex}{pub.scholarI10Index ? <> · i10 {pub.scholarI10Index}</> : null}</span>
+                    </div>
+                    {pub.since && (
+                      <div class="cidx">
+                        <span class="cidx__src cidx__src--since">since {pub.since.year}</span>
+                        <span><b>{pub.since.cites.toLocaleString()}</b> citations · <em>h</em> {pub.since.hIndex} · i10 {pub.since.i10Index}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div class="cite-bars" role="img" aria-label="Citations received per year from Google Scholar">
+                    {cyYears.map((y) => {
+                      const v = citesByYear[y] ?? 0;
+                      return (
+                        <div class="cy-col" data-label={`${y} · ${v.toLocaleString()} citations`}>
+                          <div class="cy-bar" style={`height:${Math.max(1, Math.round((v / maxCy) * 100))}%`}>
+                            <span class="cy-v">{v}</span>
+                          </div>
+                          <span class="cy-x">'{String(y).slice(2)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p class="cite-cap">Citations received per year, from <a href={pub.scholarUrl} target="_blank" rel="noopener noreferrer">Google Scholar</a> (the graph omits pre-{cyYears[0]}). Snapshot {pub.snapshot}.</p>
+                </div>
+              )}
+
+              <!-- Sort control -->
+              <div class="sort-bar">
+                <span class="sort-label">Sort by</span>
+                <div class="sort-controls" id="pub-sort" role="group" aria-label="Sort publications">
+                  <button type="button" class="sort-btn is-active" data-sort="year" aria-pressed="true">Year</button>
+                  <button type="button" class="sort-btn" data-sort="ads" aria-pressed="false">ADS citations</button>
+                  <button type="button" class="sort-btn" data-sort="scholar" aria-pressed="false">Scholar citations</button>
+                  <button type="button" class="sort-btn" data-sort="share" aria-pressed="false">{pub.shareLabel}</button>
+                </div>
+              </div>
+
+              <div class="pub-wrap">
+                <table class="pub-table">
+                  <thead>
+                    <tr>
+                      <th class="pub-yr">Year</th>
+                      <th>Paper</th>
+                      <th class="pub-num">ADS</th>
+                      <th class="pub-num">Scholar</th>
+                      <th class="pub-num">{pub.shareLabel}</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pub-tbody">
+                    {pubs.map((p) => (
+                      <tr data-ads={p.adsCites} data-scholar={p.scholarCites ?? -1} data-share={p.asadShare} data-year={p.year}>
+                        <td class="pub-yr">{p.year}</td>
+                        <td class="pub-paper">
+                          <a href={journalLink(p)} target="_blank" rel="noopener noreferrer" class="pub-title">{p.title}</a>
+                          <span class="pub-byline">{p.byline}{p.pub ? <> · <em>{p.pub}</em></> : null}</span>
+                        </td>
+                        <td class="pub-num pub-ads">
+                          <a href={adsLink(p.bibcode)} target="_blank" rel="noopener noreferrer" title="View on NASA ADS">{p.adsCites}</a>
+                        </td>
+                        <td class="pub-num pub-scholar">
+                          {p.scholarCites === null
+                            ? "—"
+                            : <a href={scholarLink(p.title)} target="_blank" rel="noopener noreferrer" title="View on Google Scholar">{p.scholarCites}</a>}
+                        </td>
+                        <td class="pub-num pub-share" title={p.alpha ? `Author ${p.pos} of ${p.nauthors} — alphabetical list, equal share` : `Author ${p.pos} of ${p.nauthors} — contribution-ordered`}>{pct(p.asadShare)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <Prose>
+                <aside class="pub-note">
+                  <p>
+                    <strong>ADS</strong> and <strong>Scholar</strong> citation counts are the per-source
+                    totals (they differ — Scholar indexes more grey literature). <strong>{pub.shareLabel}</strong>,
+                    shown as a percentage, rewards byline placement <em>only when the author list is
+                    contribution-ordered</em>. For a paper's leading authors — those before any alphabetical
+                    tail — it is 0.9 / <em>r</em> at byline position <em>r</em>, so a first-author paper is 90%,
+                    a second-author 45%, a tenth-author 9%. But when {pub.personShort}'s name sits inside an
+                    alphabetical author list — where position carries no meaning — they instead get the equal
+                    share 0.9 / <em>N</em> among the <em>N</em> authors. The same alphabetical rule governs the
+                    {" "}<a href={withBase("/research/publications")}>publications page's</a> IUB share.
+                    Journal and conference papers; the PhD thesis is excluded.
+                  </p>
+                </aside>
+              </Prose>
+            </Reveal>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Client-side re-sort of the publications table. is:inline so it ships
+       (a hoisted <script> in slot content is dropped from the build). The guard
+       no-ops when a profile has no publications table. -->
+  <script is:inline>
+    (function () {
+      var tbody = document.getElementById("pub-tbody");
+      var bar = document.getElementById("pub-sort");
+      if (!tbody || !bar) return;
+      var btns = Array.prototype.slice.call(bar.querySelectorAll(".sort-btn"));
+      var keysFor = function (k) {
+        return k === "scholar" ? ["scholar", "ads", "year"]
+          : k === "share" ? ["share", "ads", "year"]
+          : k === "year" ? ["year", "ads", "scholar"]
+          : ["ads", "scholar", "year"];
+      };
+      function sortBy(primary) {
+        var keys = keysFor(primary);
+        var rows = Array.prototype.slice.call(tbody.children);
+        rows.sort(function (a, b) {
+          for (var i = 0; i < keys.length; i++) {
+            var d = Number(b.dataset[keys[i]]) - Number(a.dataset[keys[i]]);
+            if (d) return d;
+          }
+          return 0;
+        });
+        var frag = document.createDocumentFragment();
+        rows.forEach(function (r) { frag.appendChild(r); });
+        tbody.appendChild(frag);
+      }
+      btns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          btns.forEach(function (b) { b.classList.remove("is-active"); b.setAttribute("aria-pressed", "false"); });
+          btn.classList.add("is-active");
+          btn.setAttribute("aria-pressed", "true");
+          sortBy(btn.dataset.sort);
+        });
+      });
+    })();
+  </script>
+
+  <style>
+    /* Give this profile more horizontal room than the default 1200px container. */
+    .section--elev .wrap { max-width: 1360px; }
+
+    .profile {
+      display: grid;
+      grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+      gap: clamp(1.8rem, 4vw, 3.5rem);
+      align-items: start;
+    }
+    .profile__aside { max-width: 340px; }
+    .profile__card { position: sticky; top: 5.5rem; }
+
+    /* Each prose block fills the full content column (left-aligned). */
+    .profile__main :global(.prose-cassa) { margin-inline: 0; max-width: none; }
+    .profile__main > * + * { margin-top: clamp(1.6rem, 3vw, 2.4rem); }
+
+    /* ── Single-column clickable link tables (programs · teaching & outreach) ── */
+    .link-table-wrap { margin-top: 1.1rem; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    .link-table { width: 100%; border-collapse: collapse; }
+    .link-table td { padding: 0; border-bottom: 1px solid var(--line); }
+    .link-table tr:last-child td { border-bottom: none; }
+    .link-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1rem 1.2rem; text-decoration: none; transition: background-color 0.15s ease;
+    }
+    .link-row:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+    .link-row__text { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+    .link-row__title { color: var(--ink); font-weight: 600; font-size: 1rem; line-height: 1.35; }
+    .link-row__desc { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; }
+    .link-row__chev { color: var(--accent); font-size: 1.35rem; line-height: 1; flex-shrink: 0; transition: transform 0.15s ease; }
+    .link-row:hover .link-row__chev { transform: translateX(3px); }
+
+    /* ── Work & education table ──────────────────────────────────────────── */
+    .we-wrap { margin-top: 1.1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+    .we-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    .we-table thead { background: var(--bg-elev); border-bottom: 1px solid var(--line-strong); }
+    .we-table th {
+      text-align: left; padding: 0.7rem 1rem; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap;
+    }
+    .we-table td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+    .we-table tr:last-child td { border-bottom: none; }
+    .we-group-row td { background: color-mix(in srgb, var(--bg-elev-2) 60%, transparent); padding: 0.5rem 1rem; }
+    .we-group-row .eyebrow { font-size: 0.66rem; letter-spacing: 0.2em; }
+    .we-years { white-space: nowrap; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+    .we-role-name { color: var(--ink); font-weight: 600; }
+    .we-place { color: var(--ink-faint); }
+    .we-org a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .we-org a:hover { opacity: 0.8; }
+    .we-thesis { display: block; margin-top: 0.3rem; font-size: 0.85rem; font-weight: 400; color: var(--ink-faint); line-height: 1.5; }
+    .we-thesis a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .we-sup { color: var(--ink-faint); }
+    :global([data-theme="light"]) .we-table thead { background: var(--bg-elev-2); }
+
+    /* ── Publications table + sort control ──────────────────────────────── */
+    .sort-bar { display: flex; align-items: center; gap: 0.7rem; margin: 0.4rem 0 1.1rem; flex-wrap: wrap; }
+    .sort-label { font-size: 0.72rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+    .sort-controls { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg-elev-2); }
+    .sort-btn {
+      appearance: none; border: 0; background: transparent; color: var(--ink-soft);
+      font: inherit; font-size: 0.8rem; font-weight: 600; padding: 0.38em 0.85em;
+      border-radius: 999px; cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .sort-btn:hover { color: var(--ink); }
+    .sort-btn.is-active { background: var(--accent); color: #fff; }
+
+    /* ── Citations chart (ADS vs Scholar by publication year) ───────────── */
+    .cite-panel { margin-top: 1rem; background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 16px; padding: 1.3rem 1.4rem 1.1rem; }
+    :global([data-theme="light"]) .cite-panel { box-shadow: 0 1px 3px rgba(12,18,34,.05), 0 6px 16px rgba(12,18,34,.04); }
+    .cite-indices { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; margin-bottom: 1.1rem; }
+    .cidx { display: flex; align-items: center; gap: 0.55rem; font-size: 0.9rem; color: var(--ink-soft); }
+    .cidx b { color: var(--ink); }
+    .cidx em { font-style: italic; }
+    .cidx__src { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2em 0.55em; border-radius: 6px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); white-space: nowrap; }
+    .cidx__src--since { background: var(--bg-elev); color: var(--ink-faint); border: 1px solid var(--line); }
+    .cite-bars { display: flex; align-items: flex-end; gap: 6px; height: 180px; }
+    .cy-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end; min-width: 0; position: relative; }
+    .cy-bar { width: 100%; max-width: 34px; background: var(--accent); border-radius: 4px 4px 0 0; min-height: 2px; position: relative; opacity: 0.9; transition: opacity 0.15s; }
+    .cy-col:hover .cy-bar { opacity: 1; }
+    .cy-v { position: absolute; top: -1.2rem; left: 0; right: 0; text-align: center; font-size: 0.66rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+    .cy-x { font-size: 0.66rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+    .cy-col[data-label]:hover::after {
+      content: attr(data-label); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+      margin-bottom: 1.4rem; background: var(--ink); color: var(--bg); font-size: 0.72rem; font-weight: 600;
+      white-space: nowrap; padding: 0.35em 0.6em; border-radius: 6px; pointer-events: none; z-index: 10;
+    }
+    .cite-cap { margin: 0.9rem 0 0; font-size: 0.78rem; color: var(--ink-faint); line-height: 1.5; }
+    .cite-cap a { color: var(--accent); }
+
+    .pub-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+    .pub-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .pub-table thead { background: var(--bg-elev); border-bottom: 1px solid var(--line-strong); }
+    .pub-table th {
+      text-align: left; padding: 0.7rem 1rem; font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap;
+    }
+    .pub-table td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+    .pub-table tr:last-child td { border-bottom: none; }
+    .pub-table tbody tr { transition: background-color 0.12s ease; }
+    .pub-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+    .pub-yr { white-space: nowrap; color: var(--ink-faint); font-variant-numeric: tabular-nums; width: 1%; }
+    .pub-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; width: 1%; }
+    th.pub-num { text-align: right; }
+    .pub-ads { color: var(--ink); font-weight: 600; }
+    .pub-scholar { color: var(--ink-soft); }
+    .pub-ads a, .pub-scholar a {
+      color: inherit; text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 2px;
+    }
+    .pub-ads a:hover, .pub-scholar a:hover { color: var(--accent); }
+    .pub-share { color: var(--accent-2, #a78bfa); font-weight: 600; }
+    .pub-title { display: block; color: var(--ink); font-weight: 600; line-height: 1.4; text-decoration: none; }
+    .pub-title:hover { color: var(--accent); }
+    .pub-byline { display: block; margin-top: 0.25rem; font-size: 0.8rem; color: var(--ink-faint); line-height: 1.45; }
+    .pub-note { margin-top: 1rem; font-size: 0.84rem; }
+    :global([data-theme="light"]) .pub-table thead { background: var(--bg-elev-2); }
+    @media (max-width: 600px) {
+      .pub-table { font-size: 0.85rem; }
+      .pub-table th, .pub-table td { padding: 0.55rem 0.6rem; }
+    }
+    @media (max-width: 540px) {
+      .we-table { font-size: 0.88rem; }
+      .we-table th, .we-table td { padding: 0.6rem 0.7rem; }
+    }
+    @media (max-width: 860px) {
+      .profile { grid-template-columns: 1fr; }
+      .profile__aside { max-width: 340px; margin-inline: auto; }
+      .profile__card { position: static; }
+    }
+  </style>
+</BaseLayout>

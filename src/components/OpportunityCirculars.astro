@@ -1,0 +1,173 @@
+---
+/* Renders the "Open positions" + "Past circulars" sections for a single
+   Opportunities category. Pass the kind-filtered collection entries; the
+   open/closed split is derived from `deadline` (>= now ⇒ open) unless an
+   explicit `outcome` overrides it. Fill the `empty` slot with a
+   category-specific message shown when nothing is open. */
+import Reveal from "./immersive/Reveal.astro";
+import { withBase } from "../data/site-nav.ts";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  items: CollectionEntry<"opportunities">[];
+}
+const { items } = Astro.props;
+type Opp = CollectionEntry<"opportunities">;
+
+const now = new Date();
+const isOpen = (o: Opp) => !o.data.outcome && (!o.data.deadline || o.data.deadline >= now);
+const open = items
+  .filter(isOpen)
+  .sort((a, b) => +(a.data.deadline ?? a.data.date) - +(b.data.deadline ?? b.data.date)); // soonest deadline first
+const closed = items.filter((o) => !isOpen(o)).sort((a, b) => +b.data.date - +a.data.date);
+
+const statusOf = (o: Opp): "open" | "closed" | "filled" =>
+  o.data.outcome === "filled" ? "filled" : isOpen(o) ? "open" : "closed";
+
+const TZ = "Asia/Dhaka";
+const f = (d: Date, o: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, ...o }).format(d);
+const fmtDate = (d: Date) => f(d, { day: "numeric", month: "short", year: "numeric" });
+const yearOf = (d: Date) => f(d, { year: "numeric" });
+
+const STATUS_LABEL = { open: "Open", closed: "Closed", filled: "Filled" } as const;
+
+const footBits = (o: Opp): string[] => {
+  const bits: string[] = [];
+  if (o.data.role) bits.push(o.data.role);
+  if (o.data.compensation) bits.push(o.data.compensation);
+  const s = statusOf(o);
+  if (s === "filled") bits.push("Position filled");
+  else if (o.data.deadline)
+    bits.push(s === "open" ? `Apply by ${fmtDate(o.data.deadline)}` : `Applications closed ${fmtDate(o.data.deadline)}`);
+  return bits;
+};
+
+const closedByYear = new Map<string, Opp[]>();
+for (const o of closed) {
+  const y = yearOf(o.data.date);
+  if (!closedByYear.has(y)) closedByYear.set(y, []);
+  closedByYear.get(y)!.push(o);
+}
+const closedYears = [...closedByYear.keys()].sort((a, b) => Number(b) - Number(a));
+---
+
+<!-- Open positions (elevated — sits after an AnimatedBand on the category pages) -->
+<section class="section section--elev" id="open">
+  <div class="wrap">
+    <Reveal><p class="eyebrow">Now open</p></Reveal>
+    <Reveal delay={60}><h2 class="op-h2">Open positions</h2></Reveal>
+
+    {open.length > 0 ? (
+      <ol class="oplist" aria-label="Open positions">
+        {open.map((o, i) => {
+          const s = statusOf(o);
+          return (
+            <li>
+              <a class:list={["oprow", `oprow--${s}`]} href={withBase(`/opportunities/${o.id}`)} data-reveal style={`--reveal-delay:${Math.min(i, 6) * 50}ms`}>
+                <span class="oprow__meta">
+                  <span class:list={["opstat", `opstat--${s}`]}>{STATUS_LABEL[s]}</span>
+                  <time class="oprow__date" datetime={o.data.date.toISOString()}>{fmtDate(o.data.date)}</time>
+                </span>
+                <span class="oprow__title">{o.data.title}</span>
+                {o.data.summary && <span class="oprow__sum">{o.data.summary}</span>}
+                {footBits(o).length > 0 && <span class="oprow__foot">{footBits(o).join(" · ")}</span>}
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+    ) : (
+      <Reveal delay={100}>
+        <p class="op-empty"><slot name="empty">There are no open positions in this category right now.</slot></p>
+      </Reveal>
+    )}
+  </div>
+</section>
+
+<!-- Past circulars (archive) -->
+<section class="section" id="past">
+  <div class="wrap">
+    <Reveal><p class="eyebrow">Archive</p></Reveal>
+    <Reveal delay={60}><h2 class="op-h2">Past circulars</h2></Reveal>
+
+    {closedYears.map((yr) => (
+      <div class="opyear">
+        <Reveal><h3 class="opyear__h">{yr}</h3></Reveal>
+        <ol class="oplist">
+          {closedByYear.get(yr)!.map((o) => {
+            const s = statusOf(o);
+            return (
+              <li>
+                <a class:list={["oprow", `oprow--${s}`]} href={withBase(`/opportunities/${o.id}`)}>
+                  <span class="oprow__meta">
+                    <span class:list={["opstat", `opstat--${s}`]}>{STATUS_LABEL[s]}</span>
+                    <time class="oprow__date" datetime={o.data.date.toISOString()}>{fmtDate(o.data.date)}</time>
+                  </span>
+                  <span class="oprow__title">{o.data.title}</span>
+                  {o.data.summary && <span class="oprow__sum">{o.data.summary}</span>}
+                  {footBits(o).length > 0 && <span class="oprow__foot">{footBits(o).join(" · ")}</span>}
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    ))}
+
+    {closed.length === 0 && (
+      <p class="op-empty">No past circulars in this category yet.</p>
+    )}
+  </div>
+</section>
+
+<style>
+  .op-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+  .oplist { list-style:none; margin:1.8rem 0 0; padding:0; display:flex; flex-direction:column; gap:.7rem; }
+
+  .oprow {
+    display:flex; flex-direction:column; gap:.4rem;
+    background:var(--bg-elev-2); border:1px solid var(--line); border-radius:14px;
+    padding:1.05rem 1.25rem; transition:border-color .2s, transform .2s;
+  }
+  .oprow:hover { border-color:color-mix(in srgb,var(--accent) 40%,transparent); transform:translateY(-2px); }
+  [data-theme="light"] .oprow { box-shadow:0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .oprow--closed, .oprow--filled { opacity:.85; }
+  .oprow--closed:hover, .oprow--filled:hover { opacity:1; }
+
+  .oprow__meta { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+  .oprow__date { font-size:.78rem; color:var(--ink-faint); font-variant-numeric:tabular-nums; margin-left:auto; }
+  .oprow__title { font-size:1.05rem; color:var(--ink); line-height:1.35; font-weight:600; }
+  .oprow:hover .oprow__title { color:var(--accent); }
+  .oprow__sum { font-size:.9rem; color:var(--ink-soft); line-height:1.55; }
+  .oprow__foot { font-size:.8rem; color:var(--ink-faint); line-height:1.5; }
+
+  .optag {
+    font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    padding:.28em .7em; border-radius:999px; border:1px solid var(--line-strong); color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .optag--div { color:var(--ink-faint); border-color:var(--line); letter-spacing:.1em; }
+
+  .opstat {
+    font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    padding:.28em .7em; border-radius:999px; white-space:nowrap; border:1px solid var(--line);
+    color:var(--ink-faint);
+  }
+  .opstat--open {
+    color:var(--accent); border-color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .opyear { margin-top:2.4rem; }
+  .opyear__h {
+    font-size:1.05rem; color:var(--ink-faint); font-weight:700; letter-spacing:.02em;
+    margin:0 0 .9rem; padding-bottom:.5rem; border-bottom:1px solid var(--line);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .op-empty { color:var(--ink-soft); margin-top:1.4rem; line-height:1.7; max-width:62ch; }
+  .op-empty a { color:var(--accent); }
+  .op-empty a:hover { opacity:.75; }
+</style>

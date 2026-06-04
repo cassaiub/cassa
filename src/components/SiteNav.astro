@@ -1,0 +1,429 @@
+---
+import { NAV, withBase } from "../data/site-nav";
+import ThemeToggle from "./ThemeToggle.tsx";
+
+interface Props {
+  current?: string;
+  lang?: "en" | "bn";
+  altHref?: string;
+}
+const { current = "", lang = "en", altHref } = Astro.props;
+const items = NAV.filter((n) => n.href !== "/");
+
+/** True when the current path is inside this nav item's subtree */
+function isParentActive(href: string, cur: string): boolean {
+  if (href === "/") return false; // never match root against everything
+  return cur === href || cur.startsWith(href + "/");
+}
+---
+
+<nav class="nav" id="site-nav" aria-label="Primary">
+  <div class="wrap nav__row">
+    <a class="nav__brand" href={withBase("/")} aria-label="CASSA — home">
+      <img class="nav__logo nav__logo--white" src={withBase("/brand/CASSA-Logo_White.svg")} alt="CASSA" width="87" height="30" />
+      <img class="nav__logo nav__logo--color" src={withBase("/brand/CASSA-Logo_Color.svg")} alt="" aria-hidden="true" width="87" height="30" />
+    </a>
+
+    <div class="nav__right">
+      <div class="nav__panel" id="nav-panel">
+        {
+          items.map((n) => {
+            const active = isParentActive(n.href, current);
+            if (!n.live) {
+              return <span class="nav__link nav__link--soon" title="Coming soon">{n.label}</span>;
+            }
+            if (n.groups && n.groups.length > 0) {
+              return (
+                <div class="nav__item" data-has-children>
+                  <a
+                    class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
+                    href={withBase(n.href)}
+                    aria-current={current === n.href ? "page" : undefined}
+                    aria-haspopup="true"
+                  >
+                    {n.label}
+                    <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="2 4 6 8 10 4" />
+                    </svg>
+                  </a>
+                  <div class="nav__megamenu" role="menu">
+                    {n.groups.map((group) => (
+                      <div class="nav__megamenu-col">
+                        <p class="nav__megamenu-col-head">{group.label}</p>
+                        {group.children.map((child) => (
+                          child.live === false ? (
+                            <span class="nav__submenu-link nav__submenu-link--soon" title="Coming soon">{child.label}</span>
+                          ) : (
+                            <a
+                              class:list={["nav__submenu-link", { "nav__submenu-link--active": current === child.href }]}
+                              href={withBase(child.href)}
+                              role="menuitem"
+                              aria-current={current === child.href ? "page" : undefined}
+                            >{child.label}</a>
+                          )
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            if (n.children && n.children.length > 0) {
+              return (
+                <div class="nav__item" data-has-children>
+                  <a
+                    class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
+                    href={withBase(n.href)}
+                    aria-current={current === n.href ? "page" : undefined}
+                    aria-haspopup="true"
+                  >
+                    {n.label}
+                    <svg
+                      class="nav__chevron"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <polyline points="2 4 6 8 10 4" />
+                    </svg>
+                  </a>
+                  <div class="nav__submenu" role="menu">
+                    {n.children.map((child) => (
+                      <a
+                        class:list={[
+                          "nav__submenu-link",
+                          { "nav__submenu-link--active": current === child.href },
+                        ]}
+                        href={withBase(child.href)}
+                        role="menuitem"
+                        target={child.href.startsWith("http") ? "_blank" : undefined}
+                        rel={child.href.startsWith("http") ? "noopener" : undefined}
+                        aria-current={current === child.href ? "page" : undefined}
+                      >
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <a
+                class:list={["nav__link", { "nav__link--active": active }]}
+                href={withBase(n.href)}
+                aria-current={current === n.href ? "page" : undefined}
+              >
+                {n.label}
+              </a>
+            );
+          })
+        }
+      </div>
+
+      <button class="nav__burger" id="nav-burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-panel">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+      </button>
+
+      {altHref && (
+        <a
+          class="toggle lang-toggle"
+          href={withBase(altHref)}
+          aria-label={lang === "en" ? "বাংলায় পড়ুন — read this page in Bangla" : "Read this page in English"}
+          title={lang === "en" ? "বাংলা" : "English"}
+        >{lang === "en" ? "BN" : "EN"}</a>
+      )}
+
+      <ThemeToggle client:load />
+    </div>
+  </div>
+</nav>
+
+<script>
+  /* ── Scroll shrink ─────────────────────────────────────────────────── */
+  const nav = document.getElementById("site-nav");
+  const onScroll = () =>
+    nav && nav.classList.toggle("is-scrolled", window.scrollY > 24);
+  onScroll();
+  addEventListener("scroll", onScroll, { passive: true });
+
+  /* ── Burger / mobile panel ─────────────────────────────────────────── */
+  const burger = document.getElementById("nav-burger");
+  const panel = document.getElementById("nav-panel");
+  burger?.addEventListener("click", () => {
+    const open = panel?.classList.toggle("is-open") ?? false;
+    burger.setAttribute("aria-expanded", String(open));
+  });
+  // Close the mobile menu after following a link.
+  panel?.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", () => {
+      panel.classList.remove("is-open");
+      burger?.setAttribute("aria-expanded", "false");
+    }),
+  );
+
+  /* ── Desktop dropdown: close on outside click ──────────────────────── */
+  document.addEventListener("click", (e) => {
+    document.querySelectorAll(".nav__item[data-has-children]").forEach((item) => {
+      if (!item.contains(e.target as Node)) {
+        item.classList.remove("is-open");
+      }
+    });
+  });
+</script>
+
+<style is:global>
+  /* ── Dropdown wrapper ──────────────────────────────────────────────── */
+  .nav__item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ── Parent link (with chevron) ────────────────────────────────────── */
+  .nav__link--parent {
+    display: inline-flex;
+    align-items: center;
+    gap: 0; /* the chevron supplies its own margin only when it appears on hover */
+  }
+
+  /* ── Chevron icon ──────────────────────────────────────────────────── */
+  /* Caret hidden at rest (no extra width); slides + fades in on hover/focus. */
+  .nav__chevron {
+    flex-shrink: 0;
+    opacity: 0;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    transition: opacity 0.18s ease, max-width 0.18s ease, margin-left 0.18s ease;
+  }
+
+  .nav__item:hover .nav__chevron,
+  .nav__item:focus-within .nav__chevron {
+    opacity: 1;
+    max-width: 14px;
+    margin-left: 0.28em;
+  }
+
+  /* ── Dropdown panel (desktop) ──────────────────────────────────────── */
+  .nav__submenu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    min-width: 200px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    padding: 0.45rem 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+    z-index: 200;
+  }
+
+  /* Invisible bridge fills the 10px gap so the cursor never leaves
+     .nav__item while moving from the parent link to the panel. */
+  .nav__item[data-has-children]::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: -20px;
+    right: -20px;
+    height: 12px;
+  }
+
+  .nav__item:hover .nav__submenu,
+  .nav__item:focus-within .nav__submenu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── Submenu links ─────────────────────────────────────────────────── */
+  .nav__submenu-link {
+    display: block;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.14s ease, color 0.14s ease;
+    border-radius: 0;
+  }
+
+  .nav__submenu-link:hover {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--ink);
+  }
+
+  .nav__submenu-link--active {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Coming-soon child (no link yet) */
+  .nav__submenu-link--soon {
+    color: var(--ink-faint);
+    cursor: default;
+    opacity: 0.7;
+  }
+  .nav__submenu-link--soon::after {
+    content: "Soon";
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-left: 0.5em;
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--ink-faint);
+    vertical-align: middle;
+  }
+  .nav__submenu-link--soon:hover { background: transparent; color: var(--ink-faint); }
+
+  /* round top / bottom corners of first and last items */
+  .nav__submenu-link:first-child {
+    border-radius: 11px 11px 0 0;
+  }
+
+  .nav__submenu-link:last-child {
+    border-radius: 0 0 11px 11px;
+  }
+
+  .nav__submenu-link:only-child {
+    border-radius: 11px;
+  }
+
+  /* ── Megamenu (2-column, Research) ────────────────────────────────────── */
+  .nav__megamenu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    padding: 0.6rem 0.3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 0.3rem;
+    min-width: 360px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 200;
+  }
+  .nav__item:hover .nav__megamenu,
+  .nav__item:focus-within .nav__megamenu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .nav__megamenu-col { display: flex; flex-direction: column; }
+  .nav__megamenu-col-head {
+    font-size: 0.66rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-faint);
+    padding: 0.3rem 1.1rem 0.5rem;
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 0.2rem;
+  }
+
+  /* ── Active parent highlight ───────────────────────────────────────── */
+  .nav__link--active {
+    color: var(--accent) !important;
+  }
+
+  /* ── Language toggle — a circle identical to the theme toggle (reuses .toggle),
+        showing the OTHER language's code (BN on English pages, EN on Bangla). ── */
+  .lang-toggle {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+  }
+
+  /* ── Mobile overrides (≤860px) ─────────────────────────────────────── */
+  @media (max-width: 860px) {
+    .nav__item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .nav__link--parent {
+      width: 100%;
+    }
+
+    .nav__submenu {
+      position: static;
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: none;
+      border: none;
+      border-left: 2px solid var(--line);
+      border-radius: 0;
+      background: transparent;
+      padding: 0.2rem 0 0.4rem 0.9rem;
+      margin-top: 0.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .nav__submenu-link {
+      font-size: 0.84rem;
+      padding: 0.42rem 0.6rem;
+      border-radius: 6px !important;
+    }
+
+    .nav__chevron {
+      /* hide chevron rotation animation on mobile since submenu is always visible */
+      display: none;
+    }
+
+    .nav__megamenu {
+      position: static;
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: none;
+      border: none;
+      border-left: 2px solid var(--line);
+      border-radius: 0;
+      background: transparent;
+      padding: 0.2rem 0 0.4rem 0.9rem;
+      margin-top: 0.1rem;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      gap: 0;
+    }
+    .nav__megamenu-col-head {
+      border-bottom: none;
+      padding: 0.5rem 0.6rem 0.1rem;
+      font-size: 0.62rem;
+      margin-bottom: 0;
+    }
+  }
+</style>

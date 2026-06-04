@@ -1,0 +1,75 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+import { isBanglaSeries } from "../../data/bangla-series.ts";
+
+export async function getStaticPaths() {
+  const news = await getCollection("news", ({ data }) => data.status !== "draft" && !isBanglaSeries(data.category));
+  return news.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+const TZ = "Asia/Dhaka";
+const dateFull = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(date);
+
+const isBn = d.lang === "bn";
+const catBn = !!d.category && [...d.category].some((ch) => ch.charCodeAt(0) > 127);
+---
+
+<BaseLayout
+  title={`${d.title} — CASSA News`}
+  description={d.summary ?? d.title}
+  current="/news"
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow={`News${d.category ? ` · ${d.category}` : ""}`}
+    title={d.title}
+    lede={d.summary ?? undefined}
+    cue={false}
+  >
+    <Fragment slot="meta">
+      Published {dateFull(d.date)}
+      {d.category ? <> · <span lang={catBn ? "bn" : undefined}>{d.category}</span></> : ""}
+      {d.author ? (
+        <> · By {d.authorHref
+          ? <a href={d.authorHref} {...(/^https?:/.test(d.authorHref) ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{d.author}</a>
+          : d.author}</>
+      ) : null}
+    </Fragment>
+  </AnimatedHero>
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="nd-article" data-reveal>
+        <div lang={isBn ? "bn" : undefined}>
+          <Prose class="prose-cassa--wide">
+            {d.hero && (
+              <figure class="article-figure" data-figure>
+                <Image src={d.hero} alt={d.heroAlt ?? ""} widths={[480, 768, 1100, 1600]} sizes="(max-width: 880px) 92vw, 900px" loading="lazy" />
+              </figure>
+            )}
+            <Content />
+          </Prose>
+        </div>
+        <p class="nd__back"><a href={withBase("/news")}>← All news</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nd-article { max-width: none; }
+
+  .nd__back { margin-top: 2rem; }
+  .nd__back a { color: var(--accent); }
+  .nd__back a:hover { opacity: .75; }
+</style>

@@ -1,0 +1,151 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../components/immersive/AnimatedBand.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import { withBase } from "../data/site-nav.ts";
+import { isBanglaSeries } from "../data/bangla-series.ts";
+
+// The Bengali article series live under /outreach/bangla, and Durbin updates
+// live under /outreach/durbin/updates — neither shows in the main news feed.
+// (Their /news/<slug> detail pages still exist; those sections link to them.)
+const all = (await getCollection("news", ({ data }) =>
+  data.status !== "draft" && !isBanglaSeries(data.category) && data.category !== "Durbin"))
+  .sort((a, b) => +b.data.date - +a.data.date);
+
+const TZ = "Asia/Dhaka";
+const fmtDate = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "short", year: "numeric" }).format(d);
+const yearOf = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric" }).format(d);
+
+// The four Bengali article series are colour-coded cyan; institutional posts gold.
+const BENGALI_SERIES = new Set(["দূরের কথা", "নতুন কথা", "সহজ কথা", "ক্লাসিকেল কথা"]);
+const catClass = (c?: string) => (c && BENGALI_SERIES.has(c) ? "nf-series" : "nf-news");
+
+const byYear = new Map<string, typeof all>();
+for (const p of all) {
+  const y = yearOf(p.data.date);
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(p);
+}
+const years = [...byYear.keys()].sort((a, b) => Number(b) - Number(a));
+
+const CAT_ORDER = ["Milestones", "People", "Outreach", "Colloquia", "Workshops"];
+const cats = [...new Set(all.map((p) => p.data.category).filter(Boolean) as string[])]
+  .sort((a, b) => (CAT_ORDER.indexOf(a) + 1 || 99) - (CAT_ORDER.indexOf(b) + 1 || 99));
+
+// Featured posts (homepage-slider features) get their own filter chip + row tag.
+const hasFeatured = all.some((p) => p.data.featured);
+---
+
+<BaseLayout
+  title="News — CASSA"
+  description="Announcements, research highlights, outreach stories and the Bengali article series from the Center for Astronomy, Space Science and Astrophysics (CASSA), IUB."
+  current="/news"
+>
+  <AnimatedHero
+    theme="lensing"
+    eyebrow="News"
+    title="News & Updates"
+    lede="Announcements, research highlights, outreach dispatches and CASSA's Bengali article series."
+  />
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The feed</p></Reveal>
+      <Reveal delay={60}><h2 class="nf-h2">Latest from CASSA</h2></Reveal>
+
+      {cats.length > 0 && (
+        <Reveal delay={110}>
+          <nav class="nffilter" aria-label="Filter news by category">
+            <button class="nf-chip" data-filter="all" aria-pressed="true">All</button>
+            {hasFeatured && <button class="nf-chip nf-chip--feature" data-filter="__featured" aria-pressed="false">Feature</button>}
+            {cats.map((c) => (
+              <button class="nf-chip" data-filter={c} aria-pressed="false" lang={BENGALI_SERIES.has(c) ? "bn" : undefined}>{c}</button>
+            ))}
+          </nav>
+        </Reveal>
+      )}
+
+      {all.length === 0 ? (
+        <p class="nf-empty">News will appear here once posts are published.</p>
+      ) : (
+        years.map((yr) => (
+          <div class="nfyear" data-year={yr}>
+            <Reveal><h3 class="nfyear__h">{yr}</h3></Reveal>
+            <ol class="nflist">
+              {byYear.get(yr)!.map((p, i) => (
+                <li data-cat={p.data.category} data-featured={p.data.featured ? "" : undefined}>
+                  <a
+                    class:list={["nfrow", catClass(p.data.category), { "nfrow--media": p.data.hero }]}
+                    href={withBase(`/news/${p.id}`)}
+                    data-reveal
+                    style={`--reveal-delay:${Math.min(i, 6) * 40}ms`}
+                    lang={p.data.lang === "bn" ? "bn" : undefined}
+                  >
+                    {p.data.hero && (
+                      <span class="nfrow__thumb">
+                        <Image src={p.data.hero} alt={p.data.heroAlt ?? ""} width={240} loading="lazy" />
+                      </span>
+                    )}
+                    <span class="nfrow__body">
+                      <span class="nfrow__meta">
+                        {p.data.featured && <span class="nftag nftag--feature">Feature</span>}
+                        {p.data.category && <span class:list={["nftag", catClass(p.data.category)]} lang={BENGALI_SERIES.has(p.data.category) ? "bn" : undefined}>{p.data.category}</span>}
+                        {p.data.lang === "bn" && <span class="nftag nftag--bn" lang="bn">বাংলা</span>}
+                        <time class="nfrow__date" datetime={p.data.date.toISOString()}>{fmtDate(p.data.date)}</time>
+                      </span>
+                      <span class="nfrow__title">{p.data.title}</span>
+                      {p.data.summary && <span class="nfrow__sum">{p.data.summary}</span>}
+                      <span class="nfrow__more">Read <span aria-hidden="true">→</span></span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))
+      )}
+    </div>
+  </section>
+
+  <AnimatedBand theme="galaxy">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Across the Center</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">Explore more of CASSA</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <section class="section">
+    <div class="wrap" style="display:flex;gap:1rem;flex-wrap:wrap">
+      <a class="btn" href={withBase('/events')}>Events & calendar</a>
+      <a class="btn" href={withBase('/research')}>Research</a>
+      <a class="btn" href={withBase('/about')}>About CASSA</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Lightweight category filter — no island. Hides non-matching rows + empty year groups.
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>(".nf-chip"));
+  const rows = Array.from(document.querySelectorAll<HTMLElement>("li[data-cat]"));
+  const groups = Array.from(document.querySelectorAll<HTMLElement>(".nfyear"));
+  for (const chip of chips) {
+    chip.addEventListener("click", () => {
+      const f = chip.getAttribute("data-filter");
+      for (const c of chips) c.setAttribute("aria-pressed", String(c === chip));
+      for (const r of rows) {
+        const show =
+          f === "all" ? true : f === "__featured" ? r.hasAttribute("data-featured") : r.getAttribute("data-cat") === f;
+        r.hidden = !show;
+      }
+      for (const g of groups) {
+        const anyVisible = Array.from(g.querySelectorAll<HTMLElement>("li[data-cat]")).some((r) => !r.hidden);
+        g.hidden = !anyVisible;
+      }
+    });
+  }
+</script>

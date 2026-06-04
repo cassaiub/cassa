@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
+import Prose from "../../../components/immersive/Prose.astro";
+import { getCollection, render } from "astro:content";
+import { withBase } from "../../../data/site-nav.ts";
+
+export async function getStaticPaths() {
+  const workshops = await getCollection("workshops", ({ data }) => data.status !== "draft");
+  return workshops.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+const altHref = d.altSlug ? `/teaching/workshops/${d.altSlug}` : undefined;
+---
+
+<BaseLayout
+  title={`${d.title} — CASSA`}
+  description={d.summary ?? d.title}
+  current="/teaching"
+  lang={d.lang}
+  altHref={altHref}
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow={`Teaching · Workshop${d.workshop ? ` ${d.workshop}` : ""}`}
+    title={d.title}
+    lede={d.summary ?? undefined}
+    cue={false}
+  />
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="nd-article" data-reveal>
+        <div lang={d.lang === "bn" ? "bn" : undefined}>
+          <Prose class="prose-cassa--wide"><Content /></Prose>
+        </div>
+        <p class="nd__back"><a href={withBase("/teaching")}>← Teaching</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nd-article { max-width: none; }
+
+  .nd__back { margin-top: 2rem; }
+  .nd__back a { color: var(--accent); }
+  .nd__back a:hover { opacity: .75; }
+</style>

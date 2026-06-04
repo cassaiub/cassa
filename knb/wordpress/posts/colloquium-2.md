@@ -1,0 +1,47 @@
+---
+title: "How early galaxies might have formed, explains Lamiya Mowla"
+slug: "colloquium-2"
+wp_id: 4225
+url: "https://cassa.site/colloquium-2/"
+date: "2024-12-19 22:48:00"
+status: "publish"
+author: "kmbasad"
+categories: ["Colloquia"]
+tags: []
+---
+
+On December 19th, Assistant Professor Lamiya Ashraf Mowla from Wellesley College, USA, delivered a talk at the 2nd Colloquium organized by the Center for Astronomy, Space Science, and Astrophysics (CASSA) at Independent University, Bangladesh (IUB). The focal point of her talk ([presentation slides here](https://drive.google.com/file/d/1NBzgyT6MsGlNTSwGs62dyBRyvxFlWmEe/view?usp=sharing)) was her groundbreaking research paper published in *Nature* on December 11th of this year, highlighting the discovery of a galaxy from 13.2 billion years ago using images and spectra from the James Webb Space Telescope (JWST). This publication is important for IUB as well, as it marks the first scientific paper authored by a CASSA-affiliated member, bringing special recognition to the institution.
+
+![](https://manasarovar.space/wp-content/uploads/2024/12/where-1030x772.webp)
+
+The colloquium was attended by nearly a hundred students from IUB and other universities in Dhaka. Remarkably, even a high school student from grade eleven came to hear her speak. Considering that the audience primarily consisted of undergraduates, Lamiya began her 45-minute presentation by explaining humanity’s place in the universe in simple terms. To illustrate “Where are we?”, she described the vastness of the universe, moving from Earth to the Solar System, the interstellar neighborhood, the Milky Way galaxy, the Local Group, the Virgo Supercluster, the Local Supercluster, and finally the edge of the observable universe. Then, to explain “When are we?”, she compressed 13.7 billion years of cosmic history into a single year using the Cosmic Calendar.
+
+She explained that, against the backdrop of this vast space-time, we can understand the evolution of galaxies by using light as a messenger, thanks to its constant speed. The farther a galaxy is observed with a telescope, the further back in time we look. To understand how the first galaxies formed, a highly sensitive, high-resolution telescope like NASA's James Webb Space Telescope is essential.
+
+To illustrate the birth of the first galaxies, she discussed the Milky Way. She described its anatomy from two perspectives: first, the face-on view showing its spiral arms and core, and second, the edge-on view showing the thin and thick disks embedded in an enormous halo. One theory suggests that galaxies like these could form from the merging of smaller clusters of stars and gas. Lamiya emphasized that Webb’s ability to directly capture images of primordial star clusters can help verify such theories.
+
+![](https://manasarovar.space/wp-content/uploads/2024/12/sparkler-1030x772.webp)
+
+She then revisited the discovery of a galaxy known as “Sparkler,” a subject of her 2022 publication in the *Astrophysical Journal Letters*. This galaxy, 9 billion light-years away, was visible in Webb’s images due to gravitational lensing by a galaxy cluster 5 billion light-years away. Near the Sparkler, her team identified several "sparkles," which are ancient globular clusters—dense groups of stars nearing the end of their lives. By analyzing their colors, her team concluded that these clusters likely formed just 700 million years after the Big Bang and were nearing their death 4 billion years ago. The discovery of these oldest known globular clusters was featured by BBC and CNN. Lamiya had previously discussed this discovery during the inauguration of the “Durbin” (Citizens of the Universe) program at IUB on March 9, 2023.
+
+Lamiya posed a compelling question: could it be possible to directly observe the era when the Sparkler’s star clusters formed, approximately 700 million years after the Big Bang? To answer this, the “Canadian NIRISS Unbiased Cluster Survey” (CANUCS) was launched. This program uses JWST to find primordial galaxies in the distant background magnified by gravitational lensing from massive foreground galaxy clusters. These clusters act as magnifying glasses, enlarging the background galaxies so that Webb's high resolution can distinguish individual objects within them.
+
+![](https://manasarovar.space/wp-content/uploads/2024/12/firefly-1030x772.webp)
+
+As part of the CANUCS program, Lamiya and her team recently discovered the “Firefly Sparkle,” a proto-galaxy from when the universe was just 600 million years old. Lamiya shared that the name was inspired by her colleague Kartheik Iyer’s wife, Nupur, who remarked that the galaxy resembled a swarm of fireflies. Alongside the Firefly, they found two smaller companion galaxies named “Firefly Best Friend” (BF) and “Firefly New Best Friend” (NBF). Although *Nature* didn’t use these playful names, BBC adopted them. Lamiya highlighted how scientists often find joy in their work, and this sense of fun drives their dedication.
+
+The Firefly Sparkle was visible due to the gravitational lensing effect of a foreground galaxy cluster, which magnified its size. Lamiya illustrated how light bends due to the cluster's immense gravity, creating magnification. She also showed a conceptual illustration of how the Firefly Sparkle would appear without lensing.
+
+![](https://manasarovar.space/wp-content/uploads/2024/12/colors-1030x772.webp)
+
+Following the discussion on images, the focus shifted to spectra. Lamiya explained how the presence of various chemical elements is identified using different colors in the spectrum of the Crab Nebula, captured by the Hubble Telescope. She highlighted the colors of oxygen, hydrogen, nitrogen, and sulfur in the electromagnetic spectrum. Webb’s NIRSpec instrument works like a prism, separating the light from galaxies into different wavelengths. Using this instrument, Lamiya presented the spectrum of the Firefly Sparkle in the wavelength range of 1 to 5 micrometers. By analyzing the spectral lines, the redshift of three galaxies was measured. Redshift quantifies how much the light from a galaxy is stretched to longer wavelengths due to the universe's expansion, directly correlating with the galaxy’s distance and velocity. The redshift values of the Firefly, its Best Friend (BF), and New Best Friend (NBF) were found to be similar, indicating that “they are very close to each other.”
+
+The spectra of all three galaxies revealed the presence of doubly ionized oxygen lines. A deeper analysis of Firefly’s spectrum showed its metallicity to be significantly low, meaning the ratio of oxygen to hydrogen is much lower than the current average, confirming that the galaxy is very young. The temperature was calculated based on the light’s color, showing that Firefly acts as an ionizing source, emitting light that ionizes surrounding hydrogen. This ionizing source was found to have a temperature of 40,000 Kelvin, nearly eight times the Sun’s surface temperature.
+
+The discussion then moved to the Initial Mass Function (IMF), which describes the distribution of galaxy and star masses in the early stages of formation. While renowned scientist Pavel Kroupa’s research established a particular slope for this function, the findings from Lamiya and Kartik Iyer’s work suggested a steeper slope. Lamiya shared how exciting it was when Kroupa contacted them after reviewing their results.
+
+By analyzing the energy of different colors of light, Lamiya and her team determined the star formation rates and ages of 10 star clusters within Firefly Sparkle. These clusters have masses ranging from 100,000 to 1 million times that of the Sun. The data suggests that these clusters may merge over 13 billion years to form a galaxy like the Milky Way. Unlike previously discovered primordial galaxies, Firefly Sparkle stands out for its exceptionally low mass, making it one of the oldest known proto-galaxies.
+
+In her concluding remarks, Lamiya mentioned Nusrath Jahan, a student from Shahjalal University of Science and Technology, who was a co-author of her *Nature* paper. Lamiya expressed her strong interest in involving Bangladeshi students in her research projects. Before the colloquium, during a discussion with CASSA Director and IUB Assistant Professor Khan Asad about initiating a master’s program in astronomy and space science, Lamiya conveyed her willingness to supervise master’s students remotely if the program is launched.
+
+![](https://manasarovar.space/wp-content/uploads/2024/12/audience-1030x772.webp)

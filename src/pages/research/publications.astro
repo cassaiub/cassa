@@ -1,0 +1,1119 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import { withBase } from "../../data/site-nav.ts";
+import { ADS_LIBRARY_URL } from "../../data/ads-library.ts";
+import snapshot from "../../data/publications-snapshot.json";
+import { SCHOLAR_CITATIONS, SCHOLAR_UPDATED } from "../../data/scholar-citations.ts";
+import { getCollection } from "astro:content";
+import PersonCard from "../../components/PersonCard.astro";
+import { personalSite } from "../../data/people/personal-site.ts";
+
+/* ── Data source: local ADS snapshot ─────────────────────────────────────
+   This page reads a frozen copy of the CASSA corpus from
+   src/data/publications-snapshot.json — the build does NOT call ADS. Refresh
+   the snapshot weekly with `npm run update:publications` (which runs
+   scripts/fetch-publications.mjs against the NASA ADS search API: the
+   affiliation search plus the curated library in src/data/ads-library.ts),
+   then rebuild. The links below point back to the live sources.
+   ──────────────────────────────────────────────────────────────────────── */
+const LIBRARY_URL = ADS_LIBRARY_URL;
+const SCIX_URL    = "https://scixplorer.org/search?n=10&p=1&q=aff%3A%22Center+for+Astronomy%2C+Space+Science+and+Astrophysics%22&sort=date+desc&d=general";
+const ADS_URL     = "https://ui.adsabs.harvard.edu/search/q=aff%3A%22Center%20for%20Astronomy%2C%20Space%20Science%20and%20Astrophysics%22&sort=date%20desc";
+
+type Paper = {
+  title: string[];
+  author: string[];
+  author_count?: number;
+  aff?: string[];
+  doctype?: string;
+  year: string;
+  pub?: string;
+  bibstem?: string[];
+  bibcode: string;
+  doi?: string[];
+  citation_count: number;
+  pubdate?: string;
+  iubShare?: number; // computed below — CASSA/IUB contribution share ∈ [0,1]
+};
+
+/* ── CASSA / IUB contribution share ───────────────────────────────────────
+   A per-paper score ∈ [0,1] in the spirit of the Nature Index "Share", but
+   additionally weighted by author primacy AND affiliation primacy (harmonic):
+     · author at rank r of A authors  → weight (1/r) / H(A)
+     · within an author, IUB at slot k of n affiliations → (1/k) / H(n)
+   Score = Σ over IUB authors of (author weight × affiliation weight).
+   1.0 ⇒ every author is IUB with IUB as their sole/leading affiliation; 0 ⇒ none.
+   "IUB" = any affiliation naming Independent University, Bangladesh (incl. the
+   full CASSA centre string); other Bangladeshi institutions are NOT counted.
+   ──────────────────────────────────────────────────────────────────────── */
+const H = (n: number) => { let s = 0; for (let k = 1; k <= n; k++) s += 1 / k; return s; };
+const decodeAff = (s: string) => (s ?? "")
+  .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+  .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&#x27;/gi, "'").replace(/&nbsp;/g, " ");
+const RE_CASSA = /center for astronomy,?\s*space science/i;
+const isIUBaff = (s: string) => RE_CASSA.test(s) || (/independent university/i.test(s) && /bangladesh/i.test(s));
+function splitAffs(s?: string): string[] {
+  const d = decodeAff(s ?? "");
+  if (!d || d === "-") return [];
+  if (d.includes(";")) return d.split(";").map(x => x.trim()).filter(Boolean);
+  // comma-only fallback (rare): split before common institution-head tokens
+  const parts = d.split(/,\s*(?=(?:Department|Center for|Centre for|Kavli|Institut|Max-Planck|Max Planck|Laboratoire|Laboratory for|Institute of|Institute for|School of|National|European Southern|Steward Observ|Observatoire|Harvard)\b)/)
+                 .map(x => x.trim()).filter(Boolean);
+  return parts.length ? parts : [d.trim()];
+}
+/* Alphabetical-byline detection. Many large collaborations list authors
+   alphabetically, where byline position carries NO contribution signal. The
+   lead-block size L = the position from which the remaining byline runs ≥90%
+   alphabetical (tolerant of a few out-of-order names). Authors before L are
+   contribution-ordered and earn placement credit; authors inside the
+   alphabetical tail (position > L) get equal author credit instead — so an
+   author early only because their surname starts with "A" isn't over-credited. */
+const surnameKey = (au: string) =>
+  (au ?? "").split(",")[0].normalize("NFD").toLowerCase().replace(/[^a-z]/g, "");
+function leadBlock(authors: string[]): number {
+  const n = authors.length;
+  if (n < 6) return n; // too short to infer ordering → all contribution-ordered
+  const s = authors.map(surnameKey);
+  for (let k = 0; k <= n - 6; k++) {
+    let inorder = 0;
+    for (let i = k; i < n - 1; i++) if (s[i] <= s[i + 1]) inorder++;
+    if (inorder / (n - 1 - k) >= 0.9) return k; // alphabetical tail starts at k
+  }
+  return n;
+}
+function computeIubShare(p: Paper): number {
+  const authors = p.author ?? [];
+  const A = p.author_count ?? authors.length;
+  if (!A) return 0;
+  const aff = p.aff ?? [];
+  const HA = H(A);
+  const L = leadBlock(authors);
+  let share = 0;
+  for (let i = 0; i < authors.length; i++) {
+    const segs = splitAffs(aff[i]);
+    let iubPos = -1;
+    for (let j = 0; j < segs.length; j++) if (isIUBaff(segs[j])) { iubPos = j + 1; break; }
+    if (iubPos === -1) continue;
+    // Author-primacy weight: harmonic placement credit for a lead author, but a
+    // flat equal share (1/A) for an author sitting inside the alphabetical tail.
+    const r = i + 1;
+    const authorW = r <= L ? (1 / r) / HA : 1 / A;
+    share += authorW * ((1 / iubPos) / H(segs.length));
+  }
+  return share;
+}
+
+/* ── Publications corpus — read from the local snapshot ───────────────────
+   src/data/publications-snapshot.json is refreshed weekly out-of-band (see the
+   data-source note at the top of this file). The IUB share is computed here, not
+   stored, so the formula and the People-roster matching below can change without
+   re-fetching. Default order = IUB share desc, ties broken by citations, then
+   year (the sort control also offers citations / year). */
+const snap: { papers?: Paper[]; libOnlyCount?: number; fetchedAt?: string } = snapshot as any;
+const papers: Paper[] = (snap.papers ?? []).map((p) => ({ ...p, iubShare: computeIubShare(p) }));
+papers.sort((a, b) =>
+  (b.iubShare ?? 0) - (a.iubShare ?? 0)
+  || (b.citation_count ?? 0) - (a.citation_count ?? 0)
+  || (parseInt(b.year) - parseInt(a.year))
+);
+const totalFound = papers.length;
+const libOnlyCount = snap.libOnlyCount ?? 0;
+/* "Updated" reflects when the snapshot was pulled from ADS, not the build time. */
+const updatedDate = snap.fetchedAt
+  ? new Date(snap.fetchedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+  : null;
+
+/* ── CASSA personnel on each paper ─────────────────────────────────────────
+   Match every ADS author against the People roster, so members are highlighted
+   in the byline, surfaced as avatar chips, counted in the right-hand panel, and
+   open their people-page card in a slide-in drawer. Match rule: normalized
+   surname equality + given-initial overlap — but a COMMON Bangladeshi surname
+   requires a first-initial match, so "Tanvir, Nial" ≠ our Tabassum S. Tanvir and
+   IUB co-authors like "Hossain, Mir Sazzat" / "Roy, Sugandha" don't false-hit.
+   Optional per-person `orcid` / `ads` aliases are exact overrides. Build-time. */
+const peopleRoster = await getCollection("people", ({ data }) => data.status !== "draft");
+
+const stripDia = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+// Drop hyphens/apostrophes (so "Al-Imtiaz" ↔ "Al Imtiaz" surname matches); dots → spaces (so "K.M.B." → initials).
+const norm = (s: string) => stripDia(s).toLowerCase().replace(/[-'’`]/g, "").replace(/\./g, " ").replace(/\s+/g, " ").trim();
+const COMMON_SURNAMES = new Set([
+  "hossain", "ahmed", "islam", "khan", "roy", "rahman", "ali", "chowdhury",
+  "hasan", "karim", "das", "saha", "sarkar", "akter", "begum", "khatun", "sultana", "alam",
+]);
+
+type RosterPerson = {
+  slug: string; name: string; photo?: string; title?: string; tier: string;
+  interests: string[]; institution?: string; education?: string; research?: string; email?: string;
+  links: Record<string, string>; orcid?: string; aliases: string[];
+  surname: string; firstInitial: string; initials: Set<string>;
+};
+const roster: RosterPerson[] = peopleRoster.map((p) => {
+  const toks = norm(p.data.name).split(" ").filter(Boolean);
+  const surname = toks.at(-1) ?? norm(p.data.name);
+  const givens = toks.slice(0, -1);
+  return {
+    slug: p.id, name: p.data.name, photo: p.data.photo, title: p.data.title,
+    tier: p.data.tier, interests: p.data.interests ?? [],
+    institution: p.data.institution, education: p.data.education, research: p.data.research, email: p.data.email, links: p.data.links ?? {},
+    orcid: p.data.orcid, aliases: (p.data.ads ?? []).map(norm),
+    surname, firstInitial: givens[0]?.[0] ?? surname[0] ?? "",
+    initials: new Set(givens.map((t) => t[0]).filter(Boolean)),
+  };
+});
+
+function authorKey(au: string) {
+  const ci = au.indexOf(",");
+  const surname = norm(ci >= 0 ? au.slice(0, ci) : (au.split(/\s+/).at(-1) ?? au));
+  const givens = norm(ci >= 0 ? au.slice(ci + 1) : au.split(/\s+/).slice(0, -1).join(" "))
+    .split(" ").filter(Boolean);
+  return {
+    surname, firstInitial: givens[0]?.[0] ?? "",
+    initials: new Set(givens.map((t) => t[0]).filter(Boolean)), full: norm(au),
+  };
+}
+function matchPerson(au: string): RosterPerson | null {
+  const k = authorKey(au);
+  for (const r of roster) if (r.aliases.includes(k.full)) return r;          // explicit alias / orcid override
+  for (const r of roster) {
+    if (r.surname !== k.surname) continue;
+    if (k.firstInitial && r.firstInitial && k.firstInitial === r.firstInitial) return r;
+    if (COMMON_SURNAMES.has(r.surname)) continue;                            // common surname ⇒ need first initial
+    for (const i of k.initials) if (r.initials.has(i)) return r;             // else any given-initial overlap
+  }
+  return null;
+}
+
+const paperByline = new Map<string, { name: string; slug: string | null }[]>();
+const paperIubSlugs = new Map<string, string[]>(); // bibcode → roster slugs IUB-affiliated on that paper (author filter)
+const matchedSlugs = new Set<string>();           // roster members appearing anywhere (byline highlight + drawer + stat)
+const unmatchedIub = new Set<string>();            // IUB-affiliated authors NOT in the roster (gap report)
+const iubPapers = new Map<string, Set<string>>();  // slug → bibcodes where that roster member is listed WITH an IUB affiliation
+for (const p of papers) {
+  const au = p.author ?? [], af = p.aff ?? [];
+  const slugsIub = new Set<string>();
+  const marks = au.map((name, i) => {
+    const person = matchPerson(name);
+    const iub = splitAffs(af[i]).some(isIUBaff);
+    if (person) matchedSlugs.add(person.slug);
+    else if (iub) unmatchedIub.add(name);
+    if (person && iub) {
+      slugsIub.add(person.slug);
+      if (!iubPapers.has(person.slug)) iubPapers.set(person.slug, new Set());
+      iubPapers.get(person.slug)!.add(p.bibcode);
+    }
+    return { name, slug: person?.slug ?? null };
+  });
+  paperByline.set(p.bibcode, marks);
+  paperIubSlugs.set(p.bibcode, [...slugsIub]);
+}
+
+const rosterBySlug = new Map(roster.map((r) => [r.slug, r]));
+// Short display name for the panel: given-initials + surname ("Khan Muhammad Bin Asad" → "KMB Asad").
+const shortName = (full: string) => {
+  const t = full.trim().split(/\s+/).filter(Boolean);
+  if (t.length < 2) return full;
+  return `${t.slice(0, -1).map((x) => (x[0] ?? "").toUpperCase()).join("")} ${t.at(-1)}`;
+};
+// Right panel = roster members WITH an IUB affiliation, counting only their IUB-affiliated papers.
+const cassaAuthorsRanked = [...iubPapers.entries()]
+  .map(([slug, set]) => ({ person: rosterBySlug.get(slug)!, count: set.size }))
+  .filter((x) => x.person)
+  .map((x) => ({ slug: x.person.slug, short: shortName(x.person.name), count: x.count }))
+  .sort((a, b) => b.count - a.count || a.short.localeCompare(b.short));
+// Only these IUB-affiliated roster members are counted in "At a glance" and are
+// underlined/linked in the byline; a matched-but-non-IUB member renders plain.
+const panelSlugs = new Set(cassaAuthorsRanked.map((a) => a.slug));
+const cassaAuthorsCount = cassaAuthorsRanked.length;
+const maxAuthorPapers = Math.max(1, ...cassaAuthorsRanked.map((x) => x.count));
+const drawerPeople = cassaAuthorsRanked.map((a) => rosterBySlug.get(a.slug)!).filter(Boolean);
+const filterAuthors = cassaAuthorsRanked.filter((a) => a.count > 1); // panel authors with >1 paper → list-filter buttons
+
+const bylineFor = (bibcode: string) => {
+  // Only the counted CASSA authors (panelSlugs) are linkable; others render plain.
+  const marks = (paperByline.get(bibcode) ?? []).map((m) => ({
+    name: m.name, slug: m.slug && panelSlugs.has(m.slug) ? m.slug : null,
+  }));
+  const n = marks.length;
+  // Index of the deepest CASSA author, so a highlighted name is never buried.
+  let lastCassa = -1;
+  marks.forEach((m, i) => { if (m.slug) lastCassa = i; });
+  // Near the front (or none matched): list straight through, then "et al.".
+  if (lastCassa <= 9) {
+    const shown: any[] = marks.slice(0, lastCassa >= 0 ? lastCassa + 1 : Math.min(n, 6));
+    return { shown, etAl: n > shown.length };
+  }
+  // Deep in a long author list: a few lead authors → … → the CASSA author(s),
+  // so the highlighted name shows without printing dozens of names.
+  const lead = marks.slice(0, 3);
+  const tail = marks.slice(3, lastCassa + 1).filter((m) => m.slug);
+  const shown: any[] = [...lead, { gap: true }, ...tail];
+  return { shown, etAl: n > lastCassa + 1 };
+};
+const initialsOf = (name: string) =>
+  name.trim().split(/\s+/).map((t) => t[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
+
+if (unmatchedIub.size) {
+  console.warn(`[publications] ${unmatchedIub.size} IUB-affiliated author(s) not matched to the People roster (not highlighted): ${[...unmatchedIub].join("; ")}`);
+}
+
+/* ── Statistics ─────────────────────────────────────────────────────────── */
+const totalCitations = papers.reduce((s, p) => s + (p.citation_count ?? 0), 0);
+const allYears       = papers.map(p => parseInt(p.year)).filter(y => !isNaN(y));
+const firstYear      = allYears.length ? Math.min(...allYears) : null;
+const lastYear       = allYears.length ? Math.max(...allYears) : null;
+const uniqueJournals = new Set(papers.map(p => p.pub).filter(Boolean)).size;
+
+/* papers-per-year and citations-per-year bar charts */
+const byYear: Record<number, number> = {};
+const citsByYear: Record<number, number> = {};
+for (const p of papers) {
+  const y = parseInt(p.year);
+  if (isNaN(y)) continue;
+  byYear[y]    = (byYear[y]    ?? 0) + 1;
+  citsByYear[y] = (citsByYear[y] ?? 0) + (p.citation_count ?? 0);
+}
+const yearEntries = Object.entries(byYear)
+  .map(([y, n]) => [Number(y), n] as [number, number])
+  .sort(([a], [b]) => a - b);
+const citEntries = Object.entries(citsByYear)
+  .map(([y, n]) => [Number(y), n] as [number, number])
+  .sort(([a], [b]) => a - b);
+const maxPerYear  = Math.max(...Object.values(byYear),    1);
+const maxCitYear  = Math.max(...Object.values(citsByYear), 1);
+
+/* ── Helpers ─────────────────────────────────────────────────────────────── */
+const fmt = (authors: string[], max = 5) => {
+  if (!authors?.length) return "";
+  const s = authors.slice(0, max).join(", ");
+  return authors.length > max ? s + " et al." : s;
+};
+const adsLink  = (b: string) => `https://ui.adsabs.harvard.edu/abs/${encodeURIComponent(b)}`;
+const doiLink  = (doi: string) => doi.startsWith("http") ? doi : `https://doi.org/${doi}`;
+// IUB share as a whole-number percentage; tiny non-zero values show "<1%".
+const pct = (x: number) => { const r = Math.round((x ?? 0) * 100); return r === 0 && (x ?? 0) > 0 ? "<1%" : `${r}%`; };
+// Google Scholar citations — manual snapshot in scholar-citations.ts, joined by bibcode.
+const scholarOf   = (b: string): number | null => SCHOLAR_CITATIONS[b] ?? null;
+const scholarSort = (b: string): number => scholarOf(b) ?? -1;          // unknown → sorts last
+const scholarShow = (b: string): string => { const s = scholarOf(b); return s === null ? "—" : s.toLocaleString(); };
+
+const hasData = papers.length > 0;
+---
+
+<BaseLayout
+  title="Publications — CASSA Research"
+  description="Peer-reviewed publications from the Center for Astronomy, Space Science and Astrophysics."
+  current="/research/publications"
+>
+
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Research · Publications"
+    title="CASSA Publications"
+    lede="Peer-reviewed papers published by CASSA members and affiliates, sourced from the NASA Astrophysics Data System — affiliation search plus a curated library."
+  />
+
+  <!-- ── Back link + source note ────────────────────────────────────────── -->
+  <div style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;padding-block:.85rem">
+      <a href={withBase("/research")} style="color:var(--ink-faint);font-size:.85rem">← Research</a>
+      <span style="color:var(--ink-faint);font-size:.8rem">
+        {hasData
+          ? <>
+              <a href={ADS_URL} target="_blank" rel="noopener" style="color:var(--accent)">NASA ADS affiliation</a>
+              {" + "}
+              <a href={LIBRARY_URL} target="_blank" rel="noopener" style="color:var(--accent)">curated library</a>
+              {updatedDate && <>{" · updated "}{updatedDate}</>}
+            </>
+          : <>Live search: <a href={SCIX_URL} target="_blank" rel="noopener" style="color:var(--accent)">SciXplorer ↗</a></>
+        }
+      </span>
+    </div>
+  </div>
+
+  {hasData && (
+    <>
+      <!-- ── Statistics ──────────────────────────────────────────────── -->
+      <section class="section section--elev">
+        <div class="wrap">
+          <Reveal><p class="eyebrow">At a glance</p></Reveal>
+
+          <!-- Big numbers -->
+          <div style="display:grid;gap:1.2rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:1.8rem">
+            {[
+              { n: papers.length,     label: "Papers" },
+              { n: totalCitations,    label: "Total citations" },
+              { n: uniqueJournals,    label: "Journals" },
+              { n: cassaAuthorsCount, label: "CASSA authors" },
+              { n: firstYear ? `${firstYear} – ${lastYear}` : "—", label: "Active since", raw: true },
+            ].map((s, i) => (
+              <Reveal delay={i * 80} class="stat-card">
+                <span class="stat-n">{s.raw ? s.n : s.n.toLocaleString()}</span>
+                <span class="stat-label">{s.label}</span>
+              </Reveal>
+            ))}
+          </div>
+
+          <!-- Bar charts: papers per year + citations per year -->
+          {(yearEntries.length > 1 || cassaAuthorsRanked.length > 0) && (
+            <Reveal delay={160}>
+              <div class="charts-row">
+
+                <!-- LEFT: papers (bars) + citations (line) per year, dual scale -->
+                <div class="chart-panel">
+                  <div class="chart-head">
+                    <p class="eyebrow chart-label">Output per year</p>
+                    <div class="chart-legend">
+                      <span class="lg lg--bar">Papers</span>
+                      <span class="lg lg--line">Citations</span>
+                    </div>
+                  </div>
+                  {yearEntries.length > 1 ? (
+                    <div class="combo">
+                      <div class="combo-plot">
+                        {yearEntries.map(([year, count]) => (
+                          <div class="combo-col">
+                            <div
+                              class="combo-bar"
+                              data-label={`${count} paper${count !== 1 ? "s" : ""} · ${year}`}
+                              style={`height:${Math.max(2, Math.round((count / maxPerYear) * 100))}%`}
+                            >
+                              <span class="combo-bv">{count}</span>
+                            </div>
+                          </div>
+                        ))}
+                        <svg class="combo-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                          <polyline points={citEntries.map(([, c], i) => `${((i + 0.5) / citEntries.length * 100).toFixed(2)},${(100 - (c / maxCitYear) * 100).toFixed(2)}`).join(" ")} />
+                        </svg>
+                        {citEntries.map(([year, c], i) => (
+                          <span
+                            class="combo-dot"
+                            data-label={`${c.toLocaleString()} citation${c !== 1 ? "s" : ""} · ${year}`}
+                            style={`left:${((i + 0.5) / citEntries.length * 100).toFixed(2)}%;top:${(100 - (c / maxCitYear) * 100).toFixed(2)}%`}
+                          ></span>
+                        ))}
+                      </div>
+                      <div class="combo-axis">
+                        {yearEntries.map(([year]) => (<span class="combo-yr">{year}</span>))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p class="ppl-empty">Not enough years to chart yet.</p>
+                  )}
+                </div>
+
+                <!-- RIGHT: papers per CASSA author (click a name → drawer) -->
+                <div class="chart-panel">
+                  <p class="eyebrow chart-label">Papers per CASSA author</p>
+                  {cassaAuthorsRanked.length > 0 ? (
+                    <ol class="ppl-rank">
+                      {cassaAuthorsRanked.map(({ slug, short, count }) => (
+                        <li class="ppl-item">
+                          <a class="ppl-name" href={withBase(`/people#${slug}`)} data-person={slug} title={short}>{short}</a>
+                          <span class="ppl-track"><span class="ppl-fill" style={`width:${Math.round((count / maxAuthorPapers) * 100)}%`}></span></span>
+                          <span class="ppl-n">{count}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <p class="ppl-empty">No roster members matched in this corpus yet.</p>
+                  )}
+                </div>
+
+              </div>
+            </Reveal>
+          )}
+        </div>
+      </section>
+
+      <!-- ── Full list ─────────────────────────────────────────────────── -->
+      <section class="section">
+        <div class="wrap">
+          <Reveal><p class="eyebrow">All publications</p></Reveal>
+          <Reveal delay={50}>
+            <h2 class="section-h2">
+              <span id="paper-count">{totalFound}</span> paper{totalFound !== 1 ? "s" : ""}
+            </h2>
+            {libOnlyCount > 0 && (
+              <p style="margin:.5rem 0 0;font-size:.83rem;color:var(--ink-faint)">
+                Includes {libOnlyCount} paper{libOnlyCount !== 1 ? "s" : ""} from the
+                <a href={LIBRARY_URL} target="_blank" rel="noopener" style="color:var(--accent)">curated ADS library</a>
+                {" "}not matched by the affiliation search.
+              </p>
+            )}
+          </Reveal>
+
+          <!-- Sort control — default IUB share, then citations, then year -->
+          <Reveal delay={80}>
+            <div class="sort-bar">
+              <span class="sort-label">Sort by</span>
+              <div class="sort-controls" role="group" aria-label="Sort publications">
+                <button type="button" class="sort-btn is-active" data-sort="iub" aria-pressed="true">IUB share</button>
+                <button type="button" class="sort-btn" data-sort="cites" aria-pressed="false">ADS</button>
+                <button type="button" class="sort-btn" data-sort="scholar" aria-pressed="false">Scholar</button>
+                <button type="button" class="sort-btn" data-sort="year" aria-pressed="false">Year</button>
+              </div>
+              {filterAuthors.length > 0 && (
+                <>
+                  <span class="sort-label sort-label--author">Author</span>
+                  <div class="sort-controls author-filter" role="group" aria-label="Filter by author">
+                    <button type="button" class="sort-btn is-active" data-author="all" aria-pressed="true">All</button>
+                    {filterAuthors.map((a) => (
+                      <button type="button" class="sort-btn" data-author={a.slug} aria-pressed="false">{a.short}</button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </Reveal>
+
+          <div class="pub-table-wrap" data-reveal>
+            <table class="pub-table">
+              <thead>
+                <tr>
+                  <th class="col-year" scope="col">Year</th>
+                  <th class="col-paper" scope="col">Paper</th>
+                  <th class="col-cites" scope="col" title="NASA ADS citations">ADS</th>
+                  <th class="col-scholar" scope="col" title="Google Scholar citations">Scholar</th>
+                  <th class="col-iub" scope="col">IUB share</th>
+                </tr>
+              </thead>
+              <tbody id="paper-list">
+                {papers.map((p) => (
+                  <tr
+                    class="paper-row"
+                    data-iub={(p.iubShare ?? 0).toFixed(6)}
+                    data-cites={p.citation_count ?? 0}
+                    data-scholar={scholarSort(p.bibcode)}
+                    data-year={parseInt(p.year) || 0}
+                    data-authors={(paperIubSlugs.get(p.bibcode) ?? []).join(" ")}
+                  >
+                    <td class="col-year">{p.year}</td>
+                    <td class="col-paper">
+                      <a
+                        href={adsLink(p.bibcode)}
+                        target="_blank"
+                        rel="noopener"
+                        class="paper-title"
+                      >{p.title?.[0]}</a>
+                      <p class="paper-authors">
+                        {bylineFor(p.bibcode).shown.map((m, idx, arr) => (
+                          <>{m.gap
+                            ? <span class="au-more"> … </span>
+                            : m.slug
+                              ? <a class="au au--cassa" href={withBase(`/people#${m.slug}`)} data-person={m.slug}>{m.name}</a>
+                              : <span class="au">{m.name}</span>}{idx < arr.length - 1 && !m.gap && !arr[idx + 1]?.gap ? ", " : ""}</>
+                        ))}{bylineFor(p.bibcode).etAl && <span class="au-more">, et al.</span>}
+                      </p>
+                      <div class="paper-meta">
+                        {p.pub && <span class="meta-journal">{p.pub}</span>}
+                        <a href={adsLink(p.bibcode)} target="_blank" rel="noopener" class="meta-link">ADS ↗</a>
+                        {p.doi?.[0] && (
+                          <a href={doiLink(p.doi[0])} target="_blank" rel="noopener" class="meta-link">DOI ↗</a>
+                        )}
+                      </div>
+                    </td>
+                    <td class="col-cites">{(p.citation_count ?? 0).toLocaleString()}</td>
+                    <td class="col-scholar">{scholarShow(p.bibcode)}</td>
+                    <td class="col-iub">{pct(p.iubShare ?? 0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p class="table-source">
+            <strong>ADS</strong> citation counts are from NASA ADS (refreshed with the snapshot);
+            <strong>Scholar</strong> counts are from Google Scholar — a manual snapshot from {SCHOLAR_UPDATED}.
+          </p>
+
+          <!-- Footnote: how the IUB share is defined -->
+          <Reveal>
+            <aside class="iub-note" aria-label="How the IUB share is calculated">
+              <h3 class="iub-note-h">How the IUB share is calculated</h3>
+              <p>
+                Each paper carries an <strong>IUB share</strong> from 0% to 100%, in the spirit of
+                the Nature Index <em>Share</em> (fractional authorship). It estimates how much of a
+                paper belongs to IUB by combining two things for every author who lists an IUB
+                affiliation: their position in the byline — earlier authors count for more, with the
+                credit summing to one across the whole byline — and where IUB sits among that
+                author's own affiliations, counting for more when it is listed first. A share of
+                100% means every author is at IUB with IUB as their sole or leading affiliation;
+                0% means no author lists IUB.
+              </p>
+
+              <p>
+                "IUB" matches any affiliation naming Independent University, Bangladesh —
+                including the full Center for Astronomy, Space Science and Astrophysics centre
+                string. Other Bangladeshi institutions are not counted.
+              </p>
+
+              <p>
+                <strong>Alphabetical author lists.</strong> Many large collaborations order the
+                byline alphabetically, where position carries no contribution signal. When a
+                paper's byline runs alphabetically from some point on, authors inside that
+                alphabetical tail receive an equal share of author credit in place of
+                position-based credit — so an author listed early only because their surname
+                starts with "A" is not over-credited. Authors before the alphabetical tail keep
+                their placement credit.
+              </p>
+            </aside>
+          </Reveal>
+        </div>
+      </section>
+    </>
+  )}
+
+  <!-- Client-side re-sort of the publications list. is:inline so it's emitted
+       verbatim (a hoisted <script> in slot content gets dropped); the guard
+       handles the no-data case. Default order (IUB share) is server-rendered. -->
+  <script is:inline>
+    (function () {
+      const list = document.getElementById("paper-list");
+      if (!list) return;
+      const btns = Array.from(document.querySelectorAll(".sort-btn[data-sort]"));
+      const keysFor = (k) =>
+        k === "cites" ? ["cites", "scholar", "year"]
+        : k === "scholar" ? ["scholar", "cites", "year"]
+        : k === "year" ? ["year", "iub", "cites"]
+        : ["iub", "cites", "year"];
+      function sortList(primary) {
+        const keys = keysFor(primary);
+        const items = Array.from(list.children);
+        items.sort((a, b) => {
+          for (const k of keys) {
+            const d = Number(b.dataset[k]) - Number(a.dataset[k]);
+            if (d) return d;
+          }
+          return 0;
+        });
+        const frag = document.createDocumentFragment();
+        items.forEach((el) => frag.appendChild(el));
+        list.appendChild(frag);
+      }
+      btns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          btns.forEach((b) => { b.classList.remove("is-active"); b.setAttribute("aria-pressed", "false"); });
+          btn.classList.add("is-active");
+          btn.setAttribute("aria-pressed", "true");
+          sortList(btn.dataset.sort);
+        });
+      });
+    })();
+  </script>
+
+  <!-- Author filter — show only the clicked CASSA author's papers (data-authors = IUB-affiliated roster slugs). -->
+  <script is:inline>
+    (function () {
+      const list = document.getElementById("paper-list");
+      if (!list) return;
+      const btns = Array.prototype.slice.call(document.querySelectorAll(".author-filter .sort-btn"));
+      if (!btns.length) return;
+      const cards = Array.prototype.slice.call(list.children);
+      const counter = document.getElementById("paper-count");
+      btns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const a = btn.getAttribute("data-author");
+          btns.forEach(function (b) {
+            const on = b === btn;
+            b.classList.toggle("is-active", on);
+            b.setAttribute("aria-pressed", String(on));
+          });
+          let shown = 0;
+          cards.forEach(function (c) {
+            const match = a === "all" || (c.getAttribute("data-authors") || "").split(" ").indexOf(a) !== -1;
+            c.hidden = !match;
+            if (match) shown++;
+          });
+          if (counter) counter.textContent = String(shown);
+        });
+      });
+    })();
+  </script>
+
+  <!-- ── CASSA member drawer (right slide-in; opened by any [data-person]) ── -->
+  {drawerPeople.length > 0 && (
+    <div id="cassa-drawer" class="cdrawer" hidden>
+      <div class="cdrawer__scrim" data-cdrawer-close></div>
+      <aside class="cdrawer__panel" role="dialog" aria-modal="true" aria-label="CASSA member profile" tabindex="-1">
+        <button type="button" class="cdrawer__close" data-cdrawer-close aria-label="Close profile">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="cdrawer__cards">
+          {drawerPeople.map((person) => (
+            <div class="cdrawer__card" data-card={person.slug} hidden>
+              <PersonCard
+                name={person.name}
+                title={person.title}
+                tier={person.tier}
+                interests={person.interests}
+                institution={person.institution}
+                education={person.education}
+                research={person.research}
+                email={person.email}
+                photo={person.photo}
+                links={person.links}
+                website={personalSite(person.slug, { tier: person.tier, links: person.links })}
+              />
+            </div>
+          ))}
+        </div>
+      </aside>
+    </div>
+  )}
+
+  <script is:inline>
+    (function () {
+      const drawer = document.getElementById("cassa-drawer");
+      if (!drawer) return;
+      const panel = drawer.querySelector(".cdrawer__panel");
+      const cards = Array.prototype.slice.call(drawer.querySelectorAll(".cdrawer__card"));
+      const closeBtn = drawer.querySelector(".cdrawer__close");
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let lastFocus = null;
+      function open(slug, trigger) {
+        let found = false;
+        cards.forEach(function (c) {
+          const m = c.getAttribute("data-card") === slug;
+          c.hidden = !m;
+          if (m) found = true;
+        });
+        if (!found) return false;
+        lastFocus = trigger || null;
+        drawer.hidden = false;
+        requestAnimationFrame(function () { drawer.classList.add("is-open"); });
+        document.body.style.overflow = "hidden";
+        if (closeBtn) closeBtn.focus();
+        return true;
+      }
+      function close() {
+        if (drawer.hidden) return;
+        drawer.classList.remove("is-open");
+        document.body.style.overflow = "";
+        let done = false;
+        const finish = function () { if (done) return; done = true; drawer.hidden = true; };
+        if (reduce.matches) finish();
+        else { if (panel) panel.addEventListener("transitionend", finish, { once: true }); setTimeout(finish, 420); }
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+        lastFocus = null;
+      }
+      document.addEventListener("click", function (e) {
+        const opener = e.target.closest && e.target.closest("[data-person]");
+        if (opener) { if (open(opener.getAttribute("data-person"), opener)) e.preventDefault(); return; }
+        if (e.target.closest && e.target.closest("[data-cdrawer-close]")) { e.preventDefault(); close(); }
+      });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    })();
+  </script>
+
+</BaseLayout>
+
+<style>
+  /* ── Side-by-side bar charts ─────────────────────────────────────────── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  @media (max-width: 640px) {
+    .charts-row { grid-template-columns: 1fr; }
+  }
+  .chart-panel {
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.4rem 1.4rem 1rem;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+  [data-theme="light"] .chart-panel {
+    box-shadow: 0 1px 3px rgba(12,18,34,.05), 0 6px 16px rgba(12,18,34,.04);
+  }
+  .chart-label {
+    margin: 0 0 1.2rem;
+  }
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 220px;
+    width: 100%;
+  }
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+  }
+  .bar-val {
+    font-size: .78rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    opacity: .88;
+    transition: opacity .15s;
+  }
+  .bar:hover { opacity: 1; }
+  .bar--accent { background: var(--accent); }
+  .bar--cit    { background: var(--accent-2, #a78bfa); }
+  .bar-yr {
+    font-size: .75rem;
+    color: var(--ink-faint);
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    line-height: 1;
+  }
+
+  /* ── Section heading ─────────────────────────────────────────────────── */
+  .section-h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    letter-spacing: -.015em;
+    margin: .4rem 0 0;
+    color: var(--ink);
+  }
+
+  /* ── Stat cards ─────────────────────────────────────────────────────── */
+  .stat-card {
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.6rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+  [data-theme="light"] .stat-card {
+    box-shadow: 0 1px 3px rgba(12,18,34,.06), 0 8px 20px rgba(12,18,34,.05);
+  }
+  .stat-n {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -.03em;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: .82rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-weight: 600;
+  }
+
+  /* ── Publications table ─────────────────────────────────────────────── */
+  .pub-table-wrap { overflow-x: auto; }
+  .pub-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.4rem;
+    font-size: .92rem;
+  }
+  .pub-table thead th {
+    text-align: left;
+    padding: .7rem .9rem;
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .pub-table th.col-cites,
+  .pub-table th.col-scholar,
+  .pub-table th.col-iub { text-align: right; }
+  .pub-table tbody td {
+    padding: .95rem .9rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: baseline;
+  }
+  .paper-row { transition: background .15s; }
+  .paper-row:hover { background: var(--bg-elev); }
+  .paper-row[hidden] { display: none; }
+  .col-year {
+    width: 1%;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ink-faint);
+  }
+  .col-cites,
+  .col-scholar,
+  .col-iub {
+    width: 1%;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .col-cites,
+  .col-scholar { color: var(--ink-soft); }
+  .col-iub { color: var(--accent-2, #a78bfa); font-weight: 700; }
+  .table-source {
+    margin: .85rem 0 0;
+    font-size: .8rem;
+    color: var(--ink-faint);
+  }
+  .table-source strong { color: var(--ink-soft); font-weight: 600; }
+  @media (max-width: 560px) {
+    .pub-table { font-size: .86rem; }
+    .pub-table thead th,
+    .pub-table tbody td { padding-inline: .55rem; }
+  }
+
+  .paper-title {
+    display: block;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.42;
+    font-size: .98rem;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .paper-title:hover { color: var(--accent); }
+
+  .paper-authors {
+    margin: .35rem 0 0;
+    font-size: .83rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .paper-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin-top: .55rem;
+  }
+  .meta-journal {
+    font-size: .8rem;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .meta-link {
+    font-size: .78rem;
+    color: var(--accent-2);
+    transition: opacity .2s;
+  }
+  .meta-link:hover { opacity: .75; }
+
+  /* ── Sort control (IUB share · citations · year) ─────────────────────── */
+  .sort-bar {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    margin-top: 1.6rem;
+    flex-wrap: wrap;
+  }
+  .sort-label {
+    font-size: .76rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-weight: 600;
+  }
+  .sort-controls {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg-elev-2);
+  }
+  .sort-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 600;
+    padding: .4em .9em;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .sort-btn:hover { color: var(--ink); }
+  .sort-btn.is-active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ── IUB-share footnote ─────────────────────────────────────────────── */
+  .iub-note {
+    margin-top: 2.6rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--line);
+    max-width: 62ch;
+    font-size: .86rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+  .iub-note-h {
+    margin: 0 0 .7rem;
+    font-size: .74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--ink-faint);
+  }
+  .iub-note p { margin: .55rem 0; }
+  .iub-note em { color: var(--ink); }
+
+  /* ── Highlighted CASSA authors in the byline ────────────────────────── */
+  .au { color: inherit; }
+  .au--cassa {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    cursor: pointer;
+  }
+  .au--cassa:hover { color: var(--ink); border-bottom-color: var(--accent); }
+  .au-more { color: var(--ink-faint); font-style: italic; }
+
+  /* ── CASSA author avatar chips ──────────────────────────────────────── */
+  .cassa-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: .6rem; }
+  .cassa-row__lbl {
+    font-size: .6rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .cassa-chip {
+    display: inline-flex; align-items: center; gap: .45em;
+    padding: .2em .7em .2em .2em; border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+    color: var(--ink); font-size: .8rem; font-weight: 600; line-height: 1;
+    text-decoration: none; transition: border-color .2s, background .2s, transform .2s;
+  }
+  .cassa-chip:hover {
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    transform: translateY(-1px);
+  }
+  .cassa-chip__img {
+    width: 22px; height: 22px; border-radius: 50%; object-fit: cover;
+    object-position: top center; display: block; background: var(--bg-elev-2);
+  }
+  .cassa-chip__mono {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+    color: var(--accent); font-size: .58rem; font-weight: 700;
+  }
+  .cassa-chip__name { white-space: nowrap; }
+
+  /* ── Combined output-per-year chart (bars = papers, line = citations) ── */
+  .chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+  .chart-legend { display: inline-flex; gap: .9rem; }
+  .lg { font-size: .7rem; color: var(--ink-faint); display: inline-flex; align-items: center; gap: .35em; }
+  .lg::before { content: ""; width: .75em; height: .75em; border-radius: 2px; }
+  .lg--bar::before { background: var(--accent); }
+  .lg--line::before { background: var(--accent-2); border-radius: 50%; width: .6em; height: .6em; }
+
+  .combo { margin-top: 1.4rem; flex: 1; display: flex; flex-direction: column; }
+  .combo-plot { position: relative; flex: 1; min-height: 240px; display: flex; align-items: flex-end; gap: 5px; }
+  .combo-col { flex: 1; height: 100%; display: flex; align-items: flex-end; min-width: 0; }
+  .combo-bar {
+    width: 100%; background: var(--accent); border-radius: 4px 4px 0 0;
+    opacity: .82; position: relative; min-height: 2px;
+  }
+  .combo-bar:hover { opacity: 1; }
+  .combo-bv {
+    position: absolute; top: -1.15rem; left: 0; right: 0; text-align: center;
+    font-size: .68rem; color: var(--ink-faint); font-variant-numeric: tabular-nums;
+  }
+  .combo-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .combo-svg polyline {
+    fill: none; stroke: var(--accent-2); stroke-width: 2;
+    vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round;
+  }
+  .combo-dot {
+    position: absolute; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--accent-2); transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px var(--bg-elev-2); cursor: default;
+  }
+  /* Enlarged invisible hit area so the small dots are easy to hover */
+  .combo-dot::before {
+    content: ""; position: absolute; left: 50%; top: 50%;
+    width: 24px; height: 24px; transform: translate(-50%, -50%); border-radius: 50%;
+  }
+  .combo-dot:hover { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 40%, transparent); }
+
+  /* Hover tooltip for the combo chart — papers bars + citation dots */
+  .combo-bar::after, .combo-dot::after {
+    content: attr(data-label);
+    position: absolute; left: 50%; bottom: 100%;
+    transform: translateX(-50%); margin-bottom: 9px;
+    padding: .3em .55em; border-radius: 6px;
+    background: var(--ink); color: var(--bg);
+    font-size: .7rem; font-weight: 600; white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    opacity: 0; pointer-events: none; transition: opacity .12s ease; z-index: 12;
+  }
+  .combo-bar:hover::after, .combo-dot:hover::after { opacity: 1; }
+  .combo-axis { display: flex; gap: 5px; margin-top: .45rem; }
+  .combo-yr {
+    flex: 1; text-align: center; font-size: .68rem; color: var(--ink-faint);
+    writing-mode: vertical-lr; transform: rotate(180deg); line-height: 1;
+  }
+
+  /* ── Papers per CASSA author ────────────────────────────────────────── */
+  .ppl-rank {
+    list-style: none; margin: 1.3rem 0 0; padding: 0;
+    display: flex; flex-direction: column; justify-content: space-between; gap: .55rem;
+    flex: 1;
+  }
+  .ppl-item { display: grid; grid-template-columns: 7rem 1fr 1.7rem; align-items: center; gap: .6rem; }
+  .ppl-name {
+    font-size: .82rem; color: var(--ink); text-align: left;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    text-decoration: none; cursor: pointer; transition: color .15s;
+  }
+  .ppl-name:hover { color: var(--accent); text-decoration: underline; }
+  .ppl-track { height: 8px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .ppl-fill { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+  .ppl-n { font-size: .8rem; color: var(--ink-soft); text-align: right; font-variant-numeric: tabular-nums; }
+  .ppl-empty { color: var(--ink-faint); font-size: .85rem; margin-top: 1.2rem; }
+  @media (max-width: 520px) { .ppl-item { grid-template-columns: 6.5rem 1fr 1.6rem; } }
+
+  /* ── Member drawer (right slide-in) ─────────────────────────────────── */
+  .cdrawer { position: fixed; inset: 0; z-index: 1000; }
+  .cdrawer[hidden] { display: none; }
+  .cdrawer__scrim {
+    position: absolute; inset: 0; background: rgba(3, 6, 14, .58);
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .cdrawer.is-open .cdrawer__scrim { opacity: 1; }
+  .cdrawer__panel {
+    position: absolute; top: 0; right: 0; height: 100%;
+    width: min(420px, 92vw); overflow-y: auto;
+    background: var(--bg-elev); border-left: 1px solid var(--line);
+    box-shadow: -20px 0 50px rgba(3, 6, 14, .4);
+    padding: 3.2rem 1.3rem 1.6rem;
+    transform: translateX(100%); transition: transform .32s cubic-bezier(.4, 0, .2, 1);
+  }
+  .cdrawer.is-open .cdrawer__panel { transform: translateX(0); }
+  .cdrawer__close {
+    position: absolute; top: .8rem; right: .8rem; z-index: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.1rem; height: 2.1rem; border-radius: 999px;
+    background: var(--bg-elev-2); border: 1px solid var(--line);
+    color: var(--ink-soft); cursor: pointer; transition: color .2s, border-color .2s;
+  }
+  .cdrawer__close:hover { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+  .cdrawer__card :global(.pcard) { background: var(--bg-elev-2); }
+  @media (prefers-reduced-motion: reduce) {
+    .cdrawer__scrim, .cdrawer__panel { transition: none; }
+  }
+</style>

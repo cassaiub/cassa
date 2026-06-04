@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
+import Prose from "../../../components/immersive/Prose.astro";
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import { withBase } from "../../../data/site-nav.ts";
+import { isBanglaSeries } from "../../../data/bangla-series.ts";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("news", ({ data }) => data.status !== "draft" && isBanglaSeries(data.category));
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+const dateFull = (date: Date) =>
+  new Intl.DateTimeFormat("bn-BD", { timeZone: "Asia/Dhaka", day: "numeric", month: "long", year: "numeric" }).format(date);
+---
+
+<BaseLayout
+  title={`${d.title} — CASSA`}
+  description={d.summary ?? d.title}
+  current="/outreach"
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow={`In Bangla${d.category ? ` · ${d.category}` : ""}`}
+    title={d.title}
+    lede={d.summary ?? undefined}
+    cue={false}
+  >
+    <Fragment slot="meta">প্রকাশিত {dateFull(d.date)}{d.category ? ` · ${d.category}` : ""}{d.author ? ` · ${d.author}` : ""}</Fragment>
+  </AnimatedHero>
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="nd-article" data-reveal>
+        <div lang="bn">
+          <Prose class="prose-cassa--wide">
+            {d.hero && (
+              <figure class="article-figure" data-figure>
+                <Image src={d.hero} alt={d.heroAlt ?? ""} widths={[480, 768, 1100, 1600]} sizes="(max-width: 880px) 92vw, 900px" loading="lazy" />
+              </figure>
+            )}
+            <Content />
+          </Prose>
+        </div>
+        <p class="nd__back"><a href={withBase("/outreach/bangla")}>← <span lang="bn">সব লেখা</span></a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nd__back { margin-top: 2rem; }
+  .nd__back a { color: var(--accent); }
+  .nd__back a:hover { opacity: .75; }
+</style>

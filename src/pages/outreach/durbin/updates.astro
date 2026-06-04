@@ -1,0 +1,103 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../../components/immersive/Reveal.astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import { withBase } from "../../../data/site-nav.ts";
+
+// Durbin Updates — the news feed scoped to the "Durbin" category. New updates
+// file themselves here automatically: add a src/content/news/*.md entry with
+// `category: "Durbin"` and it appears (and stays in the main /news feed too).
+const all = (await getCollection("news", ({ data }) =>
+  data.status !== "draft" && (data.category === "Durbin" || data.durbin)))
+  .sort((a, b) => +b.data.date - +a.data.date);
+
+const TZ = "Asia/Dhaka";
+const fmtDate = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "short", year: "numeric" }).format(d);
+const yearOf = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric" }).format(d);
+
+const byYear = new Map<string, typeof all>();
+for (const p of all) {
+  const y = yearOf(p.data.date);
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(p);
+}
+const years = [...byYear.keys()].sort((a, b) => Number(b) - Number(a));
+---
+
+<BaseLayout
+  title="Durbin Updates — CASSA"
+  description="Dispatches from Durbin, CASSA's volunteer astronomy-outreach programme — workshops, school visits, public astronomy nights, and calls for volunteers."
+  current="/outreach"
+>
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Outreach · Durbin"
+    title="Durbin Updates"
+    lede="Dispatches from Durbin — workshops, school visits, public astronomy nights, and open calls — as the programme brings the sky to people across Bangladesh."
+  />
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The feed</p></Reveal>
+      <Reveal delay={60}><h2 class="nf-h2">Latest from Durbin</h2></Reveal>
+
+      {all.length === 0 ? (
+        <p class="nf-empty">Durbin updates will appear here once posts are published.</p>
+      ) : (
+        years.map((yr) => (
+          <div class="nfyear" data-year={yr}>
+            <Reveal><h3 class="nfyear__h">{yr}</h3></Reveal>
+            <ol class="nflist">
+              {byYear.get(yr)!.map((p, i) => (
+                <li>
+                  <a
+                    class:list={["nfrow", "nf-news", { "nfrow--media": p.data.hero }]}
+                    href={withBase(`/news/${p.id}`)}
+                    data-reveal
+                    style={`--reveal-delay:${Math.min(i, 6) * 40}ms`}
+                  >
+                    {p.data.hero && (
+                      <span class="nfrow__thumb">
+                        <Image src={p.data.hero} alt={p.data.heroAlt ?? ""} width={240} loading="lazy" />
+                      </span>
+                    )}
+                    <span class="nfrow__body">
+                      <span class="nfrow__meta">
+                        <span class="nftag nf-news">{p.data.category ?? "Durbin"}</span>
+                        {p.data.lang === "bn" && <span class="nftag nftag--bn" lang="bn">বাংলা</span>}
+                        <time class="nfrow__date" datetime={p.data.date.toISOString()}>{fmtDate(p.data.date)}</time>
+                      </span>
+                      <span class="nfrow__title">{p.data.title}</span>
+                      {p.data.summary && <span class="nfrow__sum">{p.data.summary}</span>}
+                      <span class="nfrow__more">Read <span aria-hidden="true">→</span></span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))
+      )}
+    </div>
+  </section>
+
+  <AnimatedBand theme="cosmic">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">More from Durbin</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">The wider programme</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <section class="section">
+    <div class="wrap" style="display:flex;gap:1rem;flex-wrap:wrap">
+      <a class="btn" href={withBase('/outreach/durbin/images')}>Astrophotographic Images</a>
+      <a class="btn" href={withBase('/outreach/durbin/manual')}>The Durbin Manual</a>
+      <a class="btn" href={withBase('/news')}>All CASSA news</a>
+    </div>
+  </section>
+</BaseLayout>

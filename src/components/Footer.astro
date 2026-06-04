@@ -1,0 +1,94 @@
+---
+import { withBase, EXTERNAL } from "../data/site-nav";
+import { Image } from "astro:assets";
+import iubColor from "../assets/iub-logo-color.png";
+import iubWhite from "../assets/iub-logo-white.png";
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__cols">
+    <!-- CASSA teaser -->
+    <div class="footer__about">
+      <p class="footer__brand">CASSA</p>
+      <p style="margin:0 0 .65rem;max-width:44ch">
+        The Center for Astronomy, Space Science and Astrophysics — an autonomous,
+        multidisciplinary research center of Independent University, Bangladesh.
+      </p>
+      <p style="margin:0;max-width:44ch">
+        Founded in 2025, CASSA advances the field through original research, the
+        Minor in Astronomy &amp; Astrophysics, and public outreach.
+      </p>
+    </div>
+
+    <!-- Reach out (get involved + contact, merged) -->
+    <div class="footer__reach">
+      <p class="eyebrow" style="margin-bottom:.55rem">Reach out</p>
+      <p style="margin:0 0 .7rem;max-width:34ch">
+        Students and researchers are welcome to join the Center — explore the openings or get in touch.
+      </p>
+      <p style="margin:.3rem 0"><a href={withBase('/opportunities')}>Opportunities →</a></p>
+      <p style="margin:.3rem 0"><a href={withBase('/people')}>People →</a></p>
+      <p style="margin:.3rem 0">Manager: <a href="mailto:cassa@iub.edu.bd">cassa@iub.edu.bd</a></p>
+    </div>
+
+    <!-- Parent institution — theme-aware official IUB crest (white on dark, colour on light) -->
+    <div class="footer__org">
+      <a
+        href={EXTERNAL.iub}
+        target="_blank"
+        rel="noopener"
+        class="footer__org-link"
+        aria-label="Independent University, Bangladesh — opens in a new tab"
+      >
+        <Image
+          class="iublogo iublogo--white"
+          src={iubWhite}
+          alt=""
+          width={230}
+          height={177}
+          densities={[2, 3]}
+          loading="lazy"
+          decoding="async"
+        />
+        <Image
+          class="iublogo iublogo--color"
+          src={iubColor}
+          alt=""
+          width={230}
+          height={177}
+          densities={[2, 3]}
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+    </div>
+  </div>
+
+  <div class="wrap footer__legal">
+    © {year} CASSA, Independent University, Bangladesh. Working under the Office of the Vice Chancellor.
+  </div>
+</footer>
+
+<style>
+  .footer__brand { font-weight: 800; color: var(--ink); letter-spacing: .02em; margin: 0 0 .6rem; }
+
+  /* Logo sits at the far edge of its column */
+  .footer__org { display: flex; justify-content: flex-end; align-items: flex-start; }
+  @media (max-width: 720px) { .footer__org { justify-content: flex-start; } }
+
+  .footer__org-link { display: inline-flex; line-height: 0; transition: opacity .2s; }
+  .footer__org-link:hover { opacity: .8; }
+  .footer__org-link :global(.iublogo) { width: 230px; max-width: 100%; height: auto; display: block; }
+
+  /* Theme-aware: white crest on the dark default, full-colour crest in light theme */
+  .footer__org-link :global(.iublogo--color) { display: none; }
+  .footer__org-link :global(.iublogo--white) { display: block; }
+  :global([data-theme="light"]) .footer__org-link :global(.iublogo--white) { display: none; }
+  :global([data-theme="light"]) .footer__org-link :global(.iublogo--color) { display: block; }
+
+  .footer__legal {
+    margin-top: 2.4rem; border-top: 1px solid var(--line); padding-top: 1.4rem;
+    font-size: .85rem; color: var(--ink-faint);
+  }
+</style>

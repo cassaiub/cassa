@@ -1,0 +1,73 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import OpportunityCirculars from "../../components/OpportunityCirculars.astro";
+import { getCollection } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+
+const items = (await getCollection("opportunities", ({ data }) => data.status !== "draft" && data.kind === "internship"))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<BaseLayout
+  title="Internships — CASSA Opportunities"
+  description="Research internships at the Center for Astronomy, Space Science and Astrophysics (CASSA), IUB — the application pathway, eligibility, term and how to join a live research project."
+  current="/opportunities/internships"
+>
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Opportunities · Internships"
+    title="Internships"
+    lede="Research internships at CASSA — the application pathway, who can apply, and how interns join a live research project."
+  />
+
+  <!-- Pathway (elevated, right after the dark hero — rule 19) -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Learn by doing</p></Reveal>
+      <Reveal delay={60}><h2 class="op-h2">The internship pathway</h2></Reveal>
+      <Reveal delay={100}>
+        <Prose>
+          <p>
+            Internships are CASSA's main entry point for students. <strong>Research Interns</strong> join
+            at undergraduate, post-baccalaureate or graduate level for a renewable six-month term, working
+            alongside a supervising Core or Associate Member on a live project. <em>(CASSA Constitution
+            v2.0, cl. 16)</em>
+          </p>
+          <p>
+            The pathway is open and structured: explore the Center's
+            <a href={withBase('/research')}> research areas</a> to find a fit, reach out to a prospective
+            supervisor, and — after an interview arranged through the Science Manager — enter a roughly
+            two-month onboarding pipeline. Confirmed interns commit to a three-to-six-month term with at
+            least one full day on-site each week, deliver an internship report and a presentation, and are
+            encouraged to publish their work (for example as an <em>AAS Research Note</em>).
+          </p>
+          <p>
+            Undergraduates, post-baccalaureates, graduates and motivated school students (HSC, A-Levels,
+            Alim) are all eligible. Meet the current cohort on the
+            <a href={withBase('/people/interns')}>Interns &amp; Undergraduates</a> page.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+
+  <AnimatedBand theme="galaxy">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Intern calls</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">Apply any time — plus any open intern calls</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <OpportunityCirculars items={items}>
+    <Fragment slot="empty">
+      CASSA accepts research-intern applications on a <strong>rolling basis</strong> — you don't need to
+      wait for an open circular. Follow the pathway above to approach a supervisor, or write to
+      <a href="mailto:cassa@iub.edu.bd">cassa@iub.edu.bd</a>. Any time-bound intern calls will also appear
+      here.
+    </Fragment>
+  </OpportunityCirculars>
+</BaseLayout>

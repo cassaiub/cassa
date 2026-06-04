@@ -1,0 +1,14 @@
+---
+import SkyCanvas, { type SkyTheme } from "../SkyCanvas.tsx";
+
+interface Props {
+  theme: SkyTheme;
+}
+const { theme } = Astro.props;
+---
+
+<section class="band">
+  <div class="band__media"><SkyCanvas theme={theme} client:visible /></div>
+  <div class="band__scrim"></div>
+  <div class="wrap band__inner"><slot /></div>
+</section>

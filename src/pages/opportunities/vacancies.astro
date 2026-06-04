@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import OpportunityCirculars from "../../components/OpportunityCirculars.astro";
+import { getCollection } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+
+const items = (await getCollection("opportunities", ({ data }) => data.status !== "draft" && data.kind === "job"))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<BaseLayout
+  title="Vacancies — CASSA Opportunities"
+  description="Paid research assistantships and staff roles at the Center for Astronomy, Space Science and Astrophysics (CASSA), IUB — how CASSA hires, plus open and past job circulars."
+  current="/opportunities/vacancies"
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Opportunities · Vacancies"
+    title="Vacancies"
+    lede="Paid research and staff positions at CASSA — how we hire, and every open and past job circular."
+  />
+
+  <!-- Hiring (elevated, right after the dark hero — rule 19) -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Work with us</p></Reveal>
+      <Reveal delay={60}><h2 class="op-h2">How CASSA hires</h2></Reveal>
+      <Reveal delay={100}>
+        <Prose>
+          <p>
+            CASSA hires across research and operations. Paid research roles run from
+            <strong> Research Assistantships</strong> — at graduate, post-baccalaureate and undergraduate
+            levels — to the <strong>Outreach Ambassador</strong> post, while day-to-day operations are
+            supported by staff roles such as the <strong>Manager (Science)</strong>, the
+            <strong> Observatory Engineer</strong> and the <strong>Project Manager</strong>.
+          </p>
+          <p>
+            Every paid position is created with the approval of the VC Office and advertised openly for at
+            least two weeks. Shortlisted candidates are interviewed by a panel of at least two members
+            senior to the post — including at least one Director — and at least two references are sought.
+            All paid roles carry a three-month probation, and recruitment is monitored for equity,
+            diversity and inclusion. <em>(CASSA Constitution v2.0, cl. 20)</em>
+          </p>
+          <p>
+            See who currently makes up the Center on the <a href={withBase('/people')}>People</a> page, or
+            explore the <a href={withBase('/research')}>research areas</a> you could join.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+
+  <AnimatedBand theme="cosmic">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Job circulars</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">Open vacancies &amp; the hiring archive</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <OpportunityCirculars items={items}>
+    <Fragment slot="empty">
+      There are no open vacancies right now. New job circulars are posted here and announced in the
+      <a href={withBase('/news')}> news feed</a> — check back, or write to
+      <a href="mailto:cassa@iub.edu.bd">cassa@iub.edu.bd</a> to register your interest. Browse past
+      circulars below to see the kinds of roles CASSA recruits for.
+    </Fragment>
+  </OpportunityCirculars>
+</BaseLayout>

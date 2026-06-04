@@ -1,0 +1,26 @@
+---
+import SkyCanvas, { type SkyTheme } from "../SkyCanvas.tsx";
+
+interface Props {
+  theme: SkyTheme;
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  cue?: boolean;
+}
+const { theme, eyebrow, title, lede, cue = true } = Astro.props;
+---
+
+<header class="hero">
+  <div class="hero__media"><SkyCanvas theme={theme} client:load /></div>
+  <div class="hero__scrim"></div>
+
+  <div class="wrap hero__inner">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="hero__title">{title}</h1>
+    {lede && <p class="hero__lede">{lede}</p>}
+    {Astro.slots.has("meta") && (<div class="hero__meta"><slot name="meta" /></div>)}
+  </div>
+
+  {cue && <div class="hero__cue" aria-hidden="true"><span></span></div>}
+</header>

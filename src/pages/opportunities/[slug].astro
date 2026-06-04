@@ -1,0 +1,134 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { getCollection, render } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+import { categoryForKind, pathForKind } from "../../data/opportunities.ts";
+
+export async function getStaticPaths() {
+  const opps = await getCollection("opportunities", ({ data }) => data.status !== "draft");
+  return opps.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+const TZ = "Asia/Dhaka";
+const dateFull = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(date);
+const dateShort = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "long", year: "numeric" }).format(date);
+
+const now = new Date();
+const isOpen = !d.outcome && (!d.deadline || d.deadline >= now);
+const status: "open" | "closed" | "filled" = d.outcome === "filled" ? "filled" : isOpen ? "open" : "closed";
+const STATUS_LABEL = { open: "Open", closed: "Closed", filled: "Filled" } as const;
+const KIND_LABEL = { job: "Job opening", internship: "Internship", volunteer: "Volunteer call" } as const;
+
+const category = categoryForKind(d.kind);
+const categoryPath = pathForKind(d.kind);
+---
+
+<BaseLayout
+  title={`${d.title} — CASSA Opportunities`}
+  description={d.summary ?? d.title}
+  current={categoryPath}
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow={`Opportunity · ${KIND_LABEL[d.kind]}`}
+    title={d.title}
+    lede={d.summary ?? undefined}
+    cue={false}
+  />
+
+  <section class="section section--elev">
+    <div class="wrap od">
+      <!-- plain data-reveal div (NOT <Reveal>) so the scoped .od__meta styles match -->
+      <div class="od__meta" data-reveal>
+        <div class="od__item">
+          <p class="od__lbl">Status</p>
+          <p class="od__val"><span class:list={["od__stat", `od__stat--${status}`]}>{STATUS_LABEL[status]}</span></p>
+        </div>
+        {d.role && (
+          <div class="od__item">
+            <p class="od__lbl">Role</p>
+            <p class="od__val">{d.role}</p>
+          </div>
+        )}
+        {d.compensation && (
+          <div class="od__item">
+            <p class="od__lbl">Compensation</p>
+            <p class="od__val">{d.compensation}</p>
+          </div>
+        )}
+        <div class="od__item">
+          <p class="od__lbl">Posted</p>
+          <p class="od__val">{dateFull(d.date)}</p>
+        </div>
+        {d.deadline && (
+          <div class="od__item">
+            <p class="od__lbl">{isOpen ? "Apply by" : "Deadline was"}</p>
+            <p class="od__val">{dateShort(d.deadline)}</p>
+          </div>
+        )}
+        {isOpen && d.applyUrl && (
+          <a class="od__apply" href={d.applyUrl} target="_blank" rel="noopener">Apply now →</a>
+        )}
+      </div>
+
+      <div class="od__content" data-reveal style="--reveal-delay:80ms">
+        {!isOpen && (
+          <p class="od__notice">
+            This circular is closed{status === "filled" ? " — the position has been filled" : ""}. It is
+            kept here as a record of the kinds of roles CASSA recruits for. See the
+            <a href={withBase(`${categoryPath}#open`)}> open positions</a> for anything currently live.
+          </p>
+        )}
+        <Prose><Content /></Prose>
+        <p class="od__back"><a href={withBase(categoryPath)}>← All {category.label.toLowerCase()}</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .od { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr); gap: 2.4rem; align-items: start; }
+  @media (max-width: 820px) { .od { grid-template-columns: 1fr; gap: 1.6rem; } }
+
+  .od__meta {
+    display: flex; flex-direction: column; gap: 1.3rem;
+    background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.5rem 1.6rem; position: sticky; top: 90px;
+  }
+  @media (max-width: 820px) { .od__meta { position: static; } }
+  [data-theme="light"] .od__meta { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .od__lbl { font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--ink-faint); margin: 0 0 .35rem; }
+  .od__val { color: var(--ink); margin: 0; line-height: 1.5; font-weight: 500; }
+
+  .od__stat {
+    display: inline-block; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+    padding: .3em .75em; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-faint);
+  }
+  .od__stat--open { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+
+  .od__apply {
+    margin-top: .4rem; display: inline-block; text-align: center; font-weight: 600;
+    background: var(--accent); color: var(--accent-ink); border-radius: 10px; padding: .7rem 1rem;
+    transition: opacity .2s;
+  }
+  .od__apply:hover { opacity: .85; }
+
+  .od__notice {
+    background: var(--bg-elev-2); border: 1px solid var(--line); border-left: 3px solid var(--line-strong);
+    border-radius: 12px; padding: .9rem 1.1rem; margin: 0 0 1.6rem; color: var(--ink-soft);
+    font-size: .92rem; line-height: 1.6;
+  }
+  .od__notice a { color: var(--accent); }
+
+  .od__back { margin-top: 2rem; }
+  .od__back a { color: var(--accent); }
+  .od__back a:hover { opacity: .75; }
+</style>

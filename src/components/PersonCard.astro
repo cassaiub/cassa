@@ -1,0 +1,373 @@
+---
+/*
+  PersonCard.astro — reusable people card for all CASSA People subpages.
+  Used by: /people/directors, /people/core-associate, /people/grad-affiliates,
+           /people/staff, /people/student-ras, /people/interns, the
+           people/index.astro directory (via PersonDrawer), asad's profile and
+           the publications member drawer.
+
+  Compact immersive layout for directors + members (every row optional, so
+  other tiers degrade gracefully):
+    1. CASSA role  → tier badge, floated on the photo
+    2. name, PhD   → name + academic title
+    3. position    → current role + institution (`institution`)
+    4. trained at  → PhD & postdoc institutes + countries (`education`)
+    5. research    → area pills (`interests`) + a one-line blurb (`research`)
+    6. email
+    7. personal website (plain text link — no button)
+
+  Prop interface matches the people collection schema + layout hints.
+*/
+
+interface Props {
+  name: string;
+  title?: string;        // academic title, e.g. "PhD"
+  tier: string;          // "Director", "Core Member", etc.
+  interests?: string[];  // research areas → pills
+  institution?: string;  // current position + institution (row 3)
+  education?: string;    // PhD & postdoc institutes + countries (row 4)
+  research?: string;     // concise, student-facing research description (row 5)
+  email?: string;
+  photo?: string;        // path like "/people/uddin.webp" or undefined
+  links?: Record<string, string>;  // { label: url }
+  feature?: boolean;     // true = large featured card (for Directors page)
+  href?: string;       // when set, the whole card links here (profile detail page)
+  website?: string;    // personal-site link shown at the end (members/directors)
+}
+
+const {
+  name,
+  title,
+  tier,
+  interests = [],
+  institution,
+  education,
+  research,
+  email,
+  photo,
+  links = {},
+  feature = false,
+  href,
+  website,
+} = Astro.props;
+
+const interestsSlice = interests.slice(0, 3);
+// The website is shown once as its own link, so drop it from the small links.
+const linkEntries = Object.entries(links).filter(([, url]) => url !== website);
+const isInternal = !!website && !/^https?:\/\//.test(website);
+const hasResearch = interestsSlice.length > 0 || !!research;
+const hasContact = !!email || !!website || linkEntries.length > 0;
+---
+
+<article class:list={["pcard", { "pcard--feature": feature }]}>
+  {href && (
+    <a class="pcard__overlay" href={href} aria-label={`View profile of ${name}`}></a>
+  )}
+
+  <!-- Photo + floated role badge (row 1) -->
+  <div class="pcard__photo-wrap">
+    {photo ? (
+      <>
+        <img
+          class="pcard__photo"
+          src={photo}
+          alt={`Photo of ${name}`}
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="pcard__photo-scrim" aria-hidden="true"></span>
+      </>
+    ) : (
+      <div class="pcard__photo-placeholder" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="pcard__placeholder-icon">
+          <circle cx="32" cy="22" r="13" fill="currentColor" opacity=".22" />
+          <path
+            d="M8 58c0-13.255 10.745-22 24-22s24 8.745 24 22"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            opacity=".22"
+          />
+        </svg>
+      </div>
+    )}
+    <span class="pcard__tier">{tier}</span>
+  </div>
+
+  <div class="pcard__body">
+    <!-- Identity: name, title (row 2) + current position (row 3) -->
+    <div class="pcard__head">
+      <h3 class="pcard__name">{name}</h3>
+      {title && <p class="pcard__title">{title}</p>}
+      {institution && <p class="pcard__institution">{institution}</p>}
+    </div>
+
+    <!-- Trained at (row 4) -->
+    {education && (
+      <div class="pcard__row">
+        <span class="pcard__label">Trained at</span>
+        <p class="pcard__education">{education}</p>
+      </div>
+    )}
+
+    <!-- Research: one-line blurb (members), or areas as plain text (row 5) -->
+    {hasResearch && (
+      <div class="pcard__row">
+        <span class="pcard__label">Research</span>
+        <p class="pcard__research">{research ?? interestsSlice.join(", ")}</p>
+      </div>
+    )}
+
+    <!-- Contact: email (row 6) + personal site + small links (row 7) -->
+    {hasContact && (
+      <div class="pcard__contact">
+        {email && (
+          <a class="pcard__email" href={`mailto:${email}`}>
+            <svg class="pcard__email-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="5" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
+              <path d="M2 7.5l7.47 4.674a1 1 0 001.06 0L18 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            {email}
+          </a>
+        )}
+        {(website || linkEntries.length > 0) && (
+          <div class="pcard__links">
+            {website && (
+              <a
+                class="pcard__link"
+                href={website}
+                target={isInternal ? undefined : "_blank"}
+                rel={isInternal ? undefined : "noopener noreferrer"}
+              >
+                {isInternal ? "Full profile" : "Personal site"}
+                <span class="pcard__link-arrow" aria-hidden="true">→</span>
+              </a>
+            )}
+            {linkEntries.map(([label, url]) => (
+              <a class="pcard__link" href={url} target="_blank" rel="noopener noreferrer">{label}</a>
+            ))}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  /* ── PersonCard scoped styles ───────────────────────────────────────────
+     Uses .pcard (not .card) to avoid conflicts with global .card.
+     All colours reference CSS vars from global.css so dark/light themes
+     work automatically. */
+
+  .pcard {
+    position: relative;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s ease;
+  }
+
+  .pcard:hover {
+    border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(3, 6, 14, 0.36),
+                0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  /* Light-theme card shadow (kept softer than the hover glow) */
+  :global([data-theme="light"]) .pcard {
+    box-shadow: 0 1px 2px rgba(12, 18, 34, 0.06), 0 14px 34px rgba(12, 18, 34, 0.05);
+  }
+  :global([data-theme="light"]) .pcard:hover {
+    box-shadow: 0 1px 2px rgba(12, 18, 34, 0.06),
+                0 22px 46px rgba(12, 18, 34, 0.12),
+                0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  /* When inside .section--elev the background steps up */
+  :global(.section--elev) .pcard {
+    background: var(--bg-elev-2);
+  }
+
+  /* Whole-card link overlay */
+  .pcard__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+  }
+  .pcard:has(.pcard__overlay) { cursor: pointer; }
+
+  /* keep interactive children above the overlay so they remain clickable */
+  .pcard__contact { position: relative; z-index: 4; }
+
+  /* ── Photo area ─────────────────────────────────────────────────────── */
+  .pcard__photo-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--bg-elev-2);
+    flex-shrink: 0;
+  }
+
+  .pcard--feature .pcard__photo-wrap { aspect-ratio: 1 / 1; }
+
+  .pcard__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pcard:hover .pcard__photo { transform: scale(1.045); }
+
+  /* Bottom gradient so the floated role badge stays legible on any photo */
+  .pcard__photo-scrim {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 42%;
+    background: linear-gradient(to top, rgba(3, 6, 14, 0.64), rgba(3, 6, 14, 0));
+    pointer-events: none;
+  }
+
+  .pcard__photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--bg-elev-2) 80%, var(--line));
+    color: var(--ink-faint);
+  }
+  .pcard__placeholder-icon {
+    width: clamp(2.6rem, 7vw, 4.2rem);
+    height: clamp(2.6rem, 7vw, 4.2rem);
+  }
+
+  /* Role badge (row 1) — frosted, floated on the photo */
+  .pcard__tier {
+    position: absolute;
+    left: clamp(0.65rem, 2vw, 0.85rem);
+    bottom: clamp(0.65rem, 2vw, 0.85rem);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.28em 0.72em;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #fff;
+    background: color-mix(in srgb, var(--accent) 30%, rgba(6, 8, 15, 0.62));
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+  }
+
+  /* ── Body ───────────────────────────────────────────────────────────── */
+  .pcard__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: clamp(0.85rem, 2.2vw, 1.15rem);
+    flex: 1;
+  }
+
+  /* Identity block — tight internal spacing */
+  .pcard__head { display: flex; flex-direction: column; gap: 0.12rem; }
+
+  .pcard__name {
+    margin: 0;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1.12rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .pcard--feature .pcard__name { font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+
+  .pcard__title {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .pcard__institution {
+    margin: 0.12rem 0 0;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+
+  /* Labelled rows (trained at · research) */
+  .pcard__row { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .pcard__label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .pcard__education {
+    margin: 0;
+    font-size: 0.79rem;
+    line-height: 1.42;
+    color: var(--ink-soft);
+  }
+
+  .pcard__research {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+
+  /* Contact block — email + plain text links, separated by a hairline */
+  .pcard__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 0.65rem;
+    margin-top: auto;
+    border-top: 1px solid var(--line);
+  }
+
+  .pcard__email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.82rem;
+    color: var(--accent);
+    word-break: break-all;
+    transition: opacity 0.2s;
+  }
+  .pcard__email:hover { opacity: 0.8; }
+  .pcard__email-icon { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .pcard__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+  }
+  .pcard__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    transition: opacity 0.2s;
+  }
+  .pcard__link:hover { opacity: 0.8; }
+  .pcard__link-arrow { font-weight: 400; }
+</style>

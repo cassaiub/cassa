@@ -1,0 +1,160 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { withBase } from "../../data/site-nav.ts";
+---
+
+<BaseLayout
+  title="STAR Telescope — CASSA Research"
+  description="The STAR Telescope (Small Transient Array Radio Telescope) is CASSA's radio instrument at IUB CORE, designed and built by Shoaib Mirza."
+  current="/research/star"
+>
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Research · Facilities"
+    title="STAR Telescope"
+    lede="Small Transient Array Radio Telescope — CASSA's radio instrument at IUB CORE, designed and built by Shoaib Mirza as the foundation of CASSA's radio observation capability."
+  />
+
+  <!-- ── Facility sub-nav strip ─────────────────────────────────────────── -->
+  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/research')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Research</a>
+      {[
+        { href: "/research/observatory", label: "IUB Observatory" },
+        { href: "/research/core", label: "IUB CORE" },
+        { href: "/research/hpc", label: "Timaeus HPC" },
+        { href: "/research/star", label: "STAR Telescope" },
+      ].map(s => (
+        <a href={withBase(s.href)} style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${s.href === '/research/star' ? 'background:var(--accent);color:#1a1206;font-weight:600' : 'color:var(--ink-soft);border:1px solid var(--line)'}`}>{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ── Section 1: Overview ────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Radio Telescope</p></Reveal>
+      <Reveal delay={70}>
+        <h2 class="section-h2">About the STAR Telescope</h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            The STAR Telescope — Small Transient Array Radio Telescope — is
+            CASSA's radio instrument, housed at IUB CORE on the rooftop of the
+            Main Academic Building. Designed and built by CASSA Technical
+            Affiliate Shoaib Mirza, the STAR Telescope is a localized build of
+            the open-source TART (Transient Array Radio Telescope), giving CASSA
+            its own radio observation capability for the first time in Bangladesh.
+            The instrument is operated by CASSA and feeds into the
+            RAIN research area's instrumentation programme.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="pg">
+        {[
+          { label: "Full Name", value: "Small Transient Array Radio Telescope" },
+          { label: "Location", value: "IUB CORE, Main Academic Building rooftop, IUB Bashundhara" },
+          { label: "Instrument", value: "CASSA's primary radio instrument" },
+          { label: "Designer", value: "Shoaib Mirza (Technical Affiliate, CASSA)" },
+        ].map((card, i) => (
+          <Reveal class="card" delay={i * 80}>
+            <p class="eyebrow" style="font-size:.75rem">{card.label}</p>
+            <p style="color:var(--ink-soft);margin-top:.6rem;font-size:.97rem;line-height:1.6">{card.value}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AnimatedBand — Science ─────────────────────────────────────────── -->
+  <AnimatedBand theme="lensing">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Science</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">
+        What the STAR Telescope observes
+      </h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Section 2: Science ─────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Science Capabilities</p></Reveal>
+      <Reveal delay={70}>
+        <h2 class="section-h2">Radio science with the STAR Telescope</h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            The STAR Telescope is the foundation of CASSA's in-house radio observation programme.
+            As part of the RAIN (Radio Astronomy Instrumentation) research area, the
+            telescope serves as a testbed for developing calibration workflows,
+            primary beam characterisation pipelines, and data reduction methods that
+            are directly applicable to larger arrays including LOFAR and the Square
+            Kilometre Array (SKA).
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="pg">
+        {[
+          {
+            label: "Transient Detection",
+            desc: "Monitoring and detection of radio transient phenomena",
+          },
+          {
+            label: "Pipeline Development",
+            desc: "Development and testing of radio interferometry reduction pipelines for the RAIN research area",
+          },
+          {
+            label: "Calibration Research",
+            desc: "Primary beam characterisation and calibration workflows applicable to international arrays",
+          },
+          {
+            label: "Student Training",
+            desc: "Hands-on radio astronomy training for CASSA student researchers",
+          },
+        ].map((card, i) => (
+          <Reveal class="card" delay={i * 90}>
+            <h3 style="font-size:1.1rem;color:var(--ink)">{card.label}</h3>
+            <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">{card.desc}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 3: Context ─────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal>
+        <div class="card" style="max-width:52rem">
+          <p class="eyebrow" style="font-size:.75rem;color:var(--ink-faint)">Historical note</p>
+          <p style="color:var(--ink-soft);margin-top:.75rem;font-size:.97rem;line-height:1.7">
+            The STAR Telescope is CASSA's build of the open-source TART
+            (Transient Array Radio Telescope), adapted by Shoaib Mirza. MATRiX (Multiwavelength Astronomy
+            Techniques: Radio and X-ray) — the former research group centred on this
+            instrumentation — has been renamed RAIN (Radio Astronomy Instrumentation)
+            to better reflect CASSA's evolving focus on array design, pipeline
+            development, and multi-telescope coordination.
+          </p>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .pg { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+  @media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:540px) { .pg { grid-template-columns:1fr; } }
+  .section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+</style>
