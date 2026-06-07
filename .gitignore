@@ -12,3 +12,5 @@ npm-debug.log*
 .env.*
 # os
 .DS_Store
+# content source-of-truth — kept local only, not tracked in the repo
+knb/
