@@ -1,7 +1,7 @@
 ---
 title: "Journal Talk 20: Rose et al. (2019)"
-start: "2026-05-02T13:30:00+06:00"
-end: "2026-05-02T14:10:00+06:00"
+start: "2026-06-02T13:30:00+06:00"
+end: "2026-06-02T14:10:00+06:00"
 venue: "CASSA, IUB Main Building Rooftop, Plot 16, Aftabuddin Ahmed Road, Block B, Bashundhara RA (Main Building Rooftop)"
 organizer: "CASSA, Independent University, Bangladesh"
 series: "journal-talk"
