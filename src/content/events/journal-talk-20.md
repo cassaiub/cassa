@@ -22,8 +22,7 @@ The reliability of Type Ia Supernovae (SNe Ia) may be limited by the imprint of 
 
 ---
 
-Both in person and online.
 
-To get notifications and the Google Meet link, subscribe using the Google Form:
+To get notifications, subscribe using the Google Form:
 
 [https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

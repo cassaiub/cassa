@@ -24,8 +24,7 @@ The main goal of this work is to investigate whether galaxies in dense environme
 
 ---
 
-Both in person and online.
 
-To get notifications and the Google Meet link, subscribe using the Google Form:
+To get notifications, subscribe using the Google Form:
 
 [https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)
