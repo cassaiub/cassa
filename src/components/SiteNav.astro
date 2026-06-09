@@ -196,27 +196,31 @@ function isParentActive(href: string, cur: string): boolean {
 
   /* ── Parent link (with chevron) ────────────────────────────────────── */
   .nav__link--parent {
+    position: relative; /* positioning context for the out-of-flow caret */
     display: inline-flex;
     align-items: center;
-    gap: 0; /* the chevron supplies its own margin only when it appears on hover */
+    gap: 0;
   }
 
   /* ── Chevron icon ──────────────────────────────────────────────────── */
-  /* Caret hidden at rest (no extra width); slides + fades in on hover/focus. */
+  /* Sits OUT OF FLOW (absolute, centered just below its label) so it adds no
+     width to the bar and never shifts the row. Hidden at rest, it fades and
+     slides in on hover/focus as a "menu opens below" cue. */
   .nav__chevron {
+    position: absolute;
+    top: 100%;
+    left: 50%;
     flex-shrink: 0;
     opacity: 0;
-    max-width: 0;
-    margin-left: 0;
-    overflow: hidden;
-    transition: opacity 0.18s ease, max-width 0.18s ease, margin-left 0.18s ease;
+    transform: translate(-50%, -6px);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
   }
 
   .nav__item:hover .nav__chevron,
   .nav__item:focus-within .nav__chevron {
     opacity: 1;
-    max-width: 14px;
-    margin-left: 0.28em;
+    transform: translate(-50%, -1px);
   }
 
   /* ── Dropdown panel (desktop) ──────────────────────────────────────── */
