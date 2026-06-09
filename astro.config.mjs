@@ -127,6 +127,10 @@ export default defineConfig({
   site: 'https://cassa.site',
   base: '/',
   trailingSlash: 'never',
+  // The radio telescope was renamed STAR → TART; keep the old facility URL alive.
+  redirects: {
+    '/research/star': '/research/tart',
+  },
   build: {
     inlineStylesheets: 'auto',
   },

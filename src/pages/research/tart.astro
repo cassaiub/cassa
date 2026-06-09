@@ -1,0 +1,218 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { withBase } from "../../data/site-nav.ts";
+---
+
+<BaseLayout
+  title="TART — CASSA Research"
+  description="TART (Transient Array Radio Telescope) is CASSA's radio instrument at IUB CORE — Bangladesh's first radio telescope, with its 24-antenna array fabricated at the IUB Fab Lab and assembled during CASSA Workshop 2."
+  current="/research/tart"
+>
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Research · Facilities"
+    title="TART"
+    lede="Transient Array Radio Telescope — CASSA's radio instrument at IUB CORE, and Bangladesh's first radio telescope. A 24-antenna array built at IUB and the only TART in the Northern Hemisphere."
+  />
+
+  <!-- ── Facility sub-nav strip ─────────────────────────────────────────── -->
+  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/research')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Research</a>
+      {[
+        { href: "/research/observatory", label: "IUB Observatory" },
+        { href: "/research/core", label: "IUB CORE" },
+        { href: "/research/hpc", label: "Timaeus HPC" },
+        { href: "/research/tart", label: "TART" },
+      ].map(s => (
+        <a href={withBase(s.href)} style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${s.href === '/research/tart' ? 'background:var(--accent);color:#1a1206;font-weight:600' : 'color:var(--ink-soft);border:1px solid var(--line)'}`}>{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ── Section 1: Overview ────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Radio Telescope</p></Reveal>
+      <Reveal delay={70}>
+        <h2 class="section-h2">About TART</h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            TART — the Transient Array Radio Telescope — is CASSA's radio
+            instrument, housed at IUB CORE on the rooftop of the Main Academic
+            Building. A 24-antenna build of the open-source TART design, it gave
+            Bangladesh its first radio telescope and is the only TART in the
+            Northern Hemisphere. It first detected radio signals from space on
+            18 November 2025, and is operated by CASSA as part of the RAIN
+            (Radio Astronomy Instrumentation) research area.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="pg">
+        {[
+          { label: "Full Name", value: "Transient Array Radio Telescope (TART)" },
+          { label: "Location", value: "IUB CORE, Main Academic Building rooftop, IUB Bashundhara" },
+          { label: "Array", value: "24 antennas, ~10 ft across, full-sky image every minute" },
+          { label: "Built by", value: "Shoaib Mirza (Technical Affiliate, CASSA), at the IUB Fab Lab" },
+        ].map((card, i) => (
+          <Reveal class="card" delay={i * 80}>
+            <p class="eyebrow" style="font-size:.75rem">{card.label}</p>
+            <p style="color:var(--ink-soft);margin-top:.6rem;font-size:.97rem;line-height:1.6">{card.value}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AnimatedBand — How it was built ────────────────────────────────── -->
+  <AnimatedBand theme="cosmic">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">How it was built</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">
+        Fabricated at IUB, assembled at Workshop 2
+      </h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Section 2: How it was built ────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The build</p></Reveal>
+      <Reveal delay={70}>
+        <h2 class="section-h2">Made in Bangladesh</h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            The telescope's <strong>array structure was designed and fabricated at the
+            IUB Fabrication Laboratory (Fab Lab)</strong> by CASSA Technical Affiliate
+            <strong>Shoaib Mirza</strong>, with help from students <strong>Yusa Islam</strong> and
+            <strong>Md. Shahadat Hossain Shahal</strong>. The <strong>electronics were imported from
+            New Zealand</strong>, the home of the open-source TART project.
+          </p>
+          <p>
+            After more than six months of work — held up for a time by electronic
+            complications — the instrument was finally <strong>assembled and brought online during
+            <a href={withBase('/teaching/workshops/cw2-en')}>CASSA Workshop 2</a></strong>,
+            <em>"Installing a Radio Telescope to Image the Invisible"</em> (17–21 November 2025).
+            It detected its first radio signals on 18 November 2025, under the supervision of
+            Dr. Tim Molteno of the University of Otago, New Zealand, who brought the final
+            electronic components that completed the build. Thirty students from eleven
+            universities took part in the hands-on assembly.
+          </p>
+          <p style="font-size:.95rem">
+            Read the full story:
+            <a href={withBase('/news/tart-installation')} style="color:var(--accent)">IUB launches Bangladesh's first TART →</a>
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="pg">
+        {[
+          { label: "Array structure", value: "Designed & fabricated at the IUB Fab Lab by Shoaib Mirza, with students Yusa Islam and Md. Shahadat Hossain Shahal" },
+          { label: "Electronics", value: "Imported from New Zealand, home of the open-source TART project" },
+          { label: "Assembly", value: "Brought online during CASSA Workshop 2 (17–21 Nov 2025); first signals 18 Nov 2025" },
+        ].map((card, i) => (
+          <Reveal class="card" delay={i * 80}>
+            <p class="eyebrow" style="font-size:.75rem">{card.label}</p>
+            <p style="color:var(--ink-soft);margin-top:.6rem;font-size:.97rem;line-height:1.6">{card.value}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AnimatedBand — Science ─────────────────────────────────────────── -->
+  <AnimatedBand theme="lensing">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Science</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">
+        What TART observes
+      </h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Section 3: Science ─────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Science Capabilities</p></Reveal>
+      <Reveal delay={70}>
+        <h2 class="section-h2">Radio science with TART</h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            TART is the foundation of CASSA's in-house radio observation programme.
+            As part of the RAIN (Radio Astronomy Instrumentation) research area, the
+            telescope serves as a testbed for developing calibration workflows,
+            primary beam characterisation pipelines, and data reduction methods that
+            are directly applicable to larger arrays including LOFAR and the Square
+            Kilometre Array (SKA). Its full-sky images, captured every minute, are
+            shared live across the global TART network.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="pg">
+        {[
+          {
+            label: "Transient Detection",
+            desc: "Monitoring and detection of radio transient phenomena, including cosmic rays",
+          },
+          {
+            label: "Pipeline Development",
+            desc: "Development and testing of radio interferometry reduction pipelines for the RAIN research area",
+          },
+          {
+            label: "Calibration Research",
+            desc: "Primary beam characterisation and calibration workflows applicable to international arrays",
+          },
+          {
+            label: "Student Training",
+            desc: "Hands-on radio astronomy training for CASSA student researchers",
+          },
+        ].map((card, i) => (
+          <Reveal class="card" delay={i * 90}>
+            <h3 style="font-size:1.1rem;color:var(--ink)">{card.label}</h3>
+            <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">{card.desc}</p>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 4: Context ─────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal>
+        <div class="card" style="max-width:52rem">
+          <p class="eyebrow" style="font-size:.75rem;color:var(--ink-faint)">Network &amp; history</p>
+          <p style="color:var(--ink-soft);margin-top:.75rem;font-size:.97rem;line-height:1.7">
+            TART is part of a global network of low-cost array telescopes — with siblings
+            in Ghana, Kenya, Zambia, Namibia, Mauritius, South Africa and New Zealand — that
+            share data and full-sky imagery. MATRiX (Multiwavelength Astronomy Techniques:
+            Radio and X-ray) — the former research group centred on this instrumentation — has
+            been renamed RAIN (Radio Astronomy Instrumentation) to better reflect CASSA's
+            evolving focus on array design, pipeline development, and multi-telescope coordination.
+          </p>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .pg { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
+  @media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:540px) { .pg { grid-template-columns:1fr; } }
+  .section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+</style>

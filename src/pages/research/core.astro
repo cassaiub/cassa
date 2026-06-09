@@ -9,7 +9,7 @@ import { withBase } from "../../data/site-nav.ts";
 
 <BaseLayout
   title="IUB CORE — CASSA Research"
-  description="Campus Observatory for Research and Education — CASSA's rooftop facility on the main academic building, housing optical telescopes, the STAR Telescope, and educational instruments."
+  description="Campus Observatory for Research and Education — CASSA's rooftop facility on the main academic building, housing optical telescopes, TART, and educational instruments."
   current="/research/core"
 >
   <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
@@ -17,7 +17,7 @@ import { withBase } from "../../data/site-nav.ts";
     theme="cosmic"
     eyebrow="Research · Facilities"
     title="IUB CORE"
-    lede="Campus Observatory for Research and Education — CASSA's rooftop facility on the main academic building, housing optical telescopes, the STAR Telescope, and educational instruments."
+    lede="Campus Observatory for Research and Education — CASSA's rooftop facility on the main academic building, housing optical telescopes, TART, and educational instruments."
   />
 
   <!-- ── Facility sub-nav strip ───────────────────────────────────────── -->
@@ -28,7 +28,7 @@ import { withBase } from "../../data/site-nav.ts";
         { href: "/research/observatory", label: "IUB Observatory" },
         { href: "/research/core",        label: "IUB CORE" },
         { href: "/research/hpc",         label: "Timaeus HPC" },
-        { href: "/research/star",       label: "STAR Telescope" },
+        { href: "/research/tart",       label: "TART" },
       ].map(s => (
         <a href={withBase(s.href)} style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${s.href === '/research/core' ? 'background:var(--accent);color:#1a1206;font-weight:600' : 'color:var(--ink-soft);border:1px solid var(--line)'}`}>{s.label}</a>
       ))}
@@ -46,7 +46,7 @@ import { withBase } from "../../data/site-nav.ts";
             IUB CORE (Campus Observatory for Research and Education) is CASSA's
             rooftop observatory on the Main Academic Building of Independent
             University, Bangladesh. It hosts both the optical instruments and
-            the STAR Telescope. IUB
+            TART, CASSA's radio telescope. IUB
             CORE serves both research and educational purposes, providing
             students and CASSA members with hands-on access to working
             astronomical instruments in the heart of the Bashundhara campus.
@@ -96,11 +96,11 @@ import { withBase } from "../../data/site-nav.ts";
         </Reveal>
         <Reveal class="card" delay={110}>
           <p class="eyebrow" style="font-size:.68rem">Radio</p>
-          <h3 style="font-size:1.25rem;margin-top:.45rem">STAR Telescope</h3>
-          <p style="font-size:.85rem;color:var(--ink-faint);margin-top:.25rem">Small Transient Array Radio Telescope</p>
+          <h3 style="font-size:1.25rem;margin-top:.45rem">TART</h3>
+          <p style="font-size:.85rem;color:var(--ink-faint);margin-top:.25rem">Transient Array Radio Telescope</p>
           <p style="color:var(--ink-soft);margin-top:.8rem;font-size:.97rem;line-height:1.65">
-            Designed by Shoaib Mirza ·{" "}
-            <a href={withBase('/research/star')} style="color:var(--accent)">See the STAR Telescope page</a>
+            Built by Shoaib Mirza at the IUB Fab Lab ·{" "}
+            <a href={withBase('/research/tart')} style="color:var(--accent)">See the TART page</a>
           </p>
         </Reveal>
         <Reveal class="card" delay={220}>

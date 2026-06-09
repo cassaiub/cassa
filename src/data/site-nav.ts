@@ -49,7 +49,7 @@ export const NAV: NavItem[] = [
           { href: "/research/observatory", label: "IUB Observatory" },
           { href: "/research/core", label: "IUB CORE" },
           { href: "/research/hpc", label: "Timaeus HPC" },
-          { href: "/research/star", label: "STAR Telescope" },
+          { href: "/research/tart", label: "TART" },
         ],
       },
     ],

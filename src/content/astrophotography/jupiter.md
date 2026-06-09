@@ -1,6 +1,6 @@
 ---
 title: "Jupiter"
-categories: ["Solar System"]
+categories: ["Featured", "Solar System"]
 image: "./jupiter.webp"
 imageAlt: "Jupiter"
 caption: "Captured by Sohanur Rahman | Jahirul Islam"

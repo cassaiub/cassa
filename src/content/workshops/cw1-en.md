@@ -101,7 +101,7 @@ Therefore, the only way to improve resolution in radio is to use an array of wid
 
 ### 1.2. Array Radio Telescope (ART)
 
-After a tea break, I tried to explain to everyone the concept of an array made of multiple antennas. At that time, we were deploying a small array radio telescope called the Small Transient Array Radio Telescope (START) just outside the CASSA office. Shoaib from the Fab Lab was still working outside then. This was an array of 24 antennas, but during the workshop, we worked with the LOFAR telescope in the Netherlands, which has nearly 50,000 high-band antennas. A combination of two antennas is called an interferometer, and many such interferometers together make up an array.
+After a tea break, I tried to explain to everyone the concept of an array made of multiple antennas. At that time, we were deploying a small array radio telescope called the Transient Array Radio Telescope (TART) just outside the CASSA office. Shoaib from the Fab Lab was still working outside then. This was an array of 24 antennas, but during the workshop, we worked with the LOFAR telescope in the Netherlands, which has nearly 50,000 high-band antennas. A combination of two antennas is called an interferometer, and many such interferometers together make up an array.
 
 ![](https://cassa.site/wp-content/uploads/2025/05/interferometer-5.webp)
 
@@ -161,7 +161,7 @@ From the core in the Netherlands, four spiral arms extend up to about 500 km. Th
 
 The figure above shows the configuration of a single HBA station. Sixteen crossed dipole antennas (blue crosses in the figure) form a tile (red square), and 24 such tiles make up a 30-meter station (green circle). The beam size of a single dipole at 150 MHz is about 90 degrees (blue circle), the tile beam is 20 degrees (red circle), and the station beam is just 4 degrees (green circle). As per the familiar $\lambda/D$ formula, the larger the aperture, the smaller the beam becomes. A LOFAR station like this functions as a single antenna in the full array.
 
-This idea needs further thought. In the START near the CASSA office, 24 antennas form an array, but each antenna is very simple, with no internal sub-elements. But in LOFAR’s 30 core stations, each of the 60 HBA stations acts like a single dish antenna, and each of them is itself a collection of 384 antennas. That’s why the primary beam of LOFAR must also be constructed by combining the beams of those 384 antennas.
+This idea needs further thought. In the TART near the CASSA office, 24 antennas form an array, but each antenna is very simple, with no internal sub-elements. But in LOFAR’s 30 core stations, each of the 60 HBA stations acts like a single dish antenna, and each of them is itself a collection of 384 antennas. That’s why the primary beam of LOFAR must also be constructed by combining the beams of those 384 antennas.
 
 In this case, there are three steps, as shown in the figure above (Brackenhoff et al. 2025). First, a 90-degree beam of a cross-dipole is modeled (first panel from the left), then a 20-degree tile array factor is constructed by combining 16 dipole beams (second panel), and finally, a 4-degree station array factor is constructed by combining 24 tile beams (third panel). Combining the dipole beam with the tile and station array factors yields a 4-degree station beam, which is shown in the fourth and final panel. Only the dipole beam needs to be physically modeled via electromagnetic (EM) simulations; for the array factors, geometry alone is sufficient. LOFAR is a software telescope, a geometry machine.
 

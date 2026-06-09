@@ -9,4 +9,4 @@ order: 51
 status: "published"
 ---
 
-Technical Affiliate. Designer of TART (Transient Array Radio Telescope) — the basis for CASSA's STAR Telescope.
+Technical Affiliate. Built CASSA's TART (Transient Array Radio Telescope) — Bangladesh's first radio telescope — with its array structure fabricated at the IUB Fab Lab.

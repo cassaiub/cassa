@@ -36,7 +36,7 @@ const useCases = [
   },
   {
     title: "Radio Pipeline",
-    desc: "Processes radio interferometry data from LOFAR, SKA, and the STAR Telescope; primary beam characterisation and calibration",
+    desc: "Processes radio interferometry data from LOFAR, SKA, and TART; primary beam characterisation and calibration",
   },
   {
     title: "X-ray Analysis",
@@ -97,7 +97,7 @@ const hwTable = [
         { href: "/research/observatory", label: "IUB Observatory" },
         { href: "/research/core", label: "IUB CORE" },
         { href: "/research/hpc", label: "Timaeus HPC" },
-        { href: "/research/star", label: "STAR Telescope" },
+        { href: "/research/tart", label: "TART" },
       ].map(s => (
         <a href={withBase(s.href)} style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${s.href === '/research/hpc' ? 'background:var(--accent);color:#1a1206;font-weight:600' : 'color:var(--ink-soft);border:1px solid var(--line)'}`}>{s.label}</a>
       ))}

@@ -8,11 +8,16 @@ import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 
-// Recent images — six from the astrophotography collection (same source &
-// sort as /durbin/images), shown as a teaser strip that links there.
-const photos = (await getCollection("astrophotography", ({ data }) => data.status !== "draft"))
-  .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
-  .slice(0, 6);
+// Most striking images — the astrophotography entries tagged "Featured" lead
+// (curate by adding/removing "Featured" in an image's `categories`), then any
+// remaining images fill up to six. Shown as a teaser strip linking to the gallery.
+const byId = (a, b) => a.id.localeCompare(b.id, undefined, { numeric: true });
+const allPhotos = await getCollection("astrophotography", ({ data }) => data.status !== "draft");
+const isStriking = (e) => e.data.categories.includes("Featured");
+const photos = [
+  ...allPhotos.filter(isStriking).sort(byId),
+  ...allPhotos.filter((e) => !isStriking(e)).sort(byId),
+].slice(0, 6);
 
 // Latest updates — newest three Durbin-scoped news posts (same query as
 // /durbin/updates). New posts file themselves here automatically.
@@ -122,10 +127,10 @@ const explore = [
     <section class="section section--elev">
       <div class="wrap">
         <Reveal><p class="eyebrow">From the sky</p></Reveal>
-        <Reveal delay={60}><h2 class="d-h2">Recent images</h2></Reveal>
+        <Reveal delay={60}><h2 class="d-h2">The standouts</h2></Reveal>
         <Reveal delay={100}>
           <p class="d-lede">
-            A glimpse of the deep sky as seen through Durbin's telescopes. See the
+            A selection of the most striking deep-sky images captured through Durbin's telescopes. See the
             <a href={withBase("/durbin/images")}> full gallery →</a>
           </p>
         </Reveal>

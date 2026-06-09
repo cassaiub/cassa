@@ -4,23 +4,23 @@ date: "2025-11-27T12:45:58+06:00"
 category: "Milestones"
 summary: "Independent University, Bangladesh (IUB) has launched the country’s first Transient Array Radio Telescope (TART), marking a milestone in the nation’s entry into radio…"
 hero: "../../assets/news/tart-installation/tart-1-e1768343914506.webp"
-heroAlt: "The START radio-telescope antenna array on the rooftop of IUB's academic building, with the city skyline behind."
+heroAlt: "The TART radio-telescope antenna array on the rooftop of IUB's academic building, with the city skyline behind."
 featured: true
 theme: "lensing"
 author: "CASSA Admin"
 ---
 
-Independent University, Bangladesh (IUB) has launched the country’s first Transient Array Radio Telescope (TART), marking a milestone in the nation’s entry into radio astronomy instrumentation. Installed on the roof of IUB’s 10-storey academic building, the telescope successfully detected radio signals from space for the first time on November 18, 2025. This is not only Bangladesh’s first TART but also the only such telescope in the entire Northern Hemisphere. Its commissioning marks the beginning of local capacity in building radio astronomy instruments. To signify this “start,” the telescope has been named START – a “small TART.”
+Independent University, Bangladesh (IUB) has launched the country’s first Transient Array Radio Telescope (TART), marking a milestone in the nation’s entry into radio astronomy instrumentation. Installed on the roof of IUB’s 10-storey academic building, the telescope successfully detected radio signals from space for the first time on November 18, 2025. This is not only Bangladesh’s first TART but also the only such telescope in the entire Northern Hemisphere. Its commissioning marks the beginning of local capacity in building radio astronomy instruments.
 
-![START, Bangladesh's first Transient Array Radio Telescope, a 24-antenna array installed on the rooftop of IUB's 10-storey academic building](../../assets/news/tart.webp)
+![TART, Bangladesh's first Transient Array Radio Telescope, a 24-antenna array installed on the rooftop of IUB's 10-storey academic building](../../assets/news/tart.webp)
 
-*START – the “small TART” – on the rooftop of IUB's academic building, the country's first radio telescope and the only TART in the Northern Hemisphere.*
+*TART on the rooftop of IUB's academic building — the country's first radio telescope and the only TART in the Northern Hemisphere.*
 
 Through an initiative of IUB’s Center for Astronomy, Space Science and Astrophysics (CASSA), the array structure of the telescope was fully designed and fabricated at IUB’s own Fabrication Laboratory (Fab Lab IUB). The project received financial support from IUB’s Department of Physical Sciences. The antennas and electronic components were imported from New Zealand. The telescope was first brought online on November 18 under the supervision of Dr. Tim Molteno, Senior Lecturer at the University of Otago, New Zealand. Images of the entire sky, captured by TART telescopes in Bangladesh and in seven Southern Hemisphere countries, can be viewed live at: [https://map.elec.ac.nz](https://map.elec.ac.nz)
 
 Dr. Khan Muhammad Bin Asad, Director of CASSA and Assistant Professor at IUB’s Department of Physical Sciences, said, “Installing this telescope marks the beginning of astronomical instrumentation in Bangladesh. It took us more than six months to build it. Due to some electronic complications, we were unable to activate it earlier. Dr. Molteno brought several new electronic components with him, and under his supervision, once those were integrated, we were finally able to activate the telescope.”
 
-Dr. Asad, who holds a PhD in Radio Astronomy and Astrophysics from the University of Groningen in the Netherlands, added: “START is different from the telescopes we usually know. Telescopes like James Webb or Hubble rely on mirrors to create images from visible light. START, on the other hand, detects invisible radio waves using multiple GPS antennas. Its primary scientific goals are to measure the electron content of Earth’s ionosphere and detect electrons and other fermionic particles – commonly called cosmic rays – that strike our atmosphere from space. For imaging research, our main source will be the many GPS satellites orbiting Earth, which will allow us to determine START’s properties with high precision.”
+Dr. Asad, who holds a PhD in Radio Astronomy and Astrophysics from the University of Groningen in the Netherlands, added: “TART is different from the telescopes we usually know. Telescopes like James Webb or Hubble rely on mirrors to create images from visible light. TART, on the other hand, detects invisible radio waves using multiple GPS antennas. Its primary scientific goals are to measure the electron content of Earth’s ionosphere and detect electrons and other fermionic particles – commonly called cosmic rays – that strike our atmosphere from space. For imaging research, our main source will be the many GPS satellites orbiting Earth, which will allow us to determine TART’s properties with high precision.”
 
 To provide students from IUB and 10 other universities from across Bangladesh with hands-on experience in building and activating a radio telescope, CASSA organized a five-day workshop. On November 18, the first day of the workshop, Dr. Molteno – one of the global leaders of TART technology – briefed participants on different types of radio telescopes installed around the world.
 
@@ -34,6 +34,6 @@ He noted that several large radio telescopes worldwide span sizes from hundreds 
 
 Dr. Asad said, “Building the telescope is not the biggest achievement. The real accomplishment will be using the data from this telescope for advanced research and enabling scientists worldwide to benefit from it. If that happens, Bangladesh will find a place on the global map of astronomy. Apart from IUB, no other university in Bangladesh teaches astronomy. We currently offer several undergraduate courses as part of a minor, and our long-term goal is to launch a full master’s program in this field.”
 
-At the inauguration ceremony of the workshop on November 18, IUB Vice Chancellor Prof. M. Tamim said, “With our START telescope, Bangladesh has taken its first step into constructing astronomical instruments. This is a proud moment for IUB. One of CASSA’s goals is to develop a new generation of space scientists and engineers in Bangladesh. Today marks the beginning of that journey.”
+At the inauguration ceremony of the workshop on November 18, IUB Vice Chancellor Prof. M. Tamim said, “With our TART telescope, Bangladesh has taken its first step into constructing astronomical instruments. This is a proud moment for IUB. One of CASSA’s goals is to develop a new generation of space scientists and engineers in Bangladesh. Today marks the beginning of that journey.”
 
 Other speakers at the inauguration ceremony of the workshop included IUB Pro-Vice Chancellor Prof. Dr. Daniel W. Lund; Director of Graduate Studies Prof. Dr. M. Arshad Momen; Dean of the School of Engineering, Technology and Sciences Dr. Habib Bin Muzaffar; Head of the Department of Physical Sciences Dr. Farhad Alam; and Head of the Department of Electrical and Electronic Engineering Dr. Mustafa Habib Chowdhury.
