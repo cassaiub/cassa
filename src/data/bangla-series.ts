@@ -1,4 +1,4 @@
-/* CASSA's four Bengali article series — an outreach activity, surfaced under
+/* CASSA's two Bengali article series — an outreach activity, surfaced under
    /outreach/bangla (not /news). Single source of truth for the series list,
    their stable anchor ids, transliteration and a one-line description.
    The legacy WordPress category name is the join key against the `news`
@@ -18,8 +18,6 @@ export type BanglaSeries = {
 export const BANGLA_SERIES: BanglaSeries[] = [
   { name: "নতুন কথা", id: "notun-kotha", roman: "Notun Kotha", desc: "Research-news explainers — new findings, in Bangla." },
   { name: "দূরের কথা", id: "durer-kotha", roman: "Durer Kotha", desc: "Bangla translations of popular astronomy essays (e.g. AAS Nova) that explain published research." },
-  { name: "সহজ কথা", id: "shohoj-kotha", roman: "Shohoj Kotha", desc: "Popular-science writing for a general audience." },
-  { name: "ক্লাসিকেল কথা", id: "classical-kotha", roman: "Classical Kotha", desc: "Translations of classic astronomy texts." },
 ];
 
 export const BANGLA_SERIES_NAMES: string[] = BANGLA_SERIES.map((s) => s.name);

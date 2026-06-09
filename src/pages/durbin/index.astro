@@ -1,0 +1,281 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+
+// Recent images — six from the astrophotography collection (same source &
+// sort as /durbin/images), shown as a teaser strip that links there.
+const photos = (await getCollection("astrophotography", ({ data }) => data.status !== "draft"))
+  .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+  .slice(0, 6);
+
+// Latest updates — newest three Durbin-scoped news posts (same query as
+// /durbin/updates). New posts file themselves here automatically.
+const updates = (await getCollection("news", ({ data }) =>
+  data.status !== "draft" && (data.category === "Durbin" || data.durbin)))
+  .sort((a, b) => +b.data.date - +a.data.date)
+  .slice(0, 3);
+
+const TZ = "Asia/Dhaka";
+const fmtDate = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "short", year: "numeric" }).format(d);
+
+// The four Durbin sub-pages this hub opens onto.
+const explore = [
+  {
+    href: "/durbin/images",
+    label: "Astrophotography",
+    desc: "Deep-sky objects imaged by Durbin volunteers — galaxies, nebulae, clusters, comets and planets.",
+  },
+  {
+    href: "/durbin/updates",
+    label: "Updates",
+    desc: "Dispatches from the programme — workshops, school visits, public astronomy nights and open calls.",
+  },
+  {
+    href: "/durbin/volunteers",
+    label: "Volunteers",
+    desc: "The students from across Bangladesh who power CASSA's astronomy outreach.",
+  },
+  {
+    href: "/durbin/manual",
+    label: "The Durbin Manual",
+    desc: "How the programme is run — governance, the volunteer model, and safeguarding.",
+  },
+];
+---
+
+<BaseLayout
+  title="Durbin — CASSA"
+  description="Durbin is CASSA's volunteer astronomy-outreach programme: astrophotography and science communication that bring the wonders of the universe to the public across Bangladesh."
+  current="/outreach"
+>
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Outreach · Durbin"
+    title="Durbin"
+    lede="দূরবিন — দূর বিশ্বের নাগরিক · Citizens of a distant universe. CASSA's volunteer programme for astrophotography and science communication."
+  />
+
+  <!-- About (elevated, right after the dark hero) -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">About Durbin</p></Reveal>
+      <Reveal delay={60}><h2 class="d-h2">Astronomy that brings people closer</h2></Reveal>
+      <Reveal delay={100}>
+        <Prose>
+          <p>
+            <strong>Durbin</strong> — Bangla for binoculars or a telescope — is CASSA's outreach
+            programme dedicated to <strong>astrophotography</strong> and <strong>science
+            communication</strong>, powered by a cohort of student volunteers from across Bangladesh.
+            Our mission is to introduce the wonders of the universe to the public, using astronomy as
+            a tool to bridge societal gaps. By situating Earth within the vastness of the cosmos and
+            making distant galaxies familiar, we foster a sense of universal fraternity — transcending
+            the boundaries of language, nation, religion, gender, and class.
+          </p>
+          <p>
+            The programme was founded on <strong>9 March 2023</strong> by <strong>Dr. Lamiya
+            Mowla</strong>, with initial support from the University of Toronto's <a
+            href="https://www.dunlap.utoronto.ca/" target="_blank" rel="noopener">Dunlap Institute
+            for Astronomy &amp; Astrophysics</a>. That partnership brought two <a
+            href="https://www.unistellar.com/" target="_blank" rel="noopener">Unistellar</a> small
+            telescopes to IUB, establishing a permanent hub for astronomy outreach in the region.
+            From May 2026 Durbin is supported by a <strong>British Council Bangladesh</strong> grant
+            through Women of the World.
+          </p>
+          <p class="d-contact">
+            <strong>Contact:</strong>
+            <a href="mailto:durbin.cassa@iub.edu.bd">durbin.cassa@iub.edu.bd</a>
+            <span class="d-contact__who">— Farzana Akter Lima, Project Manager</span>
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- Explore — the four sub-pages -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Explore Durbin</p></Reveal>
+      <Reveal delay={60}><h2 class="d-h2">Where to go next</h2></Reveal>
+      <div class="d-cards">
+        {explore.map((c, i) => (
+          <Reveal class="d-cards__wrap" delay={90 + i * 50}>
+            <a class="d-card" href={withBase(c.href)}>
+              <span class="d-card__label">{c.label}</span>
+              <span class="d-card__desc">{c.desc}</span>
+              <span class="d-card__more">Open <span aria-hidden="true">→</span></span>
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent images -->
+  {photos.length > 0 && (
+    <section class="section section--elev">
+      <div class="wrap">
+        <Reveal><p class="eyebrow">From the sky</p></Reveal>
+        <Reveal delay={60}><h2 class="d-h2">Recent images</h2></Reveal>
+        <Reveal delay={100}>
+          <p class="d-lede">
+            A glimpse of the deep sky as seen through Durbin's telescopes. See the
+            <a href={withBase("/durbin/images")}> full gallery →</a>
+          </p>
+        </Reveal>
+        <div class="d-gal">
+          {photos.map((p, i) => (
+            <a
+              class="d-gtile"
+              href={withBase("/durbin/images")}
+              data-reveal
+              style={`--reveal-delay:${Math.min(i, 6) * 40}ms`}
+            >
+              <Image src={p.data.image} alt={p.data.imageAlt ?? p.data.title} width={420} loading="lazy" />
+              <span class="d-gtile__cap">{p.data.title}</span>
+            </a>
+          ))}
+        </div>
+        <Reveal delay={120}>
+          <p class="d-note">
+            All Durbin images are licensed under a <a
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank"
+            rel="noopener">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
+            license.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  )}
+
+  <!-- Latest updates -->
+  {updates.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <Reveal><p class="eyebrow">Latest from Durbin</p></Reveal>
+        <Reveal delay={60}><h2 class="d-h2">Updates</h2></Reveal>
+        <ol class="d-upd">
+          {updates.map((p, i) => (
+            <li>
+              <a
+                class="d-uprow"
+                href={withBase(`/news/${p.id}`)}
+                data-reveal
+                style={`--reveal-delay:${Math.min(i, 6) * 50}ms`}
+              >
+                {p.data.hero && (
+                  <span class="d-uprow__thumb">
+                    <Image src={p.data.hero} alt={p.data.heroAlt ?? ""} width={220} loading="lazy" />
+                  </span>
+                )}
+                <span class="d-uprow__body">
+                  <time class="d-uprow__date" datetime={p.data.date.toISOString()}>{fmtDate(p.data.date)}</time>
+                  <span class="d-uprow__title">{p.data.title}</span>
+                  {p.data.summary && <span class="d-uprow__sum">{p.data.summary}</span>}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <Reveal delay={140}>
+          <p class="d-lede"><a href={withBase("/durbin/updates")}>All Durbin updates →</a></p>
+        </Reveal>
+      </div>
+    </section>
+  )}
+
+  <!-- Connect-out band -->
+  <AnimatedBand theme="cosmic">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Beyond Durbin</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">Part of CASSA's wider outreach</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal>
+        <Prose>
+          <p>
+            Durbin is one strand of CASSA's public outreach, which also runs the Bangladesh Olympiad
+            on Astronomy &amp; Astrophysics and a Bengali-language popular-astronomy writing
+            programme — including Durbin's own series, <span lang="bn">দূরের কথা</span>.
+          </p>
+        </Prose>
+      </Reveal>
+      <Reveal delay={80}>
+        <div class="d-links">
+          <a class="btn" href={withBase("/outreach")}>Outreach overview</a>
+          <a class="btn" href={withBase("/outreach/bangla#durer-kotha")}>দূরের কথা</a>
+          <a class="btn" href="https://www.facebook.com/durbin.cassa" target="_blank" rel="noopener">Durbin on Facebook ↗</a>
+          <a class="btn btn--solid" href="mailto:durbin.cassa@iub.edu.bd">Email Durbin</a>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .d-h2 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); letter-spacing: -.015em; margin: .3rem 0 0; color: var(--ink); }
+  .d-lede { color: var(--ink-soft); font-size: 1rem; line-height: 1.7; margin-top: 1.2rem; }
+  .d-contact { margin-top: 1.4rem; }
+  .d-contact__who { color: var(--ink-faint); }
+
+  /* Explore cards */
+  .d-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+  @media (max-width: 620px) { .d-cards { grid-template-columns: 1fr; } }
+  .d-card {
+    display: flex; flex-direction: column; gap: .4rem; height: 100%;
+    background: var(--bg-elev-2); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 14px; padding: 1.2rem 1.35rem; transition: border-color .2s, transform .2s;
+  }
+  .d-card:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); transform: translateY(-2px); }
+  [data-theme="light"] .d-card { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .d-card__label { font-size: 1.15rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .d-card__desc { font-size: .9rem; color: var(--ink-soft); line-height: 1.6; }
+  .d-card__more { margin-top: auto; padding-top: .5rem; color: var(--accent); font-size: .82rem; font-weight: 600; }
+
+  /* Recent images */
+  .d-gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+  @media (max-width: 760px) { .d-gal { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 460px) { .d-gal { grid-template-columns: 1fr; } }
+  .d-gtile {
+    position: relative; display: block; border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--line); background: var(--bg-elev-2);
+  }
+  [data-theme="light"] .d-gtile { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .d-gtile img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; transition: transform .35s ease; }
+  .d-gtile:hover img { transform: scale(1.05); }
+  .d-gtile__cap {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 1.4rem .8rem .65rem;
+    font-size: .82rem; font-weight: 600; color: #fff; line-height: 1.3;
+    background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+  }
+  .d-note { color: var(--ink-faint); font-size: .82rem; line-height: 1.6; margin-top: 1.4rem; }
+
+  /* Updates */
+  .d-upd { list-style: none; margin: 2rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .9rem; }
+  .d-uprow {
+    display: flex; gap: 1.1rem; align-items: stretch;
+    background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1rem 1.15rem; transition: border-color .2s, transform .2s;
+  }
+  .d-uprow:hover { border-color: var(--accent); transform: translateY(-2px); }
+  [data-theme="light"] .d-uprow { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .d-uprow__thumb { flex-shrink: 0; width: 92px; border-radius: 10px; overflow: hidden; }
+  .d-uprow__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .d-uprow__body { display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+  .d-uprow__date { color: var(--accent); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+  .d-uprow__title { color: var(--ink); font-weight: 700; font-size: 1.02rem; line-height: 1.35; }
+  .d-uprow__sum { color: var(--ink-soft); font-size: .88rem; line-height: 1.55; }
+  @media (max-width: 460px) { .d-uprow__thumb { display: none; } }
+
+  /* Connect-out links */
+  .d-links { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.6rem; }
+</style>

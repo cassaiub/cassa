@@ -1,0 +1,168 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import { withBase, EXTERNAL } from "../data/site-nav.ts";
+
+// The CASSA course catalogue at IUB. Names follow the IUB curriculum document
+// (local copy: knb/teaching/IUB-curriculum.pdf). Descriptions are written for
+// this page — vivid, jargon-light. Minor programme detail (credits, tracks,
+// admission) lives on the Minor page, not here. Only AST 100 has a live site.
+const courses = [
+  {
+    code: "AST 100", title: "Our Cosmic History",
+    href: EXTERNAL.ast100, linkLabel: "Explore the AST 100 site",
+    desc: "Fourteen billion years, told as a single story. From the first second after the Big Bang to the rise of life and mind, the universe unfolds across seven ages — no equations, no jargon, just the grand arc of cosmic change and where humanity sits within it. The one course anyone can take.",
+  },
+  {
+    code: "AST 200", title: "History of Astronomy",
+    desc: "Three thousand years of looking up. Stone circles and Babylonian tablets, the geometry of the Greeks, the great observatories of the Islamic world, and the revolution that moved the Sun to the centre — the long human effort to read the sky and, again and again, remake our place in it.",
+  },
+  {
+    code: "AST 201", title: "Introduction to Astronomy",
+    desc: "How astronomy is actually done. Light and the messengers it carries, the coordinate grids that pin down the sky, the optics of telescopes and the silicon of detectors — then the hands-on craft of turning raw photons into a calibrated, science-ready image.",
+  },
+  {
+    code: "AST 301", title: "Introduction to Astrophysics",
+    desc: "Where the equations begin. The Friedmann model of an expanding cosmos and its thermal history from a hot, dense start; how matter clumped into the structure we see; and the 21-cm hydrogen line that radio astronomers chase all the way back to the cosmic dawn.",
+  },
+  {
+    code: "AST 401", title: "Planets and Planetary Systems",
+    desc: "Worlds, near and far. How planets condense out of disks of gas and dust, the architecture of our own solar system, the five ways we hunt planets around other stars — and the question underneath it all: where else could life take hold?",
+  },
+  {
+    code: "AST 402", title: "Stars and Interstellar Medium",
+    desc: "The life and death of stars. Binary dynamics and the Hertzsprung–Russell diagram, the nuclear furnaces burning in stellar cores, a close look at our own Sun, and the clouds of gas and dust between the stars where the next generation is forged.",
+  },
+  {
+    code: "AST 403", title: "Galaxies and Intergalactic Medium",
+    desc: "Islands of stars and the web that strings them together. The Milky Way and its kin, the scaling laws that govern galaxies, the violent engines of active nuclei and quasars, and how it all assembled from the first light after cosmic dawn.",
+  },
+  {
+    code: "AST 410", title: "Radio Astronomy",
+    desc: "Tuning in to the invisible universe. The physics of radio emission, the engineering of dishes and receivers, the art of interferometry that links antennas across continents (ALMA, SKA), and the 21-cm song of neutral hydrogen ringing across the sky.",
+  },
+  {
+    code: "PHY 424", title: "Atmospheric and Space Physics",
+    desc: "Earth as a planet in space. The structure of the atmosphere and the weather it drives, the motion of charged particles through magnetic fields, the magnetosphere and ionosphere that shield us — and the electrodynamics that paints the aurora.",
+  },
+];
+---
+
+<BaseLayout
+  title="Courses — CASSA Teaching"
+  description="The astronomy courses CASSA teaches at IUB — from the general-education AST 100: Our Cosmic History to the upper-level astrophysics catalogue."
+  current="/teaching"
+>
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Teaching · Courses"
+    title="Courses"
+    lede="The astronomy courses CASSA teaches at Independent University, Bangladesh — from a gateway open to every student to an upper-level astrophysics catalogue."
+  />
+
+  <!-- ── Sub-nav strip ──────────────────────────────────────────────────── -->
+  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/teaching')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Teaching</a>
+      <a href={withBase('/courses')} style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;background:var(--accent);color:#1a1206;font-weight:600">Courses</a>
+      <a href={withBase('/teaching/minor')} style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">Minor in A&amp;A</a>
+      <a href={withBase(EXTERNAL.abekta)} style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">Abekta ↗</a>
+    </div>
+  </nav>
+
+  <!-- ── Course catalogue — immersive vertical list ─────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The catalogue</p></Reveal>
+      <Reveal delay={60}><h2 class="clist-h2">Nine ways into the universe</h2></Reveal>
+
+      <ol class="clist">
+        {courses.map((c, i) => (
+          <li
+            class:list={["crow", { "crow--feature": c.href }]}
+            data-reveal
+            style={`--reveal-delay:${Math.min(i, 6) * 50}ms`}
+          >
+            <div class="crow__meta">
+              <span class="crow__num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="crow__code">{c.code}</span>
+            </div>
+            <div class="crow__body">
+              <h3 class="crow__title">{c.title}</h3>
+              <p class="crow__desc">{c.desc}</p>
+              {c.href && (
+                <a href={withBase(c.href)} class="crow__link">
+                  {c.linkLabel}
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+                </a>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .clist-h2 { font-size:clamp(1.7rem,3.6vw,2.5rem); letter-spacing:-.02em; margin:.3rem 0 0; color:var(--ink); }
+
+  .clist { list-style:none; margin:3rem 0 0; padding:0; border-top:1px solid var(--line); }
+  .clist > li { margin:0; }
+
+  .crow {
+    display:grid;
+    grid-template-columns:minmax(0,0.85fr) minmax(0,2.15fr);
+    gap:1.2rem 3rem;
+    align-items:start;
+    padding:2.6rem 1.25rem;
+    border-bottom:1px solid var(--line);
+    border-radius:16px;
+    position:relative;
+    transition:background-color .25s ease, transform .25s ease;
+  }
+  .crow:hover { background:color-mix(in srgb, var(--accent) 6%, transparent); }
+  @media (min-width:761px) { .crow:hover { transform:translateX(6px); } }
+  @media (max-width:760px) {
+    .crow { grid-template-columns:1fr; gap:.6rem; padding:2rem .25rem; }
+  }
+
+  /* Left rail — oversized ghost ordinal + accent code */
+  .crow__meta { display:flex; align-items:baseline; gap:1rem; }
+  .crow__num {
+    font-size:clamp(2.6rem,6vw,4.4rem);
+    font-weight:800;
+    line-height:.8;
+    letter-spacing:-.04em;
+    color:color-mix(in srgb, var(--ink) 12%, transparent);
+    transition:color .25s ease;
+    font-variant-numeric:tabular-nums;
+  }
+  .crow:hover .crow__num { color:color-mix(in srgb, var(--accent) 55%, transparent); }
+  .crow__code {
+    font-size:.92rem; font-weight:700; letter-spacing:.04em;
+    color:var(--accent); white-space:nowrap;
+  }
+  @media (max-width:760px) {
+    .crow__meta { gap:.7rem; }
+    .crow__num { font-size:2.4rem; }
+  }
+
+  /* Right body */
+  .crow__title { font-size:clamp(1.35rem,2.6vw,1.85rem); color:var(--ink); margin:0; letter-spacing:-.015em; line-height:1.18; }
+  .crow:hover .crow__title { color:var(--accent); }
+  .crow__title, .crow:hover .crow__title { transition:color .25s ease; }
+  .crow__desc { color:var(--ink-soft); font-size:1.02rem; line-height:1.75; margin:.9rem 0 0; max-width:62ch; }
+  .crow__link {
+    display:inline-flex; align-items:center; gap:.4rem;
+    margin-top:1.15rem; font-weight:700; font-size:.92rem;
+    color:var(--accent-2);
+    transition:gap .2s ease, opacity .2s ease;
+  }
+  .crow__link:hover { gap:.65rem; opacity:.85; }
+
+  /* The one course with a live site reads a touch louder */
+  .crow--feature { background:color-mix(in srgb, var(--accent) 5%, transparent); }
+</style>

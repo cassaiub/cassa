@@ -1,10 +1,9 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
-import AnimatedBand from "../../../components/immersive/AnimatedBand.astro";
-import Reveal from "../../../components/immersive/Reveal.astro";
-import Prose from "../../../components/immersive/Prose.astro";
-import { withBase } from "../../../data/site-nav.ts";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
 
 // Durbin Management Team — name · CASSA role · Durbin responsibility
 // (Constitution cl. 33 / Appendix F; via knb/outreach/summary.md). Pay/hours omitted.
@@ -165,14 +164,6 @@ const team = [
           </p>
         </Prose>
       </Reveal>
-      <Reveal class="doc-wrap" delay={140}>
-        <a class="dm-doc" href={withBase('/docs/CASSA_Constitution_v2.0.pdf')} target="_blank" rel="noopener">
-          <span class="dm-doc__ic" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
-          </span>
-          <span class="dm-doc__txt"><strong>CASSA Constitution v2.0</strong><span class="dm-doc__sub">The governing document — outreach in cl. 33, Appendices E &amp; F · PDF ↗</span></span>
-        </a>
-      </Reveal>
     </div>
   </section>
 </BaseLayout>
@@ -190,11 +181,4 @@ const team = [
   .dm-member__name { color: var(--ink); font-weight: 700; font-size: 1.05rem; margin: 0; line-height: 1.3; }
   .dm-member__role { color: var(--accent); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; margin: .35rem 0 0; }
   .dm-member__resp { color: var(--ink-soft); font-size: .9rem; line-height: 1.6; margin: .6rem 0 0; }
-
-  .dm-doc { display: inline-flex; align-items: center; gap: 1rem; margin-top: 2rem; background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.25rem; transition: border-color .2s, transform .2s; }
-  .dm-doc:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .dm-doc__ic { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 11px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
-  .dm-doc__txt { display: flex; flex-direction: column; }
-  .dm-doc__txt strong { color: var(--ink); font-size: 1.02rem; }
-  .dm-doc__sub { color: var(--ink-faint); font-size: .84rem; margin-top: .15rem; }
 </style>

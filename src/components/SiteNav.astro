@@ -49,7 +49,16 @@ function isParentActive(href: string, cur: string): boolean {
                   <div class="nav__megamenu" role="menu">
                     {n.groups.map((group) => (
                       <div class="nav__megamenu-col">
-                        <p class="nav__megamenu-col-head">{group.label}</p>
+                        {group.href ? (
+                          <a
+                            class:list={["nav__megamenu-col-head", "nav__megamenu-col-head--link", { "nav__submenu-link--active": current === group.href }]}
+                            href={withBase(group.href)}
+                            role="menuitem"
+                            aria-current={current === group.href ? "page" : undefined}
+                          >{group.label}</a>
+                        ) : (
+                          <p class="nav__megamenu-col-head">{group.label}</p>
+                        )}
                         {group.children.map((child) => (
                           child.live === false ? (
                             <span class="nav__submenu-link nav__submenu-link--soon" title="Coming soon">{child.label}</span>
@@ -320,9 +329,9 @@ function isParentActive(href: string, cur: string): boolean {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
     padding: 0.6rem 0.3rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(175px, 1fr);
     gap: 0 0.3rem;
-    min-width: 360px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.18s ease, transform 0.18s ease;
@@ -335,16 +344,26 @@ function isParentActive(href: string, cur: string): boolean {
     transform: translateX(-50%) translateY(0);
   }
   .nav__megamenu-col { display: flex; flex-direction: column; }
+  /* Group heads read as the headline of each megamenu column — larger, brighter
+     and sentence-case so they stand out clearly above their child links. */
   .nav__megamenu-col-head {
-    font-size: 0.66rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--ink-faint);
-    padding: 0.3rem 1.1rem 0.5rem;
-    margin: 0;
+    font-size: 1rem;
+    letter-spacing: -0.005em;
+    text-transform: none;
+    font-weight: 800;
+    color: var(--ink);
+    padding: 0.3rem 1.1rem 0.45rem;
+    margin: 0 0 0.2rem;
     border-bottom: 1px solid var(--line);
-    margin-bottom: 0.2rem;
+  }
+  /* Clickable group head (e.g. Durbin / Courses → its landing page) */
+  .nav__megamenu-col-head--link {
+    display: block;
+    text-decoration: none;
+    transition: color 0.14s ease;
+  }
+  .nav__megamenu-col-head--link:hover {
+    color: var(--accent);
   }
 
   /* ── Active parent highlight ───────────────────────────────────────── */
@@ -422,7 +441,7 @@ function isParentActive(href: string, cur: string): boolean {
     .nav__megamenu-col-head {
       border-bottom: none;
       padding: 0.5rem 0.6rem 0.1rem;
-      font-size: 0.62rem;
+      font-size: 0.95rem;
       margin-bottom: 0;
     }
   }

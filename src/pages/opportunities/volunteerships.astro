@@ -45,7 +45,7 @@ const items = (await getCollection("opportunities", ({ data }) => data.status !=
           </p>
           <p>
             Learn more about the programme on the <a href={withBase('/outreach')}>Outreach</a> page and the
-            <a href={withBase('/outreach/durbin/volunteers')}> Durbin volunteers</a> page.
+            <a href={withBase('/durbin/volunteers')}> Durbin volunteers</a> page.
           </p>
         </Prose>
       </Reveal>
@@ -63,7 +63,7 @@ const items = (await getCollection("opportunities", ({ data }) => data.status !=
     <Fragment slot="empty">
       There are no open volunteer calls right now. Durbin recruits in cycles — watch the
       <a href={withBase('/news')}> news feed</a>, follow the
-      <a href={withBase('/outreach/durbin/volunteers')}> Durbin volunteers</a> page, or write to
+      <a href={withBase('/durbin/volunteers')}> Durbin volunteers</a> page, or write to
       <a href="mailto:cassa@iub.edu.bd">cassa@iub.edu.bd</a> to be notified of the next drive.
     </Fragment>
   </OpportunityCirculars>

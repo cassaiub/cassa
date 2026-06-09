@@ -18,7 +18,7 @@ LOCAL_PATH="dist/"                # Astro build output
 # rsync --delete will NOT touch anything matched here (they are protected).
 # Edit this list if the server has other folders to preserve.
 EXCLUDES=(
-  "courses"        # /courses/ast100 sub-site
+  "courses/ast100" # /courses/ast100 sub-site (the /courses landing IS part of this build)
   "abekta"         # /abekta sub-site
   ".well-known"    # ACME / SSL validation
   "cgi-bin"        # cPanel default

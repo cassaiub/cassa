@@ -1,0 +1,218 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../components/immersive/AnimatedBand.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import Prose from "../components/immersive/Prose.astro";
+import { withBase } from "../data/site-nav.ts";
+
+// Content drawn from the official BDOAA site (https://bdoaa.org/, About Us and
+// homepage). BDOAA is the national astronomy-olympiad body that selects and
+// trains Bangladesh's team for the IOAA; CASSA supports it as an outreach
+// partner. Facts (recognition date, results, medal counts) follow bdoaa.org.
+
+const stats = [
+  { n: "2018", label: "Recognised as the national olympiad body" },
+  { n: "10", label: "Regional rounds in year one" },
+  { n: "1000+", label: "Students in the first olympiad" },
+  { n: "6", label: "Medals & mentions at GeCAA 2020" },
+];
+
+const pipeline = [
+  {
+    title: "Regional rounds",
+    desc: "It starts across the country. Thousands of school and college students sit the first papers in regional centres — the widest net BDOAA casts each year. In its first olympiad alone, ten regional competitions drew around a thousand young enthusiasts.",
+  },
+  {
+    title: "National round",
+    desc: "The top scorers converge for the national olympiad. In the inaugural edition, 120 finalists competed at Jahangirnagar University in Dhaka, sitting theory, data-analysis and observation papers modelled on the international format.",
+  },
+  {
+    title: "Selection camp",
+    desc: "An intensive training camp narrows the field. Promising students are coached hard in celestial mechanics, astrophysics, sky observation and data analysis until the strongest few emerge.",
+  },
+  {
+    title: "The national team",
+    desc: "Five contestants and two team leaders are chosen to represent Bangladesh on the world stage — at the International Olympiad on Astronomy and Astrophysics (IOAA) and its global online sibling, GeCAA.",
+  },
+];
+---
+
+<BaseLayout
+  title="BDOAA — Bangladesh Olympiad on Astronomy & Astrophysics"
+  description="The Bangladesh Olympiad on Astronomy & Astrophysics (BDOAA) — the national body that finds, trains and sends the country's brightest young astronomers to the International Olympiad on Astronomy and Astrophysics. A CASSA outreach partner."
+  current="/outreach"
+>
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="Outreach · BDOAA"
+    title="Bangladesh Olympiad on Astronomy & Astrophysics"
+    lede="Finding, training and sending the country's brightest young astronomers to the world stage — the national olympiad pipeline that CASSA champions."
+  />
+
+  <!-- ── Sub-nav strip ──────────────────────────────────────────────────── -->
+  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
+    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/outreach')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Outreach</a>
+      <a href="#how" style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">How it works</a>
+      <a href="#results" style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">On the world stage</a>
+      <a href="https://bdoaa.org/" target="_blank" rel="noopener" style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">bdoaa.org ↗</a>
+    </div>
+  </nav>
+
+  <!-- ── About ──────────────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">About</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>A non-profit with a national mission</h2>
+          <p>
+            BDOAA exists to popularise astronomy across Bangladesh — and to find, train and send the
+            country's most talented young astronomers to international competition. It is run largely
+            by olympiad alumni: past national and international competitors, many of whom have gone on
+            to study astronomy and the sciences and now give their time back to the next generation.
+          </p>
+          <p>
+            On <strong>8 February 2018</strong>, the Bangladesh Olympiad on Astronomy and
+            Astrophysics Committee (BDOAAC) was recognised — with the endorsement of the
+            International Olympiad on Astronomy and Astrophysics — as the national authority for
+            selecting Bangladesh's olympiad team. CASSA supports the olympiad as part of its
+            outreach mission; CASSA Director <strong>Khan Muhammad Bin Asad</strong> is among those
+            who mentor and back the programme.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="stats">
+        {stats.map((s, i) => (
+          <div class="stat" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <span class="stat__n">{s.n}</span>
+            <span class="stat__l">{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Band ───────────────────────────────────────────────────────────── -->
+  <AnimatedBand theme="lensing">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">The pipeline</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">From a regional classroom to the international stage</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── How it works ───────────────────────────────────────────────────── -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">How it works</p></Reveal>
+      <Reveal delay={60}><h2 class="b-h2">Four stages to the world stage</h2></Reveal>
+
+      <ol class="steps">
+        {pipeline.map((p, i) => (
+          <li class="step" data-reveal style={`--reveal-delay:${Math.min(i, 4) * 60}ms`}>
+            <span class="step__n">{String(i + 1).padStart(2, "0")}</span>
+            <div class="step__body">
+              <h3 class="step__title">{p.title}</h3>
+              <p class="step__desc">{p.desc}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── On the world stage ─────────────────────────────────────────────── -->
+  <section class="section section--elev" id="results">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">On the world stage</p></Reveal>
+      <Reveal delay={60}><h2 class="b-h2">Bangladesh among the stars</h2></Reveal>
+
+      <div class="results">
+        <article class="result" data-reveal>
+          <span class="result__tag">Since 2007</span>
+          <h3 class="result__title">A decade and more at the IOAA</h3>
+          <p class="result__desc">
+            Bangladeshi students have taken part in the International Olympiad on Astronomy and
+            Astrophysics since 2007 — building, year on year, the experience and community that
+            BDOAA now organises into a national programme.
+          </p>
+        </article>
+
+        <article class="result" data-reveal style="--reveal-delay:80ms">
+          <span class="result__tag">IOAA 2018 · Beijing</span>
+          <h3 class="result__title">A remarkable debut</h3>
+          <p class="result__desc">
+            BDOAA's first full team — five contestants and two leaders — competed at the 12th IOAA
+            in Beijing, China. Four contestants each scored above 40%, and one earned an honourable
+            mention: a striking result for a first national outing.
+          </p>
+        </article>
+
+        <article class="result result--feature" data-reveal style="--reveal-delay:160ms">
+          <span class="result__tag">GeCAA 2020</span>
+          <h3 class="result__title">Bangladesh's first olympiad medals in astronomy</h3>
+          <p class="result__desc">
+            At the Global e-Competition on Astronomy and Astrophysics, a BDOAA-selected team won the
+            country's first medals in the field — <strong>two silver, three bronze and one honourable
+            mention</strong>, plus a first-place Best Group award. Led by Fahim Rajit Hossain, Md
+            Mahmudunnabi and Arnab Chowdhury, it stands as Bangladesh's best success in astronomy to date.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ────────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+      <Reveal><p style="color:var(--ink-soft);max-width:52ch;line-height:1.7;margin:0">
+        Registration, syllabus, past papers and the full archive of Bangladesh's olympiad journey
+        live on the official BDOAA site.
+      </p></Reveal>
+      <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+        <a class="btn btn--solid" href="https://bdoaa.org/" target="_blank" rel="noopener">Visit bdoaa.org ↗</a>
+        <a class="btn" href={withBase('/outreach')}>More CASSA outreach</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .b-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+  /* Stat row */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:2.4rem; }
+  @media (max-width:760px) { .stats { grid-template-columns:repeat(2,1fr); } }
+  .stat { background:var(--bg-elev-2); border:1px solid var(--line); border-radius:14px; padding:1.4rem 1.1rem; display:flex; flex-direction:column; gap:.45rem; }
+  .stat__n { font-size:clamp(1.7rem,4vw,2.5rem); font-weight:800; letter-spacing:-.03em; color:var(--accent); line-height:1; }
+  .stat__l { font-size:.78rem; color:var(--ink-soft); line-height:1.45; }
+
+  /* Pipeline steps — editorial numbered rows */
+  .steps { list-style:none; margin:2.6rem 0 0; padding:0; border-top:1px solid var(--line); }
+  .step {
+    display:grid; grid-template-columns:auto 1fr; gap:1.5rem 2.2rem; align-items:start;
+    padding:2.1rem 1rem; border-bottom:1px solid var(--line); border-radius:14px;
+    transition:background-color .25s ease, transform .25s ease;
+  }
+  .step:hover { background:color-mix(in srgb, var(--accent) 6%, transparent); }
+  @media (min-width:761px) { .step:hover { transform:translateX(6px); } }
+  @media (max-width:560px) { .step { grid-template-columns:1fr; gap:.5rem; padding:1.6rem .25rem; } }
+  .step__n { font-size:clamp(2.2rem,5vw,3.4rem); font-weight:800; line-height:.8; letter-spacing:-.04em; color:color-mix(in srgb, var(--ink) 13%, transparent); font-variant-numeric:tabular-nums; transition:color .25s ease; }
+  .step:hover .step__n { color:color-mix(in srgb, var(--accent) 55%, transparent); }
+  .step__title { font-size:1.2rem; color:var(--ink); margin:0; letter-spacing:-.01em; }
+  .step__desc { color:var(--ink-soft); font-size:1rem; line-height:1.7; margin:.6rem 0 0; max-width:64ch; }
+
+  /* Results */
+  .results { display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; margin-top:2.4rem; }
+  @media (max-width:860px) { .results { grid-template-columns:1fr; } }
+  .result { background:var(--bg-elev); border:1px solid var(--line); border-radius:14px; padding:1.5rem; display:flex; flex-direction:column; transition:border-color .2s; }
+  .section--elev .result { background:var(--bg); }
+  .result:hover { border-color:color-mix(in srgb, var(--accent) 40%, transparent); }
+  .result--feature { border-color:color-mix(in srgb, var(--accent) 45%, transparent); background:color-mix(in srgb, var(--accent) 6%, transparent); }
+  .result__tag { font-size:.66rem; text-transform:uppercase; letter-spacing:.13em; font-weight:700; color:var(--accent); }
+  .result__title { font-size:1.12rem; color:var(--ink); margin:.6rem 0 0; line-height:1.3; }
+  .result__desc { color:var(--ink-soft); font-size:.95rem; line-height:1.65; margin:.7rem 0 0; }
+</style>

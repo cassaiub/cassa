@@ -1,9 +1,9 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
-import Reveal from "../../../components/immersive/Reveal.astro";
-import { withBase } from "../../../data/site-nav.ts";
-import { current, past } from "../../../data/durbin-volunteers.ts";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import { withBase } from "../../data/site-nav.ts";
+import { current, past } from "../../data/durbin-volunteers.ts";
 ---
 
 <BaseLayout
@@ -26,7 +26,7 @@ import { current, past } from "../../../data/durbin-volunteers.ts";
       <Reveal delay={100}>
         <p class="v-intro">
           {current.length} volunteers from across the country. How volunteer teams are formed and
-          recognised is set out in the <a href={withBase("/outreach/durbin/manual")}>Durbin Manual</a>.
+          recognised is set out in the <a href={withBase("/durbin/manual")}>Durbin Manual</a>.
         </p>
       </Reveal>
       <Reveal delay={140}>

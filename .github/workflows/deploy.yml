@@ -42,11 +42,12 @@ jobs:
       - name: Deploy with rsync
         # --delete keeps the server clean, but the excludes protect the sibling
         # sub-sites (/courses/ast100, /abekta) and cPanel/server files that are
-        # NOT part of this build. Keep this list in sync with scripts/deploy.sh.
+        # NOT part of this build. The /courses landing IS part of this build, so we
+        # only protect courses/ast100. Keep this list in sync with scripts/deploy.sh.
         run: |
           rsync -avz --delete --human-readable \
             -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o UserKnownHostsFile=~/.ssh/known_hosts" \
-            --exclude 'courses' \
+            --exclude 'courses/ast100' \
             --exclude 'abekta' \
             --exclude '.well-known' \
             --exclude 'cgi-bin' \

@@ -12,7 +12,7 @@ export function withBase(p: string): string {
 }
 
 export type NavChild = { href: string; label: string; live?: boolean };
-export type NavGroup = { label: string; children: NavChild[] };
+export type NavGroup = { label: string; href?: string; children: NavChild[] };
 export type NavItem = { href: string; label: string; live: boolean; children?: NavChild[]; groups?: NavGroup[] };
 
 export const NAV: NavItem[] = [
@@ -61,6 +61,7 @@ export const NAV: NavItem[] = [
     groups: [
       {
         label: "Courses",
+        href: "/courses",
         children: [
           { href: "/teaching/minor", label: "Minor in A&A" },
           { href: "https://cassa.site/courses/ast100/", label: "AST 100 ↗" },
@@ -83,20 +84,21 @@ export const NAV: NavItem[] = [
     groups: [
       {
         label: "Durbin",
+        href: "/durbin",
         children: [
-          { href: "/outreach/durbin/images", label: "Astrophotographic Images" },
-          { href: "/outreach/durbin/manual", label: "Durbin Manual" },
-          { href: "/outreach/durbin/volunteers", label: "Volunteers" },
-          { href: "/outreach/durbin/updates", label: "Updates" },
+          { href: "/durbin/images", label: "Astrophotography" },
+          { href: "/durbin/manual", label: "Durbin Manual" },
+          { href: "/durbin/volunteers", label: "Volunteers" },
+          { href: "/durbin/updates", label: "Updates" },
         ],
       },
       {
-        label: "In Bangla",
+        label: "BDOAA",
+        href: "/bdoaa",
         children: [
-          { href: "/outreach/bangla#notun-kotha", label: "নতুন কথা" },
-          { href: "/outreach/bangla#durer-kotha", label: "দূরের কথা" },
-          { href: "/outreach/bangla#shohoj-kotha", label: "সহজ কথা" },
-          { href: "/outreach/bangla#classical-kotha", label: "ক্লাসিকেল কথা" },
+          { href: "/bdoaa#how", label: "How it works" },
+          { href: "/bdoaa#results", label: "On the world stage" },
+          { href: "https://bdoaa.org/", label: "bdoaa.org ↗" },
         ],
       },
     ],
@@ -105,9 +107,21 @@ export const NAV: NavItem[] = [
     href: "/newsroom",
     label: "Newsroom",
     live: true,
-    children: [
-      { href: "/news", label: "News" },
-      { href: "/events", label: "Events" },
+    groups: [
+      {
+        label: "Newsroom",
+        children: [
+          { href: "/news", label: "News" },
+          { href: "/events", label: "Events" },
+        ],
+      },
+      {
+        label: "In Bangla",
+        children: [
+          { href: "/outreach/bangla#notun-kotha", label: "নতুন কথা" },
+          { href: "/outreach/bangla#durer-kotha", label: "দূরের কথা" },
+        ],
+      },
     ],
   },
   {

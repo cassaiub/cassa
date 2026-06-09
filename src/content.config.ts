@@ -75,7 +75,7 @@ const news = defineCollection({
       // adds non-Durbin-category posts without pulling the whole category in.
       durbin: z.boolean().default(false),
       // Feature image = the best image within the post; rendered as an optimized
-      // thumbnail in the /news and /outreach/durbin/updates list views.
+      // thumbnail in the /news and /durbin/updates list views.
       hero: image().optional(),
       heroAlt: z.string().optional(),
       summary: z.string().optional(),

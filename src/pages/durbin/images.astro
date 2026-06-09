@@ -1,10 +1,10 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
-import Reveal from "../../../components/immersive/Reveal.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import { withBase } from "../../../data/site-nav.ts";
+import { withBase } from "../../data/site-nav.ts";
 
 const all = await getCollection("astrophotography", ({ data }) => data.status !== "draft");
 
@@ -19,14 +19,14 @@ const cats = [...new Set(all.map(objType))].sort((a, b) => ord(a) - ord(b));
 ---
 
 <BaseLayout
-  title="Astrophotographic Images — CASSA"
+  title="Astrophotography — CASSA"
   description="Deep-sky astrophotography from CASSA's Durbin programme — galaxies, nebulae, clusters, comets and planets imaged with the Center's telescopes."
   current="/outreach"
 >
   <AnimatedHero
     theme="galaxy"
     eyebrow="Outreach · Durbin"
-    title="Astrophotographic Images"
+    title="Astrophotography"
     lede="Deep-sky objects imaged by CASSA's Durbin volunteers — galaxies, nebulae, clusters, comets and planets."
   />
 
@@ -47,7 +47,7 @@ const cats = [...new Set(all.map(objType))].sort((a, b) => ord(a) - ord(b));
       <ul class="ggrid">
         {all.map((e, i) => (
           <li data-cat={objType(e)}>
-            <a class="gtile" href={withBase(`/outreach/durbin/images/${e.id}`)} data-reveal style={`--reveal-delay:${Math.min(i, 10) * 25}ms`}>
+            <a class="gtile" href={withBase(`/durbin/images/${e.id}`)} data-reveal style={`--reveal-delay:${Math.min(i, 10) * 25}ms`}>
               <span class="gtile__media">
                 <Image src={e.data.image} alt={e.data.imageAlt ?? e.data.title} widths={[300, 480, 600]} sizes="(max-width:560px) 50vw, (max-width:980px) 33vw, 260px" loading="lazy" />
               </span>

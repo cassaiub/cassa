@@ -1,9 +1,9 @@
 ---
-import BaseLayout from "../../../../layouts/BaseLayout.astro";
-import ImmersiveHero from "../../../../components/immersive/ImmersiveHero.astro";
-import Prose from "../../../../components/immersive/Prose.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ImmersiveHero from "../../../components/immersive/ImmersiveHero.astro";
+import Prose from "../../../components/immersive/Prose.astro";
 import { getCollection, render } from "astro:content";
-import { withBase } from "../../../../data/site-nav.ts";
+import { withBase } from "../../../data/site-nav.ts";
 
 export async function getStaticPaths() {
   const items = await getCollection("astrophotography", ({ data }) => data.status !== "draft");
@@ -97,7 +97,7 @@ const bnParas = (d.essayBn ?? "").split(/\n\n+/).map((p) => p.trim()).filter(Boo
           </dl>
         )}
       </div>
-      <p class="gd-back"><a href={withBase("/outreach/durbin/images")}>← All objects</a></p>
+      <p class="gd-back"><a href={withBase("/durbin/images")}>← All objects</a></p>
     </div>
   </section>
 </BaseLayout>

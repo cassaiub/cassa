@@ -1,11 +1,11 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
-import AnimatedBand from "../../../components/immersive/AnimatedBand.astro";
-import Reveal from "../../../components/immersive/Reveal.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import { withBase } from "../../../data/site-nav.ts";
+import { withBase } from "../../data/site-nav.ts";
 
 // Durbin Updates — the news feed scoped to the "Durbin" category. New updates
 // file themselves here automatically: add a src/content/news/*.md entry with
@@ -95,8 +95,8 @@ const years = [...byYear.keys()].sort((a, b) => Number(b) - Number(a));
 
   <section class="section">
     <div class="wrap" style="display:flex;gap:1rem;flex-wrap:wrap">
-      <a class="btn" href={withBase('/outreach/durbin/images')}>Astrophotographic Images</a>
-      <a class="btn" href={withBase('/outreach/durbin/manual')}>The Durbin Manual</a>
+      <a class="btn" href={withBase('/durbin/images')}>Astrophotography</a>
+      <a class="btn" href={withBase('/durbin/manual')}>The Durbin Manual</a>
       <a class="btn" href={withBase('/news')}>All CASSA news</a>
     </div>
   </section>

@@ -1,7 +1,7 @@
 ---
 title: "অন্ধকারের উৎস-হতে উৎসারিত আলো"
 date: "2024-10-08T21:20:13+06:00"
-category: "সহজ কথা"
+category: "নতুন কথা"
 summary: "আজ থেকে চৌদ্দ বিলিয়ন বছর আগে বিগব্যাং নামের এক অদ্ভুত ঘটনার মাধ্যমে আমাদের ইউনিভার্সের জন্ম।"
 lang: "bn"
 hero: "../../assets/news/light-from-the-source-of-darkness/unitime.webp"

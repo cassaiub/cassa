@@ -9,7 +9,7 @@ import { withBase } from "../data/site-nav.ts";
 import { isBanglaSeries } from "../data/bangla-series.ts";
 
 // The Bengali article series live under /outreach/bangla, and Durbin updates
-// live under /outreach/durbin/updates — neither shows in the main news feed.
+// live under /durbin/updates — neither shows in the main news feed.
 // (Their /news/<slug> detail pages still exist; those sections link to them.)
 const all = (await getCollection("news", ({ data }) =>
   data.status !== "draft" && !isBanglaSeries(data.category) && data.category !== "Durbin"))
@@ -21,8 +21,8 @@ const fmtDate = (d: Date) =>
 const yearOf = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric" }).format(d);
 
-// The four Bengali article series are colour-coded cyan; institutional posts gold.
-const BENGALI_SERIES = new Set(["দূরের কথা", "নতুন কথা", "সহজ কথা", "ক্লাসিকেল কথা"]);
+// The Bengali article series are colour-coded cyan; institutional posts gold.
+const BENGALI_SERIES = new Set(["দূরের কথা", "নতুন কথা"]);
 const catClass = (c?: string) => (c && BENGALI_SERIES.has(c) ? "nf-series" : "nf-news");
 
 const byYear = new Map<string, typeof all>();
