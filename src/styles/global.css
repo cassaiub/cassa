@@ -163,6 +163,11 @@ a { color: inherit; text-decoration: none; }
 .nav__link--soon { opacity: .45; cursor: default; }
 .nav__burger { display: none; width: 38px; height: 38px; place-items: center; border: 1px solid var(--line-strong); border-radius: 999px; color: #fff; background: transparent; cursor: pointer; }
 .nav.is-scrolled .nav__burger { color: var(--ink); }
+/* Burger morphs to an X while the overlay menu is open. */
+.nav__burger-icon { grid-area: 1 / 1; }
+.nav__burger-icon--close { display: none; }
+.nav__burger[aria-expanded="true"] .nav__burger-icon--open { display: none; }
+.nav__burger[aria-expanded="true"] .nav__burger-icon--close { display: block; }
 /* Ring derived from the button's own text colour (always chosen to contrast the
    bg), so the circle stays visible over the dark hero AND the solid bar, in BOTH
    themes — never mistaken for a plain menu item. */
@@ -172,10 +177,48 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 860px) {
   .nav__burger { display: inline-grid; }
-  .nav__panel { position: absolute; right: 0; top: calc(100% + 12px); flex-direction: column; align-items: flex-start; gap: .15rem;
-    background: var(--bg-elev); border: 1px solid var(--line); border-radius: 14px; padding: .55rem; min-width: 210px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
-  .nav__panel:not(.is-open) { display: none; }
-  .nav__panel .nav__link, .nav__panel .nav__link--soon { color: var(--ink-soft); padding: .55rem .65rem; width: 100%; }
+
+  /* Bar contents (logo, burger, toggles) float above the full-screen overlay. */
+  .nav__brand, .nav__burger, .lang-toggle, .nav .toggle { position: relative; z-index: 90; }
+
+  /* ── Immersive full-screen overlay menu ────────────────────────────── */
+  .nav__panel {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    padding: calc(env(safe-area-inset-top, 0px) + 92px) clamp(1.5rem, 7vw, 3rem) calc(env(safe-area-inset-bottom, 0px) + 3rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background:
+      radial-gradient(125% 80% at 88% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 58%),
+      radial-gradient(120% 75% at -12% 108%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 60%),
+      var(--bg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
+  }
+  .nav__panel.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .nav__panel .nav__link, .nav__panel .nav__link--soon { color: var(--ink); width: 100%; }
+
+  /* Open menu behaves like a solid bar: lock page scroll, drop the nav's
+     backdrop-filter (a filter creates a containing block that would otherwise
+     trap the fixed overlay), and restore burger/toggle/logo contrast in both
+     themes (the overlay paints over var(--bg)). */
+  html.nav-open { overflow: hidden; }
+  html.nav-open .nav { background: transparent; backdrop-filter: none; border-bottom-color: transparent; }
+  html.nav-open .nav__burger, html.nav-open .nav .toggle { color: var(--ink); }
+  [data-theme="light"].nav-open .nav__logo--white { display: none; }
+  [data-theme="light"].nav-open .nav__logo--color { display: block; }
 }
 
 /* ── Reveal-on-scroll ───────────────────────────────────────────────── */

@@ -139,7 +139,8 @@ function isParentActive(href: string, cur: string): boolean {
       </div>
 
       <button class="nav__burger" id="nav-burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-panel">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+        <svg class="nav__burger-icon nav__burger-icon--open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+        <svg class="nav__burger-icon nav__burger-icon--close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
       </button>
 
       {altHref && (
@@ -167,17 +168,31 @@ function isParentActive(href: string, cur: string): boolean {
   /* ── Burger / mobile panel ─────────────────────────────────────────── */
   const burger = document.getElementById("nav-burger");
   const panel = document.getElementById("nav-panel");
-  burger?.addEventListener("click", () => {
-    const open = panel?.classList.toggle("is-open") ?? false;
-    burger.setAttribute("aria-expanded", String(open));
-  });
+  const setMenu = (open: boolean) => {
+    panel?.classList.toggle("is-open", open);
+    // Lock page scroll + neutralise the nav's backdrop-filter while open.
+    document.documentElement.classList.toggle("nav-open", open);
+    burger?.setAttribute("aria-expanded", String(open));
+    burger?.setAttribute("aria-label", open ? "Close menu" : "Menu");
+    if (!open) {
+      // Collapse any expanded sections so the menu reopens clean.
+      panel?.querySelectorAll(".nav__item.is-open").forEach((i) => {
+        i.classList.remove("is-open");
+        i.querySelector(".nav__submenu-toggle")?.setAttribute("aria-expanded", "false");
+      });
+    }
+  };
+  burger?.addEventListener("click", () =>
+    setMenu(!panel?.classList.contains("is-open")),
+  );
   // Close the mobile menu after following a link.
   panel?.querySelectorAll("a").forEach((a) =>
-    a.addEventListener("click", () => {
-      panel.classList.remove("is-open");
-      burger?.setAttribute("aria-expanded", "false");
-    }),
+    a.addEventListener("click", () => setMenu(false)),
   );
+  // Escape closes the overlay.
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && panel?.classList.contains("is-open")) setMenu(false);
+  });
 
   /* ── Mobile: tap the chevron to expand/collapse a section ──────────── */
   // The label still navigates to the section landing page; this button only
@@ -417,66 +432,60 @@ function isParentActive(href: string, cur: string): boolean {
     text-decoration: none;
   }
 
-  /* ── Mobile overrides (≤860px) ─────────────────────────────────────── */
+  /* ── Mobile: immersive full-screen menu (≤860px) ───────────────────── */
   @media (max-width: 860px) {
     .nav__item {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       width: 100%;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav__panel > .nav__link,
+    .nav__panel > .nav__link--soon {
+      border-bottom: 1px solid var(--line);
+    }
+    .nav__item:last-child,
+    .nav__panel > .nav__link:last-child {
+      border-bottom: none;
     }
 
-    /* Parent row: label flexes to fill, the expand/collapse toggle is pinned right. */
+    /* Big, legible type for top-level entries. */
+    .nav__link--parent,
+    .nav__panel > .nav__link,
+    .nav__panel > .nav__link--soon {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      padding: 0.85rem 0;
+    }
+
+    /* Parent row: label flexes to fill, the expand/collapse toggle pinned right. */
     .nav__item-row {
       display: flex;
       width: 100%;
       align-items: center;
+      gap: 0.5rem;
     }
-    .nav__link--parent {
-      flex: 1 1 auto;
-    }
+    .nav__link--parent { flex: 1 1 auto; }
     .nav__submenu-toggle {
       display: inline-grid;
-      width: 42px;
-      height: 42px;
+      width: 46px;
+      height: 46px;
+      margin-right: -0.4rem;
+      border-radius: 12px;
       color: var(--ink-soft);
     }
-    .nav__item.is-open .nav__toggle-icon {
-      transform: rotate(180deg);
+    .nav__submenu-toggle:active {
+      background: color-mix(in srgb, var(--ink) 8%, transparent);
     }
+    .nav__toggle-icon { width: 18px; height: 18px; }
+    .nav__item.is-open .nav__submenu-toggle { color: var(--accent); }
+    .nav__item.is-open .nav__toggle-icon { transform: rotate(180deg); }
 
-    /* Nested child lists are collapsed by default; revealed when the item is open. */
-    .nav__submenu {
-      position: static;
-      transform: none;
-      opacity: 1;
-      pointer-events: auto;
-      box-shadow: none;
-      border: none;
-      border-left: 2px solid var(--line);
-      border-radius: 0;
-      background: transparent;
-      padding: 0.2rem 0 0.4rem 0.9rem;
-      margin-top: 0.1rem;
-      display: none;
-      flex-direction: column;
-      gap: 0;
-    }
-    .nav__item.is-open > .nav__submenu {
-      display: flex;
-    }
-
-    .nav__submenu-link {
-      font-size: 0.84rem;
-      padding: 0.42rem 0.6rem;
-      border-radius: 6px !important;
-    }
-
-    .nav__chevron {
-      /* hide chevron rotation animation on mobile since submenu is always visible */
-      display: none;
-    }
-
+    /* Collapsible nested lists — clearly legible over the solid overlay, set off
+       by an accent rule and a modest indent (not pushed off to the left). */
+    .nav__submenu,
     .nav__megamenu {
       position: static;
       transform: none;
@@ -484,24 +493,53 @@ function isParentActive(href: string, cur: string): boolean {
       pointer-events: auto;
       box-shadow: none;
       border: none;
-      border-left: 2px solid var(--line);
+      border-left: 2px solid color-mix(in srgb, var(--accent) 45%, var(--line));
       border-radius: 0;
       background: transparent;
-      padding: 0.2rem 0 0.4rem 0.9rem;
-      margin-top: 0.1rem;
+      min-width: 0;
+      margin: 0 0 0.7rem 0.1rem;
+      padding: 0.1rem 0 0.1rem 1.1rem;
       display: none;
       flex-direction: column;
-      min-width: 0;
       gap: 0;
     }
+    .nav__item.is-open > .nav__submenu,
     .nav__item.is-open > .nav__megamenu {
       display: flex;
+      animation: navSubReveal 0.26s ease both;
     }
+    @keyframes navSubReveal {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .nav__submenu-link {
+      font-size: 1.08rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      padding: 0.5rem 0.3rem;
+      border-radius: 8px !important;
+      white-space: normal;
+    }
+    .nav__submenu-link:hover,
+    .nav__submenu-link:active { background: transparent; color: var(--ink); }
+    .nav__submenu-link--active { background: transparent; color: var(--accent); }
+
+    /* Megamenu group heads become uppercase subsection labels on mobile. */
+    .nav__megamenu-col + .nav__megamenu-col { margin-top: 0.35rem; }
     .nav__megamenu-col-head {
       border-bottom: none;
-      padding: 0.5rem 0.6rem 0.1rem;
-      font-size: 0.95rem;
-      margin-bottom: 0;
+      margin: 0;
+      padding: 0.55rem 0.3rem 0.1rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
     }
+    .nav__megamenu-col-head--link { color: var(--ink-soft); }
+    .nav__megamenu-col-head--link:hover { color: var(--accent); }
+
+    .nav__chevron { display: none; }
   }
 </style>
