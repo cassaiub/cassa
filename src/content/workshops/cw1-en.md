@@ -34,7 +34,7 @@ After the icebreaker, at 10:00 AM, I gave the first one-hour lecture on the basi
 
 Light has to be described both as **particles** (photons) and as electromagnetic **waves**. In high-frequency X-ray astronomy, it's more convenient to describe light as particles, whereas in low-frequency radio astronomy, it's more useful to think of light as waves. Since our workshop focused on radio astronomy, the wave nature of light was most relevant to us.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image.png)
 
 Astronomers across all frequency bands visualize the sky as an **XY plane**, with the direction of incoming light along the **Z-axis**—that is, along our line of sight. In this XY plane, oscillations in the **electric field** (denoted as $\mathbf{E}$ in blue) and the magnetic field ($\mathbf{B}$ in red) create a wave that propagates along the Z-axis.
 
@@ -54,7 +54,7 @@ In radio astronomy, the detector is often called a **feed**. To measure the comp
 
 The animation shows how one component of the field induces a signal in one dipole. As the field oscillates, it generates opposite currents on the two ends of the dipole. That’s why it’s called a dipole. This current arises due to a potential difference between the two ends of the antenna, which can be measured as a voltage $V$. According to Ohm’s law, the ratio of voltage to current depends on the resistance $R$ of the circuit. The voltages from the X and Y feeds together form the raw data of a radio telescope. In short: a radio telescope measures the voltage of the sky.
 
-![](https://cassa.site/wp-content/uploads/2025/05/lofar-hba.webp)
+![](https://cassa.bd/wp-content/uploads/2025/05/lofar-hba.webp)
 
 Here, a high-band antenna of LOFAR is shown. Perpendicular X and Y feeds are visible. The voltages of these two feeds are denoted as $V_{xx}$ and $V_{yy}$, respectively. The X feed is supposed to detect only the X component of the electric field, and the Y feed only the Y component, but in practice, some part of the Y component leaks into the X feed, and some part of the X component leaks into the Y feed. Because of this, two more voltage components, $V_{xy}$ and $V_{yx}$, are obtained; these are called cross-talk. These four components are stored in a 2×2 Jones matrix:
 
@@ -85,7 +85,7 @@ But before that, I introduced the idea of light measurement units by explaining 
 
 We measure radio light in Jy units because the intensity of radio light is much lower than that of visible light. While the Sun's power in visible light is about $10^{+26}$ W, one Jy is $10^{-26}$ W m$^{-2}$ Hz$^{-1}$, extremely small. At around 1 GHz frequency in our sky, the Sun’s flux density can be more than 1 million Jy at times, and the brightest radio object besides the Sun, Cassiopeia A (Cas A), has a flux density of more than 1000 Jy.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image-4.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image-4.png)
 
 To explain resolution, I always use this diagram from Frederick Chromey's book; it shows the process of light arriving at a telescope's aperture (another name for antenna) from a point source like a star. All stars appear point-like in the sky, but after taking an image with any telescope, the resulting image looks like the Airy disk shown in panel (b). This wave pattern from a point source arises due to the diffraction of light at the aperture. Simply put, light bends at the two edges of the aperture---or, new spherical wavefronts are generated---and due to interference among multiple waves, the resulting image appears as an Airy disk. A one-dimensional profile of this disk is shown in panel (a). Another name for this disk is the Point Spread Function (**PSF**), and the angular radius of its central main lobe is called the resolution ($\alpha$).
 
@@ -103,7 +103,7 @@ Therefore, the only way to improve resolution in radio is to use an array of wid
 
 After a tea break, I tried to explain to everyone the concept of an array made of multiple antennas. At that time, we were deploying a small array radio telescope called the Transient Array Radio Telescope (TART) just outside the CASSA office. Shoaib from the Fab Lab was still working outside then. This was an array of 24 antennas, but during the workshop, we worked with the LOFAR telescope in the Netherlands, which has nearly 50,000 high-band antennas. A combination of two antennas is called an interferometer, and many such interferometers together make up an array.
 
-![](https://cassa.site/wp-content/uploads/2025/05/interferometer-5.webp)
+![](https://cassa.bd/wp-content/uploads/2025/05/interferometer-5.webp)
 
 Let’s say two antennas, $p$ and $q$, are observing light coming from a source in the sky at an angle $\theta$ with respect to the vertical direction (zenith). The light reaches antenna $q$ first, and after a time delay of $\tau$, it reaches antenna $p$. To correct for this delay, we need to add a time delay to the observation at antenna $q$.
 
@@ -127,17 +127,17 @@ $$
 
 where $E_{xx}$ is the auto-correlation of the X component of the electric field coming from the sky. This is the 2D version of RIME, where the Fourier relationship between sky and ground is explicitly shown. But to understand the coordinates of the baseline, we need to understand the **uv-plane** and **uv-coverage**, and for that, we have to consider arrays made of many antennas instead of just a two-antenna interferometer. In the workshop, I used a software called [friendly VRI](https://crpurcell.github.io/friendlyVRI/) to show array configurations—and I’ll use it here too. This tool can simulate mock observations of some of the world’s largest ARTs on a small scale.
 
-![](https://cassa.site/wp-content/uploads/2025/05/Screenshot-from-2025-05-12-22-52-07-1030x521.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/Screenshot-from-2025-05-12-22-52-07-1030x521.png)
 
 I have selected India's Giant Meterwave Radio Telescope** (GMRT)** for the observations. This array consists of 30 parabolic mesh antennas arranged in a Y-configuration, with each antenna having a diameter of 45 meters. The positions of the antennas are shown in the top-left corner, where the x-axis represents the relative distance in kilometers along the east-west direction, and the y-axis represents the distance along the north-south direction. I have selected an hour angle range of -4 to +5 hours, meaning a setup for approximately 11 hours of observation. For the model image, I have chosen an image of a radio galaxy with two lobes emerging from the black hole in the center. Instead of the galaxy, I could have used my own image as well. This software generates the expected appearance of any image when observed with an array. From 30 antennas, we get a total of 30 × 29 / 2 = 435 unique pairs. Each pair represents a baseline.
 
-![](https://cassa.site/wp-content/uploads/2025/05/gmrt-1-1030x497.webp)
+![](https://cassa.bd/wp-content/uploads/2025/05/gmrt-1-1030x497.webp)
 
 Each pair's baseline can be thought of as a vector. Four such vectors are shown above. When these vectors are translated to a common origin, the resulting plane is called the $uv$-plane, because its x-axis represents $u$ and its y-axis represents $v$. These coordinates are used in the RIME. Knowing the tip of a vector allows us to determine its direction and length, so only the tips are shown in the right panel of the image as circles. Now, if we remove the lines of the vectors and keep only the tips, it becomes easier to understand the track of each tip. Since the Earth completes one rotation every 24 hours, each tip will describe a complete ellipse relative to an object in the sky. Given that we have an 11-hour observation, each tip will trace out approximately half of an ellipse.
 
 In this way, the pattern formed in the uv-plane during 11 hours of observation is called the **uv-coverage**, which is shown in the middle panel of the top row in the image below. Clicking the "Do Observation" button in the Friendly VRI software will generate the images shown below.
 
-![](https://cassa.site/wp-content/uploads/2025/05/gmrt-obs-2-1030x729.webp)
+![](https://cassa.bd/wp-content/uploads/2025/05/gmrt-obs-2-1030x729.webp)
 
 This image shows each step of the Friendly VRI simulation. The model image is the target object we want to image using the array. Its Fourier transform gives the model FFT (Fast Fourier Transform). Not all Fourier modes in the model FFT can be sampled by the array; only those falling within the $uv$-coverage will be sampled. This is effectively the result of multiplying the model FFT with the $uv$-coverage mask. Multiplying in the Fourier domain corresponds to a convolution in the image domain. The result of this convolution is our observed FFT, which, when inverse Fourier transformed (IFT), gives the observed image.
 
@@ -153,11 +153,11 @@ These visibilities must first be calibrated to remove all systematic effects. Th
 
 After the lunch break, from 2:30 PM, the discussion started on the antenna primary beam, and we had to focus on LOFAR. The main objective of the workshop is to model the beam of a LOFAR station. This array has thousands of antennas spread across Europe.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image-5-1030x615.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image-5-1030x615.png)
 
 From the core in the Netherlands, four spiral arms extend up to about 500 km. There are stations from Onsala in Sweden in the north to Nançay in France and Unterweilenbach in Germany in the south, and from Birr in Ireland in the west to Baldy in Poland in the east. Because of this, LOFAR’s longest baseline is about 1000 km. The high-band antennas (HBA) observe in the range of 110 to 240 MHz. Inside the Netherlands, LOFAR has 30 core stations within 3.5 km, each containing two HBA substations. A single HBA core station consists of a total of 384 antennas arranged as shown in the figure below.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image-6.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image-6.png)
 
 The figure above shows the configuration of a single HBA station. Sixteen crossed dipole antennas (blue crosses in the figure) form a tile (red square), and 24 such tiles make up a 30-meter station (green circle). The beam size of a single dipole at 150 MHz is about 90 degrees (blue circle), the tile beam is 20 degrees (red circle), and the station beam is just 4 degrees (green circle). As per the familiar $\lambda/D$ formula, the larger the aperture, the smaller the beam becomes. A LOFAR station like this functions as a single antenna in the full array.
 
@@ -169,11 +169,11 @@ But what exactly is a dipole beam? To understand this, it's helpful to think of 
 
 It’s called a beam because the antenna sees best in a specific direction, and the further you go away from that direction, the worse the vision becomes. This can be clearly understood with the example of our eyes. To read anything, we first bring it in between our eyes because our vision is sharpest right in the center of the field of view. Whatever direction we look at, we see best in that direction, and the farther we move to either side, the worse our vision gets.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image-7.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image-7.png)
 
 The reason behind this beam pattern is illustrated in the figure above. At the center of the mesh pattern is a charge whose acceleration $\mathbf{a}$ is directed upward. Radiation is strongest in the direction perpendicular to the acceleration of the charge. As we move from the perpendicular direction toward the parallel direction, the radiation decreases. The flux of the radiation produced by this acceleration follows the relation $S \propto \sin^2\theta$, where $\theta$ is the angle with respect to the acceleration vector. This is the underlying source of the symmetric beam pattern.
 
-![](https://cassa.site/wp-content/uploads/2025/05/lofar-hamaker-beam-1030x394.webp)
+![](https://cassa.bd/wp-content/uploads/2025/05/lofar-hamaker-beam-1030x394.webp)
 
 The central 30 degrees of the LOFAR station beam shown earlier is zoomed in here. A LOFAR station beam changes with time, frequency, and direction. This figure shows the beam plotted at a specific time, at 130 MHz, pointed toward the North Celestial Pole (NCP). The left panel displays the 2D beam, while the right panel shows a few of its 1D profiles. All values are given in decibels (dB)—the standard unit for measuring beam power—defined as 20 times the base-10 logarithm of a quantity. The beam value itself is a number between 0 and 1: 1 means maximum sensitivity of the antenna in that direction, and 0 means no sensitivity. In the figure, 0 dB means 1, -20 dB means 100 times less, -30 dB means 1000 times less, and -60 dB means a million times less. From the right panel’s profile, we can clearly see the diameter of the main lobe, which represents the field of view (FoV) of a LOFAR station.
 
@@ -187,7 +187,7 @@ In the workshop, we focused only on modeling the LOFAR beam; we didn’t deal wi
 
 After a tea break, the eight groups began their projects. The first-day task was to tunnel into CASSA’s HPC server, **Timaeus**, and—using a Jupyter notebook—plot the Hamaker model of the LOFAR HBA beam. Dutch scientist J. P. Hamaker created this EM-simulated beam model, which, perfect or not, remains the best-known LOFAR beam to date. To plot it, one must first simulate a Measurement Set (MS). In astronomy, real images are stored as .FITS files, and complex visibilities are stored as .MS files. On Timaeus we have already installed *synthms* for MS simulation and *everybeam* for plotting the Hamaker beam; the students’ job was simply to use these tools in Timaeus’s Jupyter environment.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image-10.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image-10.png)
 
 To log into the server, I had set up a common account for everyone. Using *SSH*, everyone was able to log into that account and navigate to their respective group folders. Along with creating working folders for the eight groups, we also had eight *screens* open. Each screen was running Jupyter Lab on a unique port. Each group had to tunnel into their respective screen using *ssh -N -f -L*, and after tunneling, each group was able to open their respective Jupyter notebooks on their laptops. The live server information was visible on the projector screen as shown in the figure above. We had instructed everyone to track the usage of our 64 CPU threads and 64 GB of RAM using this *htop* output.
 
@@ -225,7 +225,7 @@ $$
 
 where $L$ is the list of selected Zernike modes' Noll indices ($l$). By using order and frequency, a sequential index for every Zernike polynomial can be created starting from 1, called the Noll index. This makes the calculation much easier; previously, each polynomial required two numbers (order and frequency) for identification, but now only one is needed.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image-11-1030x374.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image-11-1030x374.png)
 
 In the first panel of the image above, the original Hamaker beam $B_H$ (up to 15 degrees) is shown. The middle panel displays the reconstructed LoHaZe beam $B_Z$, and the last panel shows the difference between these two as the residual $R = B_H - B_Z$. The power in decibels is given in the color bar. The closer the residual is to zero, the better the LoHaZe model is considered. The residual obtained by selecting the best 40 out of 200 modes has a value of around -30 to -50 decibels almost everywhere, which is quite good.
 
@@ -233,7 +233,7 @@ Here, the students were able to experiment with another aspect. In the image and
 
 The students' final task was to perform the above decomposition and reconstruction, i.e., the sparse representation for many frequencies between 110 to 170 MHz. Sparse representation was very important for us because, to remove the effect of the beam from visibility, computational efficiency is required. The more efficiently the beam can be described with fewer parameters, the more computationally efficient it becomes. For a 15-degree beam with dimensions of 300 along one axis, there would be a total of 90,000 pixels. However, by using only 40 Zernike coefficients, we are able to recover the values of those 90,000 pixels here.
 
-![](https://cassa.site/wp-content/uploads/2025/05/nolls.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/nolls.png)
 
 If we needed to generate beams for 60 frequency channels between 110 and 170 MHz, then the total number of values required would be $90,000 \times 60 = 5.4$ million. However, even if Zernike coefficients need to be stored separately for each frequency, we would only need $40 \times 60 = 2400$ values in total.
 
@@ -256,19 +256,19 @@ After the final presentations, I asked everyone to share their main takeaway fro
 
 At the end of the slideshow above, there are photos from all the group presentations. I don’t remember in detail what each group said, but based on the photos, I’ve tried to write something about each of them. Group 1 showed a strong interest in theory—their detailed flowchart suggested a clear inclination toward systematic analysis. Group 2 did a lot of work to determine the right threshold for how many coefficients should be kept. Group 3 thought carefully about why modeling error increases at higher frequencies. Group 4 created a nice plot showing how the error first decreases and then increases with frequency. Group 5 approached the threshold question in a particularly original way. Group 6 put together a well-structured presentation that covered both the theory and the computations. Group 7 explored both thresholding and frequency dependence of the error, and produced the largest number of plots. Group 8 was the smallest group; their results may not have been the strongest, but their thinking was clearly original.  So, in the end, I didn’t give a prize to any single group. Honestly, they were all good.
 
-![](https://cassa.site/wp-content/uploads/2025/05/image-13-1030x427.png)
+![](https://cassa.bd/wp-content/uploads/2025/05/image-13-1030x427.png)
 
-Students came from a total of 15 universities. A few of them had already finished their studies, so they were not officially affiliated with any university at the time, but we still listed their alma mater. A list of all students and TAs [can be found here](https://cassa.site/event/workshop-1/). The largest number of participants came from IUB, which also had the highest number of applications—understandably so, since it’s logistically easiest for IUB students to attend such workshops. The next highest number of students came from the University of Dhaka, followed by the University of Chittagong and the Asian University for Women. In addition, one student each joined from SUST, RUET, MIST, Khulna uni, Ahsanullah, AIUB, BUET, BRAC uni, Daffodil, Edward College, and Hajee Danesh.
+Students came from a total of 15 universities. A few of them had already finished their studies, so they were not officially affiliated with any university at the time, but we still listed their alma mater. A list of all students and TAs [can be found here](https://cassa.bd/event/workshop-1/). The largest number of participants came from IUB, which also had the highest number of applications—understandably so, since it’s logistically easiest for IUB students to attend such workshops. The next highest number of students came from the University of Dhaka, followed by the University of Chittagong and the Asian University for Women. In addition, one student each joined from SUST, RUET, MIST, Khulna uni, Ahsanullah, AIUB, BUET, BRAC uni, Daffodil, Edward College, and Hajee Danesh.
 
 Since two Afghan students from the Asian University for Women participated, we had to conduct the entire workshop in English, which turned out to be a great experience for everyone. Although CASSA is based in Bangladesh, it is part of a university—and a university is by definition a place where people from around the world must be able to come together. Over time, CASSA’s international reach will only continue to grow. CASSA is in Bangladesh, but it is not only for Bangladeshis—it belongs to everyone who comes to study, live, or work in this country, regardless of their nationality, ethnicity, religion, gender, or personal identity.
 
-![](https://cassa.site/wp-content/uploads/2025/05/cert-1030x728.webp)
+![](https://cassa.bd/wp-content/uploads/2025/05/cert-1030x728.webp)
 
 After the workshop, each participant was emailed a certificate. An example is shown above. Like the workshop poster, the certificate’s background features a scene from Michelangelo Antonioni’s 1964 film *Red Desert*, where the Medicina Radio Observatory near Bologna, Italy, is visible. While radio telescopes have appeared in many films—from *James Bond* onwards—none use them quite like Antonioni. *Red Desert* is perhaps the strangest and most striking depiction of human alienation in the modern industrial world. To express this alienation, Antonioni turns to the ART of Bologna. In the scene just after the one shown, the character of Monica Vitti asks a worker, “What are they building here?” The worker replies (paraphrasing here), “they want to *listen* to the stars with this.” Anyone watching the film will likely feel an existential jolt at that moment.
 
 ---
 
-This is an English translation by ChatGPT from the original Bangla article: [কাসা ওয়ার্কশপ ১: মেঘে ঢাকা আর্টের হাজার চোখ](https://cassa.site/cw1/)
+This is an English translation by ChatGPT from the original Bangla article: [কাসা ওয়ার্কশপ ১: মেঘে ঢাকা আর্টের হাজার চোখ](https://cassa.bd/cw1/)
 
 ---
 

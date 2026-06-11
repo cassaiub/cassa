@@ -119,12 +119,12 @@ function rehypeArticleFigure() {
   return (tree) => { walk(tree); group(tree); };
 }
 
-// Root deploy. base:'/' so the new site owns cassa.site/, while the existing
+// Root deploy. base:'/' so the new site owns cassa.bd/, while the existing
 // /courses/ast100 (Astro) and /abekta (DokuWiki) keep their own paths.
 // withBase() is still used everywhere so a future subpath/staging deploy is a
 // one-line change here.
 export default defineConfig({
-  site: 'https://cassa.site',
+  site: 'https://cassa.bd',
   base: '/',
   trailingSlash: 'never',
   // The radio telescope was renamed STAR → TART; keep the old facility URL alive.

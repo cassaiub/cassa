@@ -116,7 +116,7 @@ const events = defineCollection({
       category: z.string().optional(),
       link: z.string().optional(),
       summary: z.string().optional(),
-      // Featured image (downloaded from cassa.site): hero on the detail page,
+      // Featured image (downloaded from cassa.bd): hero on the detail page,
       // thumbnail in the listing + calendar. Resolved to ImageMetadata via image().
       // Journal talks use NO hero image — they render an animated cosmic title
       // card from `paperTitle` (the paper) + the citation in `title` instead.

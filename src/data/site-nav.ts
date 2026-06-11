@@ -64,7 +64,7 @@ export const NAV: NavItem[] = [
         href: "/courses",
         children: [
           { href: "/teaching/minor", label: "Minor in A&A" },
-          { href: "https://cassa.site/courses/ast100/", label: "AST 100 ↗" },
+          { href: "https://cassa.bd/courses/ast100/", label: "AST 100 ↗" },
           { href: "/abekta", label: "Abekta ↗" },
         ],
       },

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Ground-up replacement for the CASSA (Center for Astronomy, Space Science and Astrophysics at IUB) institutional website. Static **Astro 6** site with **React 19** islands and **Tailwind CSS v4**. Deployed at root (`/`) at cassa.site while sibling sub-sites (`/courses/ast100`, `/abekta`) are left untouched.
+Ground-up replacement for the CASSA (Center for Astronomy, Space Science and Astrophysics at IUB) institutional website. Static **Astro 6** site with **React 19** islands and **Tailwind CSS v4**. Deployed at root (`/`) at cassa.bd while sibling sub-sites (`/courses/ast100`, `/abekta`) are left untouched.
 
 When building or planning any page or section, invoke the `/cassa-create` skill — it is PLANNING-FIRST (plan verified before code is written) and contains authoritative rules, content inventory, and CASSA-specific facts.
 

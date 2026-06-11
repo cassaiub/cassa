@@ -7,7 +7,7 @@ description: Plan and build the new ground-up CASSA website — an immersive, da
 
 You are building a **ground-up replacement** for the Center for Astronomy,
 Space Science and Astrophysics (CASSA, at Independent University, Bangladesh)
-website, currently on WordPress (Enfold theme) at cassa.site. The new site is
+website, currently on WordPress (Enfold theme) at cassa.bd. The new site is
 a static **Astro** app in the spirit of the sibling `ast100` course site, but
 it is an **institutional site**, so it adds content collections for the parts
 that repeat (people, publications, news, events, projects).
@@ -46,7 +46,7 @@ and porting content from `knb/`.
 
 **Out of scope (do not touch / do not migrate):** the existing
 `/courses/ast100` Astro app and the `/abekta` DokuWiki. The new site sits at
-the cassa.site **root** and links out to those two; they stay as-is.
+the cassa.bd **root** and links out to those two; they stay as-is.
 **Deployment is deferred** ("much much later") — never push or deploy.
 
 ---

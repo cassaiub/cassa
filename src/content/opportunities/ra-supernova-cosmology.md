@@ -14,7 +14,7 @@ The **Center for Astronomy, Space Science and Astrophysics (CASSA)** is seeking 
 ### Position Overview
 
 - **Role:** Research Assistant (Post-Baccalaureate)
-- **Supervisor:** [Dr. Syed Ashraf Uddin](https://cassa.site/news/sa-uddin/) (Associate Professor, Core Member, CASSA, IUB)
+- **Supervisor:** [Dr. Syed Ashraf Uddin](https://cassa.bd/news/sa-uddin/) (Associate Professor, Core Member, CASSA, IUB)
 - **Duration:** 8 Months (February 2026 – September 2026)
 - **Remuneration:** 30,000 BDT per month
 

@@ -39,7 +39,7 @@ The following is the tentative schedule, which may be subject to minor changes u
 | Day | From | To | Segment | Instructor |
 |-----|------|----|---------|------------|
 | 2 May 2025 Fri | 9:00 | 10:00 | Icebreaker | |
-| | 10:00 | 11:00 | Introduction to radio astronomy | [KMB Asad](https://cassa.site/people/asad/) |
+| | 10:00 | 11:00 | Introduction to radio astronomy | [KMB Asad](https://cassa.bd/people/asad/) |
 | | 11:00 | 11:30 | Coffee break | |
 | | 11:30 | 12:30 | Array Radio Telescopes (ART) | Asad |
 | | 12:30 | 02:00 | Lunch break* | |

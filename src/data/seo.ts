@@ -4,7 +4,7 @@
 export const SITE = {
   name: "CASSA",
   legalName: "Center for Astronomy, Space Science and Astrophysics",
-  url: "https://cassa.site",
+  url: "https://cassa.bd",
   // Default social-share image (1200×630, real CASSA logo on the brand dark bg).
   ogImage: "/og/cassa-default.png",
   locale: "en_US",

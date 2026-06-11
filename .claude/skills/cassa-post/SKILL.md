@@ -119,8 +119,8 @@ Follow the project's image rules strictly (memory: image-localization):
   resolves & optimizes them; a bad path fails the build.
 - Prefer **`.webp`**. The `hero` is the single best image (used as the list
   thumbnail). Always set `heroAlt` (concise, descriptive).
-- Only use **CASSA-owned / cassa.site** imagery or originals the user provides —
-  never AI-generated images, never hotlink. cassa.site rate-limits bulk
+- Only use **CASSA-owned / cassa.bd** imagery or originals the user provides —
+  never AI-generated images, never hotlink. cassa.bd rate-limits bulk
   downloads (403): fetch **sequentially**, and recover originals from
   `knb/wordpress/posts/` if needed. **Never drop content because an image
   failed** — publish the text and flag the missing image.

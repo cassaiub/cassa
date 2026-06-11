@@ -16,7 +16,7 @@ Durbin facilitates a series of intensive workshops and training camps designed t
 
 While Durbin recruitment remains open year-round via the standard procedures outlined in the Durbin Manual, these sessions offer a high-intensity entry point for aspiring members. Participants who excelled in the second workshop have already joined the ranks as Volunteer Applicants, and the same pathway will be available to those attending the upcoming March camp. If you are eager to contribute to our cosmic mission and accelerate your involvement, we encourage you to review the application details below and prepare to join our growing community of explorers.
 
-Please note that mastery of the [Durbin Workshop 2 materials](https://cassa.site/durbin/updates/dw2/) is a prerequisite for this Training Camp; we expect all applicants to be familiar with those core concepts before applying.
+Please note that mastery of the [Durbin Workshop 2 materials](https://cassa.bd/durbin/updates/dw2/) is a prerequisite for this Training Camp; we expect all applicants to be familiar with those core concepts before applying.
 
 ## Program
 
@@ -36,7 +36,7 @@ Topics:
 2. [The Rotating Sky](https://astro.unl.edu/naap/motion2/motion2.html)
 3. [Cosmic Distance Ladder](https://astro.unl.edu/naap/distance/distance.html)
 
-word version: [naap_distance_sg_08](https://cassa.site/wp-content/uploads/2026/02/naap_distance_sg_08.docx)
+word version: [naap_distance_sg_08](https://cassa.bd/wp-content/uploads/2026/02/naap_distance_sg_08.docx)
 
 **Assessment Pretest:** Must be completed together as a group.
 

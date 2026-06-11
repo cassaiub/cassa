@@ -54,4 +54,4 @@ echo
 echo "▶ Deploying to $REMOTE:$REMOTE_PATH …"
 rsync "${RSYNC_ARGS[@]}" "$LOCAL_PATH" "$REMOTE:$REMOTE_PATH"
 echo
-echo "✅ Done. Hard-refresh https://cassa.site to see changes."
+echo "✅ Done. Hard-refresh https://cassa.bd to see changes."
