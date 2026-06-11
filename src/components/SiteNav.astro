@@ -35,17 +35,24 @@ function isParentActive(href: string, cur: string): boolean {
             if (n.groups && n.groups.length > 0) {
               return (
                 <div class="nav__item" data-has-children>
-                  <a
-                    class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
-                    href={withBase(n.href)}
-                    aria-current={current === n.href ? "page" : undefined}
-                    aria-haspopup="true"
-                  >
-                    {n.label}
-                    <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <polyline points="2 4 6 8 10 4" />
-                    </svg>
-                  </a>
+                  <div class="nav__item-row">
+                    <a
+                      class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
+                      href={withBase(n.href)}
+                      aria-current={current === n.href ? "page" : undefined}
+                      aria-haspopup="true"
+                    >
+                      {n.label}
+                      <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="2 4 6 8 10 4" />
+                      </svg>
+                    </a>
+                    <button class="nav__submenu-toggle" type="button" aria-label={`Toggle ${n.label} submenu`} aria-expanded="false">
+                      <svg class="nav__toggle-icon" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="2 4 6 8 10 4" />
+                      </svg>
+                    </button>
+                  </div>
                   <div class="nav__megamenu" role="menu">
                     {n.groups.map((group) => (
                       <div class="nav__megamenu-col">
@@ -80,28 +87,24 @@ function isParentActive(href: string, cur: string): boolean {
             if (n.children && n.children.length > 0) {
               return (
                 <div class="nav__item" data-has-children>
-                  <a
-                    class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
-                    href={withBase(n.href)}
-                    aria-current={current === n.href ? "page" : undefined}
-                    aria-haspopup="true"
-                  >
-                    {n.label}
-                    <svg
-                      class="nav__chevron"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
+                  <div class="nav__item-row">
+                    <a
+                      class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
+                      href={withBase(n.href)}
+                      aria-current={current === n.href ? "page" : undefined}
+                      aria-haspopup="true"
                     >
-                      <polyline points="2 4 6 8 10 4" />
-                    </svg>
-                  </a>
+                      {n.label}
+                      <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="2 4 6 8 10 4" />
+                      </svg>
+                    </a>
+                    <button class="nav__submenu-toggle" type="button" aria-label={`Toggle ${n.label} submenu`} aria-expanded="false">
+                      <svg class="nav__toggle-icon" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="2 4 6 8 10 4" />
+                      </svg>
+                    </button>
+                  </div>
                   <div class="nav__submenu" role="menu">
                     {n.children.map((child) => (
                       <a
@@ -176,6 +179,20 @@ function isParentActive(href: string, cur: string): boolean {
     }),
   );
 
+  /* ── Mobile: tap the chevron to expand/collapse a section ──────────── */
+  // The label still navigates to the section landing page; this button only
+  // toggles the nested child list (collapsed by default). Hidden on desktop.
+  document.querySelectorAll<HTMLButtonElement>(".nav__submenu-toggle").forEach((btn) =>
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const item = btn.closest(".nav__item");
+      if (!item) return;
+      const open = item.classList.toggle("is-open");
+      btn.setAttribute("aria-expanded", String(open));
+    }),
+  );
+
   /* ── Desktop dropdown: close on outside click ──────────────────────── */
   document.addEventListener("click", (e) => {
     document.querySelectorAll(".nav__item[data-has-children]").forEach((item) => {
@@ -201,6 +218,22 @@ function isParentActive(href: string, cur: string): boolean {
     align-items: center;
     gap: 0;
   }
+
+  /* ── Parent row + mobile expand/collapse toggle ────────────────────── */
+  /* On desktop the row is transparent (display:contents) so the bar layout is
+     unchanged and the toggle button is hidden — hover opens the panel. On mobile
+     the row becomes a flex line and the toggle drives a collapsible nested list. */
+  .nav__item-row { display: contents; }
+  .nav__submenu-toggle {
+    display: none;
+    flex-shrink: 0;
+    place-items: center;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .nav__toggle-icon { transition: transform 0.2s ease; }
 
   /* ── Chevron icon ──────────────────────────────────────────────────── */
   /* Sits OUT OF FLOW (absolute, centered just below its label) so it adds no
@@ -393,10 +426,26 @@ function isParentActive(href: string, cur: string): boolean {
       width: 100%;
     }
 
-    .nav__link--parent {
+    /* Parent row: label flexes to fill, the expand/collapse toggle is pinned right. */
+    .nav__item-row {
+      display: flex;
       width: 100%;
+      align-items: center;
+    }
+    .nav__link--parent {
+      flex: 1 1 auto;
+    }
+    .nav__submenu-toggle {
+      display: inline-grid;
+      width: 42px;
+      height: 42px;
+      color: var(--ink-soft);
+    }
+    .nav__item.is-open .nav__toggle-icon {
+      transform: rotate(180deg);
     }
 
+    /* Nested child lists are collapsed by default; revealed when the item is open. */
     .nav__submenu {
       position: static;
       transform: none;
@@ -409,9 +458,12 @@ function isParentActive(href: string, cur: string): boolean {
       background: transparent;
       padding: 0.2rem 0 0.4rem 0.9rem;
       margin-top: 0.1rem;
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 0;
+    }
+    .nav__item.is-open > .nav__submenu {
+      display: flex;
     }
 
     .nav__submenu-link {
@@ -437,10 +489,13 @@ function isParentActive(href: string, cur: string): boolean {
       background: transparent;
       padding: 0.2rem 0 0.4rem 0.9rem;
       margin-top: 0.1rem;
-      display: flex;
+      display: none;
       flex-direction: column;
       min-width: 0;
       gap: 0;
+    }
+    .nav__item.is-open > .nav__megamenu {
+      display: flex;
     }
     .nav__megamenu-col-head {
       border-bottom: none;
