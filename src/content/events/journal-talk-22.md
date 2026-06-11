@@ -22,6 +22,8 @@ The resulting models provide key physical parameters, including the Einstein rad
 
 **Presenter:** **Nafis Sadik Nihal** (Postbac Research Assistant at CASSA; B.Sc. in Electrical and Electronics Engineering, Islamic University of Technology, Dhaka)
 
+**Supervisor:** **Dr. Anowar Jaman Shajib** (Associate Member at CASSA; KICP & NASA Einstein Fellow, Department of Astronomy & Astrophysics, The University of Chicago, IL, USA)
+
 ---
 
 
