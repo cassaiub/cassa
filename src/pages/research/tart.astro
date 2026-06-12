@@ -1,10 +1,12 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import { Image } from "astro:assets";
+import SkyCanvas from "../../components/SkyCanvas.tsx";
 import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
 import Reveal from "../../components/immersive/Reveal.astro";
 import Prose from "../../components/immersive/Prose.astro";
 import { withBase } from "../../data/site-nav.ts";
+import tartArray from "../../assets/heroes/tart-array.webp";
 
 // ── Open-source links (verified live, June 2026) ──────────────────────────
 const docs = [
@@ -32,13 +34,39 @@ const repos = [
   description="TART (Transient Array Radio Telescope) is CASSA's radio instrument at IUB CORE — Bangladesh's first radio telescope and the country's only aperture-synthesis radio array, with its 24-antenna array fabricated at the IUB Fab Lab and assembled during CASSA Workshop 2."
   current="/research/tart"
 >
-  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
-  <AnimatedHero
-    theme="galaxy"
-    eyebrow="Research · Facilities"
-    title="TART"
-    lede="Transient Array Radio Telescope — CASSA's radio instrument at IUB CORE (Campus Observatory for Research and Education), and Bangladesh's first radio telescope. A 24-antenna aperture-synthesis array built at IUB — the only synthesis-array radio telescope in the country."
-  />
+  <!-- ── Hero — the real TART array floating over a galaxy sky ──────────── -->
+  <header class="hero tart-hero" data-tart-hero>
+    <div class="hero__media"><SkyCanvas theme="galaxy" client:load /></div>
+
+    <!-- Floating array: the actual fabricated TART structure -->
+    <div class="tart-hero__stage" data-tart-parallax aria-hidden="true">
+      <div class="tart-hero__halo"></div>
+      <Image
+        class="tart-hero__array"
+        src={tartArray}
+        alt=""
+        widths={[700, 1100, 1800]}
+        sizes="(max-width: 760px) 92vw, 60vw"
+        fetchpriority="high"
+        loading="eager"
+      />
+    </div>
+
+    <div class="hero__scrim tart-hero__scrim"></div>
+
+    <div class="wrap hero__inner">
+      <p class="eyebrow">Research · Facilities</p>
+      <h1 class="hero__title">TART</h1>
+      <p class="hero__lede">
+        Transient Array Radio Telescope — CASSA's radio instrument at IUB CORE
+        (Campus Observatory for Research and Education), and Bangladesh's first radio
+        telescope. A 24-antenna aperture-synthesis array built at IUB — the only
+        synthesis-array radio telescope in the country.
+      </p>
+    </div>
+
+    <div class="hero__cue" aria-hidden="true"><span></span></div>
+  </header>
 
   <!-- ── Facility sub-nav strip ─────────────────────────────────────────── -->
   <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
@@ -322,6 +350,29 @@ const repos = [
   </section>
 
   <script is:inline>
+    /* Hero parallax — the floating array drifts with the pointer and scroll */
+    (() => {
+      const hero = document.querySelector('[data-tart-hero]');
+      const stage = hero && hero.querySelector('[data-tart-parallax]');
+      if (!hero || !stage || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      let mx = 0, my = 0;
+      const apply = () => {
+        const sc = Math.min(window.scrollY, window.innerHeight) * 0.16;
+        stage.style.transform = `translate3d(${mx}px, ${my + sc}px, 0)`;
+      };
+      hero.addEventListener('pointermove', (e) => {
+        const r = hero.getBoundingClientRect();
+        mx = ((e.clientX - r.left) / r.width - 0.5) * 28;
+        my = ((e.clientY - r.top) / r.height - 0.5) * 18;
+        apply();
+      });
+      hero.addEventListener('pointerleave', () => { mx = 0; my = 0; apply(); });
+      window.addEventListener('scroll', apply, { passive: true });
+      apply();
+    })();
+  </script>
+
+  <script is:inline>
     (() => {
       const guard = document.querySelector('[data-map-guard]');
       if (!guard) return;
@@ -344,6 +395,46 @@ const repos = [
 </BaseLayout>
 
 <style>
+  /* ── Floating TART-array hero ───────────────────────────────────────── */
+  .tart-hero__scrim {
+    background:
+      linear-gradient(to top, rgba(2,4,12,.92) 0%, rgba(2,4,12,.55) 32%, rgba(2,4,12,.12) 60%, transparent 100%);
+    z-index:-2;
+  }
+  .tart-hero__stage {
+    position:absolute; inset:0; z-index:-1; pointer-events:none;
+    display:grid; place-items:center; padding-bottom:14vh;
+    transition:transform .25s ease-out;
+  }
+  .tart-hero__halo, .tart-hero__array { grid-area:1/1; }
+  .tart-hero__halo {
+    width:min(78vw,1000px); aspect-ratio:1; border-radius:50%;
+    background:radial-gradient(circle, rgba(96,148,236,.30), rgba(96,148,236,.07) 46%, transparent 70%);
+    filter:blur(8px); animation:tartPulse 9s ease-in-out infinite;
+  }
+  .tart-hero__array {
+    width:min(58vw,720px); height:auto; object-fit:contain;
+    filter:drop-shadow(0 34px 60px rgba(0,0,0,.55)) drop-shadow(0 0 46px rgba(120,170,255,.20));
+    animation:tartFloat 15s ease-in-out infinite;
+    will-change:transform;
+  }
+  @keyframes tartFloat {
+    0%,100% { transform:translateY(-2.5%) rotate(-1.3deg); }
+    50%     { transform:translateY(2.5%)  rotate(1.3deg); }
+  }
+  @keyframes tartPulse {
+    0%,100% { opacity:.65; transform:scale(1); }
+    50%     { opacity:1;   transform:scale(1.06); }
+  }
+  @media (max-width:760px) {
+    .tart-hero__stage { padding-bottom:30vh; place-items:start center; padding-top:12vh; }
+    .tart-hero__array { width:90vw; }
+    .tart-hero__halo  { width:96vw; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tart-hero__array, .tart-hero__halo, .tart-hero__stage { animation:none; transition:none; }
+  }
+
   .pg { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
   @media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } }
   @media (max-width:540px) { .pg { grid-template-columns:1fr; } }
