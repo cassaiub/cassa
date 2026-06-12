@@ -459,7 +459,10 @@ const repos = [
 
   /* Scroll-guard: page scrolls over the map; hold Ctrl/⌘ to interact (zoom/pan) */
   .map-shell { position:relative; border-radius:14px; overflow:hidden; }
-  .map-shell__frame { width:100%; height:100%; border:1px solid var(--line); border-radius:14px; }
+  .map-shell__frame { width:100%; height:100%; border:1px solid var(--line); border-radius:14px; transition:filter .35s ease; }
+  /* The TART map is hard-wired dark (CARTO dark tiles, no theme API). It can't
+     be driven cross-origin, so in light mode we invert it to match the site. */
+  :global([data-theme="light"]) .map-shell__frame { filter:invert(1) hue-rotate(180deg) brightness(1.05) contrast(.92); }
   .map-guard { position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center; pointer-events:auto; cursor:default; }
   .map-guard.is-pass { pointer-events:none; }   /* Ctrl held → interaction reaches the map */
   .map-guard__hint { margin-bottom:1.1rem; padding:.5rem .9rem; border-radius:999px; background:rgba(8,10,20,.72); color:#fff; font-size:.85rem; opacity:0; transform:translateY(.4rem); transition:opacity .2s, transform .2s; }
