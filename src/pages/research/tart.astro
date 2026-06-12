@@ -187,15 +187,20 @@ const repos = [
           <h3>Worldwide TART network</h3>
           <a href="https://map.elec.ac.nz/" target="_blank" rel="noopener">Open the interactive map ↗</a>
         </div>
-        <iframe
-          class="embed-frame embed-frame--full"
-          src="https://map.elec.ac.nz/"
-          title="Live map of the worldwide TART network"
-          loading="lazy"
-          scrolling="no"
-          referrerpolicy="no-referrer-when-downgrade"
-          allowfullscreen
-        ></iframe>
+        <div class="map-shell embed-frame--full">
+          <iframe
+            class="embed-frame map-shell__frame"
+            src="https://map.elec.ac.nz/"
+            title="Live map of the worldwide TART network"
+            loading="lazy"
+            scrolling="no"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+          <div class="map-guard" data-map-guard aria-hidden="true">
+            <span class="map-guard__hint">Hold <kbd>Ctrl</kbd> and scroll to zoom · drag to pan</span>
+          </div>
+        </div>
         <p class="wrap embed-cap">
           Each marker is a live TART node sharing full-sky data. Bangladesh's
           <code>bd-iub</code> is the network's newest member, alongside telescopes across
@@ -316,6 +321,25 @@ const repos = [
     </div>
   </section>
 
+  <script is:inline>
+    (() => {
+      const guard = document.querySelector('[data-map-guard]');
+      if (!guard) return;
+      let flashTimer;
+      // Plain scroll passes through to the page; flash the "hold Ctrl" hint.
+      guard.addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.metaKey) return;
+        guard.classList.add('is-flash');
+        clearTimeout(flashTimer);
+        flashTimer = setTimeout(() => guard.classList.remove('is-flash'), 1200);
+      }, { passive: true });
+      // Holding Ctrl/⌘ hands interaction (zoom + pan) to the map.
+      const setPass = (on) => guard.classList.toggle('is-pass', on);
+      window.addEventListener('keydown', (e) => { if (e.key === 'Control' || e.key === 'Meta') setPass(true); });
+      window.addEventListener('keyup', (e) => { if (e.key === 'Control' || e.key === 'Meta') setPass(false); });
+      window.addEventListener('blur', () => setPass(false));
+    })();
+  </script>
 
 </BaseLayout>
 
@@ -339,8 +363,17 @@ const repos = [
   .embed-cap { margin-top:.65rem; font-size:.85rem; color:var(--ink-faint); line-height:1.55; }
 
   /* Wide worldwide network map — taller & immersive, with small side gutters */
-  .embed-frame--full { height:min(85vh,920px); width:calc(100% - 2 * clamp(2rem,7vw,6rem)); margin-inline:clamp(2rem,7vw,6rem); overflow:hidden; }
+  .embed-frame--full { height:min(85vh,920px); width:calc(100% - 2 * clamp(2rem,7vw,6rem)); margin-inline:clamp(2rem,7vw,6rem); }
   @media (max-width:640px) { .embed-frame--full { height:72vh; } }
+
+  /* Scroll-guard: page scrolls over the map; hold Ctrl/⌘ to interact (zoom/pan) */
+  .map-shell { position:relative; border-radius:14px; overflow:hidden; }
+  .map-shell__frame { width:100%; height:100%; border:1px solid var(--line); border-radius:14px; }
+  .map-guard { position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center; pointer-events:auto; cursor:default; }
+  .map-guard.is-pass { pointer-events:none; }   /* Ctrl held → interaction reaches the map */
+  .map-guard__hint { margin-bottom:1.1rem; padding:.5rem .9rem; border-radius:999px; background:rgba(8,10,20,.72); color:#fff; font-size:.85rem; opacity:0; transform:translateY(.4rem); transition:opacity .2s, transform .2s; }
+  .map-guard.is-flash .map-guard__hint { opacity:1; transform:none; }
+  .map-guard__hint kbd { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.82em; background:rgba(255,255,255,.18); padding:.05em .4em; border-radius:5px; }
 
   /* Open-source link columns */
   .links-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; margin-top:2rem; align-items:start; }
