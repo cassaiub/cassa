@@ -5,11 +5,31 @@ import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
 import Reveal from "../../components/immersive/Reveal.astro";
 import Prose from "../../components/immersive/Prose.astro";
 import { withBase } from "../../data/site-nav.ts";
+
+// ── Open-source links (verified live, June 2026) ──────────────────────────
+const docs = [
+  { href: "https://tart.elec.ac.nz/doc/", name: "Documentation home", desc: "The full TART docs hub" },
+  { href: "https://tart.elec.ac.nz/doc/docs/intro/", name: "TART in 5 minutes", desc: "A quick overview of how it works" },
+  { href: "https://tart.elec.ac.nz/doc/docs/basics/get-tart-data/", name: "Getting data from TART", desc: "Download visibilities from the API" },
+  { href: "https://tart.elec.ac.nz/doc/docs/basics/making-images/", name: "Making images", desc: "Turn visibilities into all-sky images" },
+  { href: "https://tart.elec.ac.nz/doc/docs/basics/tart-api/", name: "The TART API", desc: "REST endpoints for every telescope" },
+  { href: "https://pypi.org/project/tart-tools/", name: "tart-tools on PyPI", desc: "pip3 install tart-tools" },
+];
+
+const repos = [
+  { href: "https://github.com/tart-telescope", name: "tart-telescope (GitHub org)", desc: "Hardware, firmware, web app & infrastructure" },
+  { href: "https://github.com/tmolteno/tart_modules", name: "tart_modules", desc: "Core Python library + command-line tools" },
+  { href: "https://github.com/tmolteno/TART", name: "TART", desc: "PCB designs & FPGA firmware — the hardware root" },
+  { href: "https://github.com/tart-telescope/tart2ms", name: "tart2ms", desc: "Convert TART data to CASA Measurement Sets" },
+  { href: "https://github.com/tart-telescope/sbc_code", name: "sbc_code", desc: "On-telescope software + the REST API server" },
+  { href: "https://github.com/tart-telescope/web_app", name: "web_app", desc: "The live telescope dashboard front-end" },
+  { href: "https://github.com/tart-telescope/notebooks", name: "notebooks", desc: "Example Jupyter notebooks using TART data" },
+];
 ---
 
 <BaseLayout
   title="TART — CASSA Research"
-  description="TART (Transient Array Radio Telescope) is CASSA's radio instrument at IUB CORE — Bangladesh's first radio telescope, with its 24-antenna array fabricated at the IUB Fab Lab and assembled during CASSA Workshop 2."
+  description="TART (Transient Array Radio Telescope) is CASSA's radio instrument at IUB CORE — Bangladesh's first radio telescope and the country's only aperture-synthesis radio array, with its 24-antenna array fabricated at the IUB Fab Lab and assembled during CASSA Workshop 2."
   current="/research/tart"
 >
   <!-- ── Hero ───────────────────────────────────────────────────────────── -->
@@ -17,7 +37,7 @@ import { withBase } from "../../data/site-nav.ts";
     theme="galaxy"
     eyebrow="Research · Facilities"
     title="TART"
-    lede="Transient Array Radio Telescope — CASSA's radio instrument at IUB CORE, and Bangladesh's first radio telescope. A 24-antenna array built at IUB and the only TART in the Northern Hemisphere."
+    lede="Transient Array Radio Telescope — CASSA's radio instrument at IUB CORE, and Bangladesh's first radio telescope. A 24-antenna aperture-synthesis array built at IUB — the only synthesis-array radio telescope in the country."
   />
 
   <!-- ── Facility sub-nav strip ─────────────────────────────────────────── -->
@@ -47,10 +67,10 @@ import { withBase } from "../../data/site-nav.ts";
           <p>
             TART — the Transient Array Radio Telescope — is CASSA's radio
             instrument, housed at IUB CORE on the rooftop of the Main Academic
-            Building. A 24-antenna build of the open-source TART design, it gave
-            Bangladesh its first radio telescope and is the only TART in the
-            Northern Hemisphere. It first detected radio signals from space on
-            18 November 2025, and is operated by CASSA as part of the RAIN
+            Building. Every one of its <strong>24 all-sky GPS antennas</strong> is correlated
+            with every other to form <strong>276 baselines</strong>, and an open-source
+            aperture-synthesis pipeline turns those into a full-sky radio image about
+            <strong>once a minute</strong>. It is operated by CASSA as part of the RAIN
             (Radio Astronomy Instrumentation) research area.
           </p>
         </Prose>
@@ -60,8 +80,8 @@ import { withBase } from "../../data/site-nav.ts";
         {[
           { label: "Full Name", value: "Transient Array Radio Telescope (TART)" },
           { label: "Location", value: "IUB CORE, Main Academic Building rooftop, IUB Bashundhara" },
-          { label: "Array", value: "24 antennas, ~10 ft across, full-sky image every minute" },
-          { label: "Built by", value: "Shoaib Mirza (Technical Affiliate, CASSA), at the IUB Fab Lab" },
+          { label: "Array", value: "24 GPS/GNSS antennas · L1 band, 1.575 GHz · 276 baselines · full-sky image every minute" },
+          { label: "First Light", value: "18 November 2025, during CASSA Workshop 2" },
         ].map((card, i) => (
           <Reveal class="card" delay={i * 80}>
             <p class="eyebrow" style="font-size:.75rem">{card.label}</p>
@@ -77,36 +97,35 @@ import { withBase } from "../../data/site-nav.ts";
     <Reveal>
       <p class="eyebrow" style="color:#fff;opacity:.85">How it was built</p>
       <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">
-        Fabricated at IUB, assembled at Workshop 2
+        An international partnership, assembled at IUB
       </h2>
     </Reveal>
   </AnimatedBand>
 
-  <!-- ── Section 2: How it was built ────────────────────────────────────── -->
-  <section class="section">
+  <!-- ── Section: How it was built (build narrative + partnership) ──────── -->
+  <section class="section section--elev">
     <div class="wrap">
-      <Reveal><p class="eyebrow">The build</p></Reveal>
+      <Reveal><p class="eyebrow">The build · a partnership</p></Reveal>
       <Reveal delay={70}>
-        <h2 class="section-h2">Made in Bangladesh</h2>
+        <h2 class="section-h2">An international partnership</h2>
       </Reveal>
       <Reveal delay={120}>
         <Prose>
           <p>
-            The telescope's <strong>array structure was designed and fabricated at the
-            IUB Fabrication Laboratory (Fab Lab)</strong> by CASSA Technical Affiliate
-            <strong>Shoaib Mirza</strong>, with help from students <strong>Yusa Islam</strong> and
-            <strong>Md. Shahadat Hossain Shahal</strong>. The <strong>electronics were imported from
-            New Zealand</strong>, the home of the open-source TART project.
+            TART at IUB is the product of an international collaboration. The receivers and
+            digital electronics — the heart of the instrument — were designed and supplied by
+            the open-source TART project at the University of Otago, New Zealand. The antenna
+            array was fabricated at the IUB Fab Lab, and CASSA provided the rooftop site,
+            student researchers, and project coordination, with funding from IUB.
           </p>
           <p>
             After more than six months of work — held up for a time by electronic
-            complications — the instrument was finally <strong>assembled and brought online during
-            <a href={withBase('/teaching/workshops/cw2-en')}>CASSA Workshop 2</a></strong>,
+            complications — the instrument was assembled and brought online during
+            <a href={withBase('/teaching/workshops/cw2-en')}>CASSA Workshop 2</a>,
             <em>"Installing a Radio Telescope to Image the Invisible"</em> (17–21 November 2025).
             It detected its first radio signals on 18 November 2025, under the supervision of
-            Dr. Tim Molteno of the University of Otago, New Zealand, who brought the final
-            electronic components that completed the build. Thirty students from eleven
-            universities took part in the hands-on assembly.
+            Dr. Tim Molteno, who brought the final electronic components that completed the
+            build. Thirty students from eleven universities took part in the hands-on assembly.
           </p>
           <p style="font-size:.95rem">
             Read the full story:
@@ -115,19 +134,75 @@ import { withBase } from "../../data/site-nav.ts";
         </Prose>
       </Reveal>
 
-      <div class="pg">
+      <div class="credits-grid">
         {[
-          { label: "Array structure", value: "Designed & fabricated at the IUB Fab Lab by Shoaib Mirza, with students Yusa Islam and Md. Shahadat Hossain Shahal" },
-          { label: "Electronics", value: "Imported from New Zealand, home of the open-source TART project" },
-          { label: "Assembly", value: "Brought online during CASSA Workshop 2 (17–21 Nov 2025); first signals 18 Nov 2025" },
+          {
+            label: "Receivers & electronics",
+            value: "Dr. Tim Molteno and his team at the University of Otago, New Zealand — the open-source TART project that designed and supplied the receivers and electronics.",
+          },
+          {
+            label: "Array structure",
+            value: "Designed and fabricated at the IUB Fabrication Laboratory (Fab Lab) by Shoaib Mirza, with students Yusa Islam and Md. Shahadat Hossain Shahal.",
+          },
+          {
+            label: "Space, location & student expertise",
+            value: "CASSA — the rooftop site at IUB CORE, project leadership, and the student researchers who built and now operate the telescope.",
+          },
+          {
+            label: "Funding",
+            value: "The Department of Physical Sciences, IUB, together with CASSA.",
+          },
         ].map((card, i) => (
           <Reveal class="card" delay={i * 80}>
-            <p class="eyebrow" style="font-size:.75rem">{card.label}</p>
-            <p style="color:var(--ink-soft);margin-top:.6rem;font-size:.97rem;line-height:1.6">{card.value}</p>
+            <p class="eyebrow" style="font-size:.72rem;color:var(--accent)">{card.label}</p>
+            <p style="color:var(--ink-soft);margin-top:.65rem;font-size:.98rem;line-height:1.65">{card.value}</p>
           </Reveal>
         ))}
       </div>
     </div>
+  </section>
+
+  <!-- ── Section 4: Live from TART (embedded map + viewer) ──────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Live data</p></Reveal>
+      <Reveal delay={70}>
+        <h2 class="section-h2">Live from TART</h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            TART images the entire sky about once a minute and shares it live across a
+            worldwide network of low-cost array telescopes. Explore the global network below —
+            Bangladesh's <code>bd-iub</code> node joins telescopes across Africa and New Zealand.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+
+    <!-- Full-bleed worldwide network map -->
+    <Reveal delay={160}>
+      <div class="embed embed--full">
+        <div class="wrap embed-head">
+          <h3>Worldwide TART network</h3>
+          <a href="https://map.elec.ac.nz/" target="_blank" rel="noopener">Open the interactive map ↗</a>
+        </div>
+        <iframe
+          class="embed-frame embed-frame--full"
+          src="https://map.elec.ac.nz/"
+          title="Live map of the worldwide TART network"
+          loading="lazy"
+          scrolling="no"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+        <p class="wrap embed-cap">
+          Each marker is a live TART node sharing full-sky data. Bangladesh's
+          <code>bd-iub</code> is the network's newest member, alongside telescopes across
+          Africa and New Zealand.
+        </p>
+      </div>
+    </Reveal>
   </section>
 
   <!-- ── AnimatedBand — Science ─────────────────────────────────────────── -->
@@ -140,8 +215,8 @@ import { withBase } from "../../data/site-nav.ts";
     </Reveal>
   </AnimatedBand>
 
-  <!-- ── Section 3: Science ─────────────────────────────────────────────── -->
-  <section class="section">
+  <!-- ── Section 5: Science ─────────────────────────────────────────────── -->
+  <section class="section section--elev">
     <div class="wrap">
       <Reveal><p class="eyebrow">Science Capabilities</p></Reveal>
       <Reveal delay={70}>
@@ -150,13 +225,11 @@ import { withBase } from "../../data/site-nav.ts";
       <Reveal delay={120}>
         <Prose>
           <p>
-            TART is the foundation of CASSA's in-house radio observation programme.
-            As part of the RAIN (Radio Astronomy Instrumentation) research area, the
-            telescope serves as a testbed for developing calibration workflows,
-            primary beam characterisation pipelines, and data reduction methods that
-            are directly applicable to larger arrays including LOFAR and the Square
-            Kilometre Array (SKA). Its full-sky images, captured every minute, are
-            shared live across the global TART network.
+            TART is the foundation of CASSA's in-house radio observation programme and a
+            hands-on training ground for student researchers. As part of the RAIN research
+            area, it is a testbed for the calibration workflows, primary-beam characterisation,
+            and data-reduction pipelines that carry directly across to far larger arrays such as
+            LOFAR and the Square Kilometre Array (SKA).
           </p>
         </Prose>
       </Reveal>
@@ -165,19 +238,19 @@ import { withBase } from "../../data/site-nav.ts";
         {[
           {
             label: "Transient Detection",
-            desc: "Monitoring and detection of radio transient phenomena, including cosmic rays",
+            desc: "Catching short-lived radio events — cosmic rays and other transients — that optical telescopes miss",
           },
           {
-            label: "Pipeline Development",
-            desc: "Development and testing of radio interferometry reduction pipelines for the RAIN research area",
+            label: "Ionospheric Science",
+            desc: "Measuring the total electron content (TEC) of Earth's ionosphere using GNSS signals",
           },
           {
             label: "Calibration Research",
-            desc: "Primary beam characterisation and calibration workflows applicable to international arrays",
+            desc: "Using the many GPS satellites overhead as bright references to characterise the array's beam and gains",
           },
           {
-            label: "Student Training",
-            desc: "Hands-on radio astronomy training for CASSA student researchers",
+            label: "Pipeline Development",
+            desc: "Building synthesis-imaging and calibration pipelines that scale to LOFAR and the SKA",
           },
         ].map((card, i) => (
           <Reveal class="card" delay={i * 90}>
@@ -189,24 +262,60 @@ import { withBase } from "../../data/site-nav.ts";
     </div>
   </section>
 
-  <!-- ── Section 4: Context ─────────────────────────────────────────────── -->
-  <section class="section section--elev">
+  <!-- ── Section 6: Open source — code & tutorials ──────────────────────── -->
+  <section class="section">
     <div class="wrap">
-      <Reveal>
-        <div class="card" style="max-width:52rem">
-          <p class="eyebrow" style="font-size:.75rem;color:var(--ink-faint)">Network &amp; history</p>
-          <p style="color:var(--ink-soft);margin-top:.75rem;font-size:.97rem;line-height:1.7">
-            TART is part of a global network of low-cost array telescopes — with siblings
-            in Ghana, Kenya, Zambia, Namibia, Mauritius, South Africa and New Zealand — that
-            share data and full-sky imagery. MATRiX (Multiwavelength Astronomy Techniques:
-            Radio and X-ray) — the former research group centred on this instrumentation — has
-            been renamed RAIN (Radio Astronomy Instrumentation) to better reflect CASSA's
-            evolving focus on array design, pipeline development, and multi-telescope coordination.
-          </p>
-        </div>
+      <Reveal><p class="eyebrow">Open source</p></Reveal>
+      <Reveal delay={70}>
+        <h2 class="section-h2">Build with TART</h2>
       </Reveal>
+      <Reveal delay={120}>
+        <Prose>
+          <p>
+            TART is fully open source — hardware, FPGA firmware, and imaging software, all
+            under GPLv3 and stewarded by the Electronics Research Foundation in New Zealand.
+            Every visibility and image is public, so the whole pipeline is reproducible end to
+            end. Install the Python tools with <code>pip3 install tart-tools</code>.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="links-grid">
+        <Reveal delay={160}>
+          <div class="card">
+            <p class="eyebrow" style="font-size:.72rem;color:var(--accent)">Tutorials & documentation</p>
+            <ul class="link-list">
+              {docs.map(l => (
+                <li>
+                  <a class="link-row" href={l.href} target="_blank" rel="noopener">
+                    <span class="link-name">{l.name} ↗</span>
+                    <span class="link-desc">{l.desc}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+
+        <Reveal delay={210}>
+          <div class="card">
+            <p class="eyebrow" style="font-size:.72rem;color:var(--accent)">Code on GitHub</p>
+            <ul class="link-list">
+              {repos.map(l => (
+                <li>
+                  <a class="link-row" href={l.href} target="_blank" rel="noopener">
+                    <span class="link-name">{l.name} ↗</span>
+                    <span class="link-desc">{l.desc}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+      </div>
     </div>
   </section>
+
 
 </BaseLayout>
 
@@ -215,4 +324,33 @@ import { withBase } from "../../data/site-nav.ts";
   @media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } }
   @media (max-width:540px) { .pg { grid-template-columns:1fr; } }
   .section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+  /* Credits — 2×2 grid */
+  .credits-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; margin-top:2rem; }
+  @media (max-width:640px) { .credits-grid { grid-template-columns:1fr; } }
+
+  /* Embedded live map + viewer */
+  .embed { margin-top:1.75rem; }
+  .embed-head { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.5rem; margin-bottom:.7rem; }
+  .embed-head h3 { font-size:1.05rem; color:var(--ink); margin:0; }
+  .embed-head a { font-size:.85rem; color:var(--accent); white-space:nowrap; }
+  .embed-frame { width:100%; height:560px; border:1px solid var(--line); border-radius:14px; background:var(--bg-elev); display:block; }
+  @media (max-width:640px) { .embed-frame { height:440px; } }
+  .embed-cap { margin-top:.65rem; font-size:.85rem; color:var(--ink-faint); line-height:1.55; }
+
+  /* Wide worldwide network map — taller & immersive, with small side gutters */
+  .embed-frame--full { height:min(85vh,920px); width:calc(100% - 2 * clamp(2rem,7vw,6rem)); margin-inline:clamp(2rem,7vw,6rem); overflow:hidden; }
+  @media (max-width:640px) { .embed-frame--full { height:72vh; } }
+
+  /* Open-source link columns */
+  .links-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; margin-top:2rem; align-items:start; }
+  @media (max-width:760px) { .links-grid { grid-template-columns:1fr; } }
+  .link-list { list-style:none; margin:1rem 0 0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+  .link-row { display:flex; flex-direction:column; gap:.12rem; padding:.6rem .7rem; margin-inline:-.7rem; border-radius:10px; text-decoration:none; transition:background-color .15s; }
+  .link-row:hover, .link-row:focus-visible { background:var(--line); }
+  .link-name { color:var(--ink); font-size:.97rem; font-weight:600; }
+  .link-row:hover .link-name, .link-row:focus-visible .link-name { color:var(--accent); }
+  .link-desc { color:var(--ink-faint); font-size:.85rem; line-height:1.45; }
+
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.88em; background:var(--line); padding:.12em .42em; border-radius:6px; color:var(--ink); }
 </style>
