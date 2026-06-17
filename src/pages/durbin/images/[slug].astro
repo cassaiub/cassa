@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ImmersiveHero from "../../../components/immersive/ImmersiveHero.astro";
+import ImmersiveHeroSlider from "../../../components/immersive/ImmersiveHeroSlider.astro";
 import Prose from "../../../components/immersive/Prose.astro";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../../data/site-nav.ts";
@@ -17,18 +18,56 @@ const { Content } = await render(entry);
 const objType = d.categories.find((c) => !["Durbin", "Featured"].includes(c)) ?? d.categories[0];
 const eyebrow = `Astrophotography${objType ? ` · ${objType}` : ""}`;
 
-const ap = d.astrophoto ?? {};
-const photoRows: [string, string | undefined][] = [
-  ["Photographer", ap.photographer],
-  ["Observing location", ap.location],
-  ["Observation date", ap.date],
-  ["Exposure", ap.exposure],
-  ["Telescope", ap.telescope],
-  ["Camera", ap.camera],
-  ["Field of view", ap.fov],
-  ["Image processing", ap.processing],
-  ["Processing method", ap.processingMethod],
+// The Astrophotographic ("how it was captured") table, built from one capture
+// block. Each slide carries its own, so a multi-author entry attributes the
+// right capture details to the photographer whose image is showing.
+type Capture = NonNullable<typeof d.astrophoto>;
+const photoRowsOf = (a: Capture): [string, string | undefined][] =>
+  (
+    [
+      ["Photographer", a.photographer],
+      ["Observing location", a.location],
+      ["Observation date", a.date],
+      ["Exposure", a.exposure],
+      ["Telescope", a.telescope],
+      ["Camera", a.camera],
+      ["Field of view", a.fov],
+      ["Image processing", a.processing],
+      ["Processing method", a.processingMethod],
+    ] as [string, string | undefined][]
+  ).filter(([, v]) => v);
+
+// The person shown on a slide (no verb) — for dot labels and table captions.
+const nameOf = (a: Capture, fallback?: string) =>
+  a.photographer ?? a.processing ?? fallback ?? undefined;
+// The full attribution line shown in the hero — distinguishes who captured vs
+// who only processed, so a processing-only contributor isn't mislabelled.
+const attributionOf = (a: Capture, fallback?: string): string | undefined => {
+  const cap = a.photographer;
+  const proc = a.processing;
+  if (cap && proc) return cap === proc ? `Captured & processed by ${cap}` : `Captured by ${cap} · processed by ${proc}`;
+  if (cap) return `Captured by ${cap}`;
+  if (proc) return `Processed by ${proc}`;
+  return fallback ? `By ${fallback}` : undefined;
+};
+
+// Slides: the primary image first, then any additional captures of the same
+// object. With 2+ the hero becomes a slider and the capture table swaps per slide.
+const buildSlide = (image: typeof d.image, alt: string, a: Capture, fallback?: string) => ({
+  image,
+  alt,
+  name: nameOf(a, fallback),
+  attribution: attributionOf(a, fallback),
+  photo: photoRowsOf(a),
+});
+const slides = [
+  buildSlide(d.image, d.imageAlt ?? d.title, d.astrophoto ?? {}, d.credit ?? undefined),
+  ...(d.slides ?? []).map((s) =>
+    buildSlide(s.image, s.alt ?? d.imageAlt ?? d.title, s.astrophoto ?? {}, s.credit ?? undefined),
+  ),
 ];
+const multi = slides.length > 1;
+
 const px = d.astrophysics ?? {};
 const physRows: [string, string | undefined][] = [
   ["Object type", px.objectType],
@@ -38,7 +77,6 @@ const physRows: [string, string | undefined][] = [
   ["Physical size", px.physicalSize],
   ["Apparent magnitude", px.magnitude],
 ];
-const photo = photoRows.filter(([, v]) => v);
 const phys = physRows.filter(([, v]) => v);
 const bnParas = (d.essayBn ?? "").split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
 ---
@@ -47,26 +85,31 @@ const bnParas = (d.essayBn ?? "").split(/\n\n+/).map((p) => p.trim()).filter(Boo
   title={`${d.title} — CASSA Astrophotography`}
   description={d.caption ?? `${d.title}${objType ? ` — ${objType}` : ""}, imaged by CASSA's Durbin programme.`}
   current="/outreach"
+  langToggle={bnParas.length > 0}
 >
-  <ImmersiveHero
-    image={d.image}
-    alt={d.imageAlt ?? d.title}
-    eyebrow={eyebrow}
-    title={d.catalog ? `${d.title}` : d.title}
-    lede={d.caption}
-    kenburns={false}
-  />
+  {multi ? (
+    <ImmersiveHeroSlider slides={slides} eyebrow={eyebrow} title={d.title} />
+  ) : (
+    <ImmersiveHero
+      image={d.image}
+      alt={d.imageAlt ?? d.title}
+      eyebrow={eyebrow}
+      title={d.catalog ? `${d.title}` : d.title}
+      lede={d.caption}
+      kenburns={false}
+    />
+  )}
 
   <!-- Essays (elevated section right after the hero) -->
   <section class="section section--elev">
     <div class="wrap gd">
-      <div class="gd-essay" data-reveal>
+      <div class="gd-essay" data-reveal data-lang="en">
         <p class="eyebrow">The object{d.catalog ? ` · ${d.catalog}` : ""}</p>
         <Prose><Content /></Prose>
       </div>
 
       {bnParas.length > 0 && (
-        <div class="gd-essay" data-reveal style="--reveal-delay:90ms" lang="bn">
+        <div class="gd-essay" data-lang="bn" lang="bn">
           <p class="eyebrow">বাংলায়</p>
           <div class="prose-cassa">
             {bnParas.map((p) => <p>{p}</p>)}
@@ -80,14 +123,25 @@ const bnParas = (d.essayBn ?? "").split(/\n\n+/).map((p) => p.trim()).filter(Boo
   <section class="section">
     <div class="wrap">
       <div class="gd-info">
-        {photo.length > 0 && (
-          <dl class="infocard" data-reveal>
-            <p class="infocard__cap">Astrophotographic information</p>
-            {photo.map(([k, v]) => (
-              <div class="inforow"><dt>{k}</dt><dd>{v}</dd></div>
-            ))}
-          </dl>
-        )}
+        {/* One Astrophotographic card per slide; only the active slide's shows.
+            The slider's `astro-hslide` event toggles them (see script below). */}
+        {slides.map((s, i) => (
+          s.photo.length > 0 && (
+            <dl
+              class="infocard"
+              data-reveal={i === 0 ? true : undefined}
+              data-photo-card={i}
+              hidden={i !== 0}
+            >
+              <p class="infocard__cap">
+                Astrophotographic information{multi && s.name ? ` · ${s.name}` : ""}
+              </p>
+              {s.photo.map(([k, v]) => (
+                <div class="inforow"><dt>{k}</dt><dd>{v}</dd></div>
+              ))}
+            </dl>
+          )
+        ))}
         {phys.length > 0 && (
           <dl class="infocard" data-reveal style="--reveal-delay:90ms">
             <p class="infocard__cap">Astrophysical information</p>
@@ -100,6 +154,17 @@ const bnParas = (d.essayBn ?? "").split(/\n\n+/).map((p) => p.trim()).filter(Boo
       <p class="gd-back"><a href={withBase("/durbin/images")}>← All objects</a></p>
     </div>
   </section>
+
+  {multi && (
+    <script>
+      // Swap the Astrophotographic card to match the active slider image.
+      const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-photo-card]"));
+      document.addEventListener("astro-hslide", (e) => {
+        const i = (e as CustomEvent<{ index: number }>).detail.index;
+        cards.forEach((c) => { c.hidden = Number(c.dataset.photoCard) !== i; });
+      });
+    </script>
+  )}
 </BaseLayout>
 
 <style>

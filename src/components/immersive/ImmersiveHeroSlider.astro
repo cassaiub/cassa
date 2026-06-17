@@ -1,0 +1,171 @@
+---
+/* A full-screen hero that cross-fades through several images of the SAME
+   object captured by different people — each slide credits its photographer.
+   Used by the astrophotography detail page when an entry has `slides`. Mirrors
+   the look of the home-page FeatureSlider but for real photos (no SkyCanvas).
+   On slide change it dispatches a document-level `astro-hslide` CustomEvent so
+   the page can swap the matching Astrophotographic table. */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface SlideInput {
+  image: ImageMetadata;
+  alt: string;
+  /** Full attribution line shown in the hero, e.g. "Processed by …". */
+  attribution?: string;
+  /** Short name for dot labels (the person, without the verb). */
+  name?: string;
+}
+interface Props {
+  slides: SlideInput[];
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+}
+const { slides, eyebrow, title, lede } = Astro.props;
+const n = slides.length;
+---
+
+<header
+  class="hero hslider"
+  data-hslider
+  role="region"
+  aria-roledescription="carousel"
+  aria-label={`${title} — captures`}
+  tabindex="0"
+>
+  <div class="hslider__stage">
+    {slides.map((s, i) => (
+      <figure
+        class:list={["hslide", { "is-active": i === 0 }]}
+        data-hslide={i}
+        data-credit={s.attribution ?? ""}
+        aria-hidden={i !== 0}
+      >
+        <Image
+          src={s.image}
+          alt={s.alt}
+          widths={[768, 1280, 1920, 2560]}
+          sizes="100vw"
+          loading={i === 0 ? "eager" : "lazy"}
+          fetchpriority={i === 0 ? "high" : undefined}
+        />
+      </figure>
+    ))}
+  </div>
+  <div class="hero__scrim"></div>
+
+  <div class="wrap hero__inner">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="hero__title">{title}</h1>
+    {lede && <p class="hero__lede">{lede}</p>}
+    <p class="hslider__credit">
+      <span class="hslider__credit-name" data-hslider-credit>{slides[0]?.attribution ?? "—"}</span>
+      {n > 1 && (
+        <span class="hslider__count"><span data-hslider-cur>1</span> / {n}</span>
+      )}
+    </p>
+  </div>
+
+  {n > 1 && (
+    <>
+      <button class="harrow harrow--prev" type="button" aria-label="Previous image" data-hslider-prev>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+      </button>
+      <button class="harrow harrow--next" type="button" aria-label="Next image" data-hslider-next>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+      </button>
+
+      <div class="hslider__dots" role="tablist" aria-label="Choose an image">
+        {slides.map((s, i) => (
+          <button
+            class="hdot"
+            type="button"
+            role="tab"
+            aria-current={i === 0}
+            aria-label={`Image ${i + 1}${s.name ? `: ${s.name}` : ""}`}
+            data-hslider-dot={i}
+          ></button>
+        ))}
+      </div>
+    </>
+  )}
+</header>
+
+<style>
+  .hslider__stage { position: absolute; inset: 0; z-index: -2; }
+  .hslide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .8s ease; }
+  .hslide.is-active { opacity: 1; }
+  .hslide :global(img) { width: 100%; height: 100%; object-fit: cover; }
+
+  .hslider__credit { margin-top: 1.4rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: .45rem .8rem; }
+  .hslider__credit-name { font-size: 1.05rem; font-weight: 600; color: #fff; }
+  .hslider__count { font-size: .8rem; color: rgba(255,255,255,.62); font-variant-numeric: tabular-nums; }
+
+  .harrow {
+    position: absolute; top: 50%; translate: 0 -50%; z-index: 2;
+    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.25); background: rgba(8,12,22,.4); color: #fff;
+    cursor: pointer; backdrop-filter: blur(6px); transition: background .2s, border-color .2s;
+  }
+  .harrow:hover { background: rgba(8,12,22,.72); border-color: rgba(255,255,255,.5); }
+  .harrow--prev { left: clamp(.8rem, 3vw, 2rem); }
+  .harrow--next { right: clamp(.8rem, 3vw, 2rem); }
+
+  .hslider__dots { position: absolute; left: 50%; bottom: 1.4rem; translate: -50% 0; z-index: 2; display: flex; gap: .5rem; }
+  .hdot { width: 9px; height: 9px; border-radius: 999px; border: 0; background: rgba(255,255,255,.4); cursor: pointer; padding: 0; transition: background .2s, transform .2s; }
+  .hdot[aria-current="true"] { background: #fff; transform: scale(1.25); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hslide { transition: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-hslider]").forEach((root) => {
+    const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-hslide]"));
+    const dots = Array.from(root.querySelectorAll<HTMLElement>("[data-hslider-dot]"));
+    const creditEl = root.querySelector<HTMLElement>("[data-hslider-credit]");
+    const curEl = root.querySelector<HTMLElement>("[data-hslider-cur]");
+    const n = slides.length;
+    if (n <= 1) return;
+
+    let index = 0;
+    let timer: number | undefined;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const show = (i: number) => {
+      index = ((i % n) + n) % n;
+      slides.forEach((s, k) => {
+        const on = k === index;
+        s.classList.toggle("is-active", on);
+        s.setAttribute("aria-hidden", String(!on));
+      });
+      dots.forEach((d, k) => d.setAttribute("aria-current", String(k === index)));
+      if (creditEl) creditEl.textContent = slides[index].dataset.credit || "—";
+      if (curEl) curEl.textContent = String(index + 1);
+      document.dispatchEvent(new CustomEvent("astro-hslide", { detail: { index } }));
+    };
+    const stop = () => { if (timer) { clearTimeout(timer); timer = undefined; } };
+    const play = () => { stop(); if (!reduce) timer = window.setTimeout(() => show(index + 1), 6000); };
+    const go = (i: number) => { show(i); play(); };
+
+    root.querySelector("[data-hslider-prev]")?.addEventListener("click", () => go(index - 1));
+    root.querySelector("[data-hslider-next]")?.addEventListener("click", () => go(index + 1));
+    dots.forEach((d, k) => d.addEventListener("click", () => go(k)));
+
+    root.addEventListener("mouseenter", stop);
+    root.addEventListener("mouseleave", play);
+    root.addEventListener("focusin", stop);
+    root.addEventListener("focusout", (e) => {
+      if (!root.contains(e.relatedTarget as Node | null)) play();
+    });
+    root.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); go(index + 1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); go(index - 1); }
+    });
+
+    show(0);
+    play();
+  });
+</script>

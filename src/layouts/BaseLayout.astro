@@ -12,6 +12,10 @@ interface Props {
   current?: string;
   lang?: "en" | "bn";
   altHref?: string;
+  /** Render the top-right nav button as an in-page EN⇄BN essay toggle (single
+      page holding both languages, e.g. astrophotography detail). Ignored when
+      `altHref` is set (that links to a separate-language page instead). */
+  langToggle?: boolean;
   /** SEO overrides (detail routes pass these). */
   ogImage?: string;
   ogImageAlt?: string;
@@ -30,6 +34,7 @@ const {
   current = "",
   lang = "en",
   altHref,
+  langToggle = false,
   ogImage,
   ogImageAlt,
   ogType = "website",
@@ -89,7 +94,7 @@ const schemas = [organizationSchema(), websiteSchema(), ...pageSchemas];
     </script>
   </head>
   <body>
-    <SiteNav current={current} lang={lang} altHref={altHref} />
+    <SiteNav current={current} lang={lang} altHref={altHref} langToggle={langToggle} />
     <main id="main"><slot /></main>
     <Footer />
 

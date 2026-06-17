@@ -6,8 +6,9 @@ interface Props {
   current?: string;
   lang?: "en" | "bn";
   altHref?: string;
+  langToggle?: boolean;
 }
-const { current = "", lang = "en", altHref } = Astro.props;
+const { current = "", lang = "en", altHref, langToggle = false } = Astro.props;
 const items = NAV.filter((n) => n.href !== "/");
 
 /** True when the current path is inside this nav item's subtree */
@@ -152,6 +153,17 @@ function isParentActive(href: string, cur: string): boolean {
         >{lang === "en" ? "BN" : "EN"}</a>
       )}
 
+      {!altHref && langToggle && (
+        <button
+          class="toggle lang-toggle"
+          id="essay-lang-toggle"
+          type="button"
+          aria-pressed="false"
+          aria-label="বাংলায় পড়ুন — read this page in Bangla"
+          title="বাংলা"
+        >BN</button>
+      )}
+
       <ThemeToggle client:load />
     </div>
   </div>
@@ -215,6 +227,26 @@ function isParentActive(href: string, cur: string): boolean {
         item.classList.remove("is-open");
       }
     });
+  });
+
+  /* ── In-page language toggle ───────────────────────────────────────────
+     On pages that hold both languages (e.g. an astrophotography entry with an
+     English body + a Bengali essay), the top-right button flips the page
+     between EN and BN in place instead of navigating. Markup opts in by
+     marking blocks with `data-lang="en"` / `data-lang="bn"`; visibility is
+     driven by the `data-page-lang` attribute on <html> (see global.css). */
+  const essayToggle = document.getElementById("essay-lang-toggle");
+  essayToggle?.addEventListener("click", () => {
+    const root = document.documentElement;
+    const toBn = root.getAttribute("data-page-lang") !== "bn";
+    root.setAttribute("data-page-lang", toBn ? "bn" : "en");
+    essayToggle.textContent = toBn ? "EN" : "BN";
+    essayToggle.setAttribute("aria-pressed", String(toBn));
+    essayToggle.setAttribute("title", toBn ? "English" : "বাংলা");
+    essayToggle.setAttribute(
+      "aria-label",
+      toBn ? "Read this page in English" : "বাংলায় পড়ুন — read this page in Bangla",
+    );
   });
 </script>
 

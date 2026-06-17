@@ -464,6 +464,15 @@ html[data-cal-ready] .ev-fallback { display: none; }
 /* Bengali prose: slightly looser line-height for legibility */
 .prose-cassa:lang(bn), [lang="bn"] .prose-cassa { line-height: 1.9; }
 
+/* ── In-page language toggle ───────────────────────────────────────────────
+   Pages that carry both languages mark each block with data-lang="en" / "bn".
+   English shows by default; the nav button (#essay-lang-toggle) sets
+   data-page-lang="bn" on <html> to swap. Driven entirely by CSS so the toggle
+   is instant and works with no layout shift. */
+[data-lang="bn"] { display: none; }
+:root[data-page-lang="bn"] [data-lang="en"] { display: none; }
+:root[data-page-lang="bn"] [data-lang="bn"] { display: block; }
+
 /* ── Lightbox (click-to-enlarge article images) ───────────────────────── */
 .lightbox {
   position: fixed; inset: 0; z-index: 1000;

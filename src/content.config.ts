@@ -167,8 +167,22 @@ const gallery = defineCollection({
 // resolves the co-located photo to an optimizable ImageMetadata for <Image>.
 const astrophotography = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/astrophotography" }),
-  schema: ({ image }) =>
-    z.object({
+  schema: ({ image }) => {
+    // The Astrophotographic ("how it was captured") block — reused by the
+    // primary capture and by each additional slider slide, so a multi-author
+    // entry keeps every contributor's distinct capture details.
+    const astrophotoFields = z.object({
+      photographer: z.string().optional(),
+      location: z.string().optional(),
+      date: z.string().optional(),
+      exposure: z.string().optional(),
+      telescope: z.string().optional(),
+      camera: z.string().optional(),
+      fov: z.string().optional(),
+      processing: z.string().optional(),
+      processingMethod: z.string().optional(),
+    });
+    return z.object({
       title: z.string(),
       object: z.string().optional(),
       catalog: z.string().optional(),
@@ -176,19 +190,21 @@ const astrophotography = defineCollection({
       image: image(),
       imageAlt: z.string().optional(),
       caption: z.string().optional(),
-      astrophoto: z
-        .object({
-          photographer: z.string().optional(),
-          location: z.string().optional(),
-          date: z.string().optional(),
-          exposure: z.string().optional(),
-          telescope: z.string().optional(),
-          camera: z.string().optional(),
-          fov: z.string().optional(),
-          processing: z.string().optional(),
-          processingMethod: z.string().optional(),
-        })
-        .default({}),
+      astrophoto: astrophotoFields.default({}),
+      // Additional captures of the SAME object by other photographers. When
+      // present, the detail page renders a slider (primary image first, then
+      // these) and swaps the Astrophotographic table to match the active slide.
+      // The object facts (astrophysics) are shared across all slides.
+      slides: z
+        .array(
+          z.object({
+            image: image(),
+            alt: z.string().optional(),
+            credit: z.string().optional(),
+            astrophoto: astrophotoFields.default({}),
+          }),
+        )
+        .optional(),
       astrophysics: z
         .object({
           objectType: z.string().optional(),
@@ -202,7 +218,8 @@ const astrophotography = defineCollection({
       credit: z.string().optional(),
       essayBn: z.string().optional(),
       status: z.enum(["published", "draft"]).default("published"),
-    }),
+    });
+  },
 });
 
 export const collections = { people, projects, publications, news, workshops, events, opportunities, gallery, astrophotography };
