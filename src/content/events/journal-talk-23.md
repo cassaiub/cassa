@@ -18,7 +18,9 @@ The 21-cm signal probes the intergalactic medium during the Epoch of Reionizatio
 
 **Link:** [https://arxiv.org/abs/2606.14682](https://arxiv.org/abs/2606.14682)
 
-**Presenter:** **Mahatab Murshed** (B.Sc. (ongoing) in Physics, Independent University, Bangladesh)
+**Presenter:** **Mahatab Murshed** (Undergraduate Research Intern at CASSA; B.Sc. (ongoing) in Physics, Independent University, Bangladesh)
+
+**Supervisor:** **Khan Muhammad Bin Asad, PhD** (Core Member of CASSA)
 
 ---
 
