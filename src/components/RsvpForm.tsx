@@ -52,12 +52,15 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, coun
 
   const seats = () => {
     if (!counts) return null;
-    if (capacity != null) {
+    if (capacity != null && remaining != null) {
       return (
-        <p className="rsvp__count">
-          <strong>{counts.count}</strong> of {capacity} seats reserved
-          {remaining != null && <> · <strong>{remaining}</strong> remaining</>}
-        </p>
+        <div className={`rsvp__seats${remaining <= 10 ? " rsvp__seats--low" : ""}`}>
+          <span className="rsvp__seats-num">{remaining}</span>
+          <span className="rsvp__seats-lbl">
+            {remaining === 1 ? "seat" : "seats"} left
+            <span className="rsvp__seats-of">of {capacity}</span>
+          </span>
+        </div>
       );
     }
     if (counts.count > 0) {

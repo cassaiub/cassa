@@ -722,6 +722,27 @@ html.fig-armed .prose-cassa .article-gallery .article-figure.is-emerged > img {
   color: var(--ink-soft); font-size: .85rem;
 }
 .rsvp__count strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* Prominent "N seats left" figure. */
+.rsvp__seats {
+  display: flex; align-items: center; gap: .6rem;
+  margin: 0 0 1.1rem; padding: .7rem .9rem; border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.rsvp__seats-num {
+  font-size: 2.4rem; font-weight: 800; line-height: 1; color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.rsvp__seats-lbl { display: flex; flex-direction: column; font-weight: 700; color: var(--ink); line-height: 1.25; }
+.rsvp__seats-of { font-size: .8rem; font-weight: 500; color: var(--ink-faint); }
+/* Running low → urgent red accent. */
+.rsvp__seats--low {
+  background: color-mix(in srgb, #e5484d 14%, transparent);
+  border-color: color-mix(in srgb, #e5484d 38%, transparent);
+}
+.rsvp__seats--low .rsvp__seats-num { color: #ff6b6f; }
+[data-theme="light"] .rsvp__seats--low .rsvp__seats-num { color: #c0392b; }
 .rsvp__intro { margin: 0 0 1.1rem; color: var(--ink-soft); }
 .rsvp__form { display: grid; gap: 1rem; margin-top: 1.1rem; }
 .rsvp__field { display: grid; gap: .35rem; }
