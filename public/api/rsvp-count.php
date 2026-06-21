@@ -2,9 +2,10 @@
 declare(strict_types=1);
 
 /*
- * CASSA RSVP count — public, read-only. Returns the number of RSVPs (and total
- * attendees, counting guests) for one event so the static event page can show a
- * live "reserved / seats remaining" tally. No personal data is exposed.
+ * CASSA RSVP count — public, read-only. Returns the number of RSVP registrations
+ * for one event so the static event page can show a live "reserved / seats
+ * remaining" tally. One registration = one seat (guests are not counted toward
+ * capacity). No personal data is exposed.
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -22,8 +23,7 @@ if ($slug === '') {
 }
 
 $file = $dataDir . '/' . $slug . '.jsonl';
-$count = 0;       // number of RSVP submissions
-$attendees = 0;   // headcount including guests
+$count = 0;   // number of RSVP registrations (= seats; guests not counted)
 
 if (is_file($file)) {
     $fh = fopen($file, 'rb');
@@ -31,13 +31,10 @@ if (is_file($file)) {
         while (($line = fgets($fh)) !== false) {
             $line = trim($line);
             if ($line === '') continue;
-            $r = json_decode($line, true);
-            if (!is_array($r)) continue;
-            $count++;
-            $attendees += 1 + max(0, (int)($r['guests'] ?? 0));
+            if (is_array(json_decode($line, true))) $count++;
         }
         fclose($fh);
     }
 }
 
-echo json_encode(['ok' => true, 'count' => $count, 'attendees' => $attendees]);
+echo json_encode(['ok' => true, 'count' => $count]);

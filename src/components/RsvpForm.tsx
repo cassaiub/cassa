@@ -17,7 +17,7 @@ interface Props {
 }
 
 type Status = "idle" | "submitting" | "ok" | "error";
-type Counts = { count: number; attendees: number };
+type Counts = { count: number };
 
 export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, countEndpoint, deadline, intro, capacity }: Props) {
   const mountedAt = useRef(Date.now());
@@ -30,7 +30,7 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, coun
     let alive = true;
     fetch(`${countEndpoint}?slug=${encodeURIComponent(eventSlug)}`)
       .then((r) => r.json())
-      .then((b) => { if (alive && b && b.ok) setCounts({ count: b.count, attendees: b.attendees }); })
+      .then((b) => { if (alive && b && b.ok) setCounts({ count: b.count }); })
       .catch(() => {});
     return () => { alive = false; };
   }, [countEndpoint, eventSlug]);
@@ -41,8 +41,8 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, coun
     return Number.isFinite(d) && Date.now() > d;
   }, [deadline]);
 
-  const remaining = capacity != null && counts != null ? Math.max(0, capacity - counts.attendees) : null;
-  const full = capacity != null && counts != null && counts.attendees >= capacity;
+  const remaining = capacity != null && counts != null ? Math.max(0, capacity - counts.count) : null;
+  const full = capacity != null && counts != null && counts.count >= capacity;
 
   // Always-present name field, then the event's chosen catalog fields.
   const defs = useMemo(
@@ -55,7 +55,7 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, coun
     if (capacity != null) {
       return (
         <p className="rsvp__count">
-          <strong>{counts.attendees}</strong> of {capacity} seats reserved
+          <strong>{counts.count}</strong> of {capacity} seats reserved
           {remaining != null && <> · <strong>{remaining}</strong> remaining</>}
         </p>
       );
@@ -94,8 +94,7 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, coun
       if (!res.ok || !body.ok) {
         throw new Error(body.error || "Something went wrong. Please try again.");
       }
-      const guests = Math.max(0, parseInt(payload.guests || "0", 10) || 0);
-      setCounts((c) => (c ? { count: c.count + 1, attendees: c.attendees + 1 + guests } : c));
+      setCounts((c) => (c ? { count: c.count + 1 } : c)); // one seat per registration
       setStatus("ok");
       form.reset();
     } catch (err) {
