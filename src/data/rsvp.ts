@@ -42,8 +42,12 @@ export const RSVP_FIELDS: Record<RsvpFieldKey, RsvpFieldDef> = {
 /** Used when an event sets `rsvp: true` (no explicit field list). Name is always added. */
 export const DEFAULT_RSVP_FIELDS: RsvpFieldKey[] = ["email", "guests", "notes"];
 
-/** Same-origin endpoint. Wrap with withBase() at call sites for a future subpath deploy. */
+/** Default seat capacity when an event doesn't set its own. Drives the live "reserved / remaining" tally. */
+export const DEFAULT_RSVP_CAPACITY = 100;
+
+/** Same-origin endpoints. Wrap with withBase() at call sites for a future subpath deploy. */
 export const RSVP_ENDPOINT = "/api/rsvp.php";
+export const RSVP_COUNT_ENDPOINT = "/api/rsvp-count.php";
 
 /** Frontmatter shape (mirrors the zod schema in content.config.ts). */
 export interface RsvpConfig {
@@ -52,18 +56,21 @@ export interface RsvpConfig {
   deadline?: string;
   /** Optional sentence shown above the form. */
   intro?: string;
+  /** Total seats. When set, the form shows a live "reserved / remaining" count. */
+  capacity?: number;
 }
 
 export interface ResolvedRsvp {
   fields: RsvpFieldKey[];
   deadline?: string;
   intro?: string;
+  capacity?: number;
 }
 
 /** Normalize the frontmatter `rsvp` value (boolean | object | undefined) into a config, or null if no form. */
 export function resolveRsvp(rsvp: boolean | RsvpConfig | undefined | null): ResolvedRsvp | null {
   if (!rsvp) return null;
-  if (rsvp === true) return { fields: DEFAULT_RSVP_FIELDS };
+  if (rsvp === true) return { fields: DEFAULT_RSVP_FIELDS, capacity: DEFAULT_RSVP_CAPACITY };
   const fields = rsvp.fields && rsvp.fields.length ? rsvp.fields : DEFAULT_RSVP_FIELDS;
-  return { fields, deadline: rsvp.deadline, intro: rsvp.intro };
+  return { fields, deadline: rsvp.deadline, intro: rsvp.intro, capacity: rsvp.capacity ?? DEFAULT_RSVP_CAPACITY };
 }

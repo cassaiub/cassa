@@ -1,23 +1,39 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RSVP_FIELDS, type RsvpFieldKey } from "../data/rsvp.ts";
 
 interface Props {
   eventSlug: string;
   eventTitle: string;
   fields: RsvpFieldKey[];
-  /** Same-origin endpoint URL (already base-resolved by the caller). */
+  /** Same-origin submit endpoint (already base-resolved by the caller). */
   endpoint: string;
+  /** Same-origin count endpoint (already base-resolved by the caller). */
+  countEndpoint: string;
   /** ISO datetime after which the form is closed. */
   deadline?: string;
   intro?: string;
+  /** Total seats. When set, a live "reserved / remaining" tally is shown. */
+  capacity?: number;
 }
 
 type Status = "idle" | "submitting" | "ok" | "error";
+type Counts = { count: number; attendees: number };
 
-export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, deadline, intro }: Props) {
+export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, countEndpoint, deadline, intro, capacity }: Props) {
   const mountedAt = useRef(Date.now());
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
+  const [counts, setCounts] = useState<Counts | null>(null);
+
+  // Live tally (best-effort; PHP-backed, so only populated on the deployed site).
+  useEffect(() => {
+    let alive = true;
+    fetch(`${countEndpoint}?slug=${encodeURIComponent(eventSlug)}`)
+      .then((r) => r.json())
+      .then((b) => { if (alive && b && b.ok) setCounts({ count: b.count, attendees: b.attendees }); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [countEndpoint, eventSlug]);
 
   const closed = useMemo(() => {
     if (!deadline) return false;
@@ -25,11 +41,34 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, dead
     return Number.isFinite(d) && Date.now() > d;
   }, [deadline]);
 
+  const remaining = capacity != null && counts != null ? Math.max(0, capacity - counts.attendees) : null;
+  const full = capacity != null && counts != null && counts.attendees >= capacity;
+
   // Always-present name field, then the event's chosen catalog fields.
   const defs = useMemo(
     () => fields.map((k) => RSVP_FIELDS[k]).filter(Boolean),
     [fields],
   );
+
+  const seats = () => {
+    if (!counts) return null;
+    if (capacity != null) {
+      return (
+        <p className="rsvp__count">
+          <strong>{counts.attendees}</strong> of {capacity} seats reserved
+          {remaining != null && <> · <strong>{remaining}</strong> remaining</>}
+        </p>
+      );
+    }
+    if (counts.count > 0) {
+      return (
+        <p className="rsvp__count">
+          <strong>{counts.count}</strong> {counts.count === 1 ? "person has" : "people have"} RSVP'd
+        </p>
+      );
+    }
+    return null;
+  };
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -55,6 +94,8 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, dead
       if (!res.ok || !body.ok) {
         throw new Error(body.error || "Something went wrong. Please try again.");
       }
+      const guests = Math.max(0, parseInt(payload.guests || "0", 10) || 0);
+      setCounts((c) => (c ? { count: c.count + 1, attendees: c.attendees + 1 + guests } : c));
       setStatus("ok");
       form.reset();
     } catch (err) {
@@ -67,6 +108,7 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, dead
     return (
       <div className="rsvp rsvp--closed" id="rsvp">
         <p className="rsvp__closed-msg">RSVPs for this event are now closed.</p>
+        {seats()}
       </div>
     );
   }
@@ -76,6 +118,16 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, dead
       <div className="rsvp rsvp--done" id="rsvp" role="status">
         <p className="rsvp__done-h">You're on the list. 🔭</p>
         <p className="rsvp__done-p">Thanks for reserving your spot for {eventTitle}. We'll see you there.</p>
+        {seats()}
+      </div>
+    );
+  }
+
+  if (full) {
+    return (
+      <div className="rsvp rsvp--closed" id="rsvp">
+        <p className="rsvp__closed-msg">This event is fully booked.</p>
+        {seats()}
       </div>
     );
   }
@@ -83,6 +135,7 @@ export default function RsvpForm({ eventSlug, eventTitle, fields, endpoint, dead
   return (
     <div className="rsvp" id="rsvp">
       <h2 className="rsvp__title">Reserve your spot</h2>
+      {seats()}
       {intro && <p className="rsvp__intro">{intro}</p>}
 
       <form className="rsvp__form" onSubmit={onSubmit} noValidate>

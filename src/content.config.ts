@@ -135,6 +135,7 @@ const events = defineCollection({
             fields: z.array(z.enum(["email", "phone", "affiliation", "studentId", "guests", "notes"])).optional(),
             deadline: z.coerce.date().optional(),
             intro: z.string().optional(),
+            capacity: z.number().int().positive().optional(),
           }),
         ])
         .optional(),

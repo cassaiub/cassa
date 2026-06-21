@@ -7,7 +7,7 @@ import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 import { eventSchema, absoluteUrl } from "../../data/seo.ts";
-import { resolveRsvp, RSVP_ENDPOINT } from "../../data/rsvp.ts";
+import { resolveRsvp, RSVP_ENDPOINT, RSVP_COUNT_ENDPOINT } from "../../data/rsvp.ts";
 
 export async function getStaticPaths() {
   const events = await getCollection("events", ({ data }) => data.status !== "draft");
@@ -125,8 +125,10 @@ const eventLd = eventSchema({
             eventTitle={d.title}
             fields={rsvp.fields}
             endpoint={withBase(RSVP_ENDPOINT)}
+            countEndpoint={withBase(RSVP_COUNT_ENDPOINT)}
             deadline={rsvpDeadline}
             intro={rsvp.intro}
+            capacity={rsvp.capacity}
           />
         )}
         <p class="ev-back"><a href={withBase("/events")}>← All events</a></p>
