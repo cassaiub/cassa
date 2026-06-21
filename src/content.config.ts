@@ -125,6 +125,19 @@ const events = defineCollection({
       paperTitle: z.string().optional(),
       lang: z.enum(["en", "bn"]).default("en"),
       status: z.enum(["published", "draft"]).default("published"),
+      // Site-wide RSVP opt-in. `true` → default fields; an object selects which
+      // fields to collect (name is always included) plus an optional deadline/intro.
+      // Absent → no RSVP form. One backend serves every event; see src/data/rsvp.ts.
+      rsvp: z
+        .union([
+          z.boolean(),
+          z.object({
+            fields: z.array(z.enum(["email", "phone", "affiliation", "studentId", "guests", "notes"])).optional(),
+            deadline: z.coerce.date().optional(),
+            intro: z.string().optional(),
+          }),
+        ])
+        .optional(),
     }),
 });
 

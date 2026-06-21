@@ -2,10 +2,12 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
 import Prose from "../../components/immersive/Prose.astro";
+import RsvpForm from "../../components/RsvpForm.tsx";
 import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 import { eventSchema, absoluteUrl } from "../../data/seo.ts";
+import { resolveRsvp, RSVP_ENDPOINT } from "../../data/rsvp.ts";
 
 export async function getStaticPaths() {
   const events = await getCollection("events", ({ data }) => data.status !== "draft");
@@ -40,6 +42,10 @@ if (d.allDay) {
 }
 
 const seriesLabel = d.category ?? d.series;
+
+// RSVP: one site-wide form, opted into per-event via frontmatter.
+const rsvp = resolveRsvp(d.rsvp as any);
+const rsvpDeadline = rsvp?.deadline instanceof Date ? rsvp.deadline.toISOString() : rsvp?.deadline;
 
 // SEO: Event structured data + canonical.
 const canonical = absoluteUrl(withBase(`/events/${entry.id}`));
@@ -95,6 +101,9 @@ const eventLd = eventSchema({
           <p class="ev-meta__lbl">Type</p>
           <p class="ev-meta__val">{seriesLabel}</p>
         </div>
+        {rsvp && (
+          <a class="btn btn--solid ev-meta__rsvp" href="#rsvp">RSVP for this event →</a>
+        )}
       </div>
 
       <div class="ev-content" data-reveal style="--reveal-delay:80ms">
@@ -108,6 +117,17 @@ const eventLd = eventSchema({
           <p class="ev-cta">
             <a class="btn btn--solid" href={d.link} target="_blank" rel="noopener">Event link ↗</a>
           </p>
+        )}
+        {rsvp && (
+          <RsvpForm
+            client:visible
+            eventSlug={entry.id}
+            eventTitle={d.title}
+            fields={rsvp.fields}
+            endpoint={withBase(RSVP_ENDPOINT)}
+            deadline={rsvpDeadline}
+            intro={rsvp.intro}
+          />
         )}
         <p class="ev-back"><a href={withBase("/events")}>← All events</a></p>
       </div>
@@ -129,6 +149,14 @@ const eventLd = eventSchema({
   .ev-meta__lbl { font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--ink-faint); margin:0 0 .35rem; }
   .ev-meta__val { color:var(--ink); margin:0; line-height:1.5; font-weight:500; }
   .ev-meta__sub { color:var(--ink-soft); margin:.2rem 0 0; font-size:.9rem; font-variant-numeric:tabular-nums; }
+
+  /* Prominent full-width RSVP CTA at the foot of the sticky meta card. */
+  .ev-meta__rsvp {
+    justify-content:center; width:100%;
+    margin-top:.5rem; padding:.95em 1em .85em;
+    font-size:1rem; font-weight:700;
+    box-shadow:0 6px 18px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
 
   .ev-figure {
     margin:0 0 1.8rem; border-radius:16px; overflow:hidden;

@@ -705,3 +705,36 @@ html.fig-armed .prose-cassa .article-gallery .article-figure.is-emerged > img {
   .prose-cassa .article-gallery .article-figure:hover > img,
   .prose-cassa .article-gallery .article-figure:focus-within > img { transform: scale(1.03) !important; }
 }
+
+/* ── RSVP form (site-wide, one component per event) ───────────────────── */
+.rsvp {
+  margin-top: 2.4rem; padding: 1.7rem 1.6rem 1.8rem;
+  background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 16px;
+  scroll-margin-top: 90px;
+}
+[data-theme="light"] .rsvp { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+.rsvp__title { margin: 0 0 .3rem; font-size: 1.3rem; line-height: 1.2; color: var(--ink); }
+.rsvp__intro { margin: 0 0 1.1rem; color: var(--ink-soft); }
+.rsvp__form { display: grid; gap: 1rem; margin-top: 1.1rem; }
+.rsvp__field { display: grid; gap: .35rem; }
+.rsvp__lbl { font-size: .82rem; font-weight: 600; color: var(--ink-soft); }
+.rsvp__lbl em { color: var(--accent); font-style: normal; }
+.rsvp__input {
+  width: 100%; padding: .62rem .8rem; border-radius: 10px;
+  background: var(--bg); border: 1px solid var(--line-strong); color: var(--ink);
+  font: inherit; transition: border-color .15s, box-shadow .15s;
+}
+.rsvp__input::placeholder { color: var(--ink-faint); }
+.rsvp__input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.rsvp__input--area { resize: vertical; min-height: 2.8rem; }
+.rsvp__hint { font-size: .74rem; color: var(--ink-faint); }
+.rsvp__err { margin: 0; color: #ff8585; font-size: .85rem; }
+[data-theme="light"] .rsvp__err { color: #c0392b; }
+.rsvp__submit { justify-self: start; margin-top: .3rem; }
+.rsvp__submit[disabled] { opacity: .6; cursor: progress; }
+.rsvp__fine { margin: .3rem 0 0; font-size: .74rem; color: var(--ink-faint); }
+/* Honeypot — visually and semantically hidden from real users. */
+.rsvp__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.rsvp--closed .rsvp__closed-msg { margin: 0; color: var(--ink-soft); font-weight: 500; }
+.rsvp__done-h { margin: 0 0 .3rem; font-size: 1.2rem; color: var(--ink); }
+.rsvp__done-p { margin: 0; color: var(--ink-soft); }
