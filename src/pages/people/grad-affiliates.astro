@@ -28,9 +28,13 @@ const gradMembers = allPeople
   .filter((p) => p.data.tier === "Graduate Member")
   .sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
 
-const affiliates = allPeople
+const allAffiliates = allPeople
   .filter((p) => p.data.tier === "Affiliate")
   .sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
+
+const technicalIds = new Set(["mirza"]);
+const affiliates = allAffiliates.filter((p) => !technicalIds.has(p.id));
+const technicalAffiliates = allAffiliates.filter((p) => technicalIds.has(p.id));
 ---
 
 <BaseLayout
@@ -152,6 +156,36 @@ const affiliates = allPeople
           Rafia Rokaiya Hossain also serves as CASSA's Central Safeguarding Focal Point (CSFP).
         </p>
       </Reveal>
+
+      {technicalAffiliates.length > 0 && (
+        <>
+          <Reveal delay={60}>
+            <p class="eyebrow" style="margin-top:3.5rem">Technical Affiliates</p>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2 class="section-h2">Technical Affiliates</h2>
+          </Reveal>
+          <div class="card-grid" style="margin-top:2rem">
+            {technicalAffiliates.map((p, i) => (
+              <Reveal delay={i * 90}>
+                <PersonCard
+                  name={p.data.name}
+                  title={p.data.title}
+                  tier={p.data.tier}
+                  interests={p.data.interests}
+                  institution={p.data.institution}
+                  education={p.data.education}
+                  research={p.data.research}
+                  email={p.data.email}
+                  photo={p.data.photo}
+                  links={p.data.links}
+                  website={personalSite(p.id, p.data)}
+                />
+              </Reveal>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   </section>
 
