@@ -7,12 +7,47 @@ import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 
-// Durbin Updates — the news feed scoped to the "Durbin" category. New updates
-// file themselves here automatically: add a src/content/news/*.md entry with
-// `category: "Durbin"` and it appears (and stays in the main /news feed too).
-const all = (await getCollection("news", ({ data }) =>
-  data.status !== "draft" && (data.category === "Durbin" || data.durbin)))
-  .sort((a, b) => +b.data.date - +a.data.date);
+// Durbin Updates — Durbin-scoped news PLUS Durbin-scoped events, merged into one
+// feed. New updates file themselves here automatically: a src/content/news/*.md
+// or src/content/events/*.md entry with `category: "Durbin"` (or `durbin: true`)
+// appears here, and stays in its own /news or /events listing too.
+type Item = {
+  href: string;
+  date: Date;
+  title: string;
+  summary?: string;
+  category: string;
+  lang: string;
+  hero?: ImageMetadata;
+  heroAlt?: string;
+};
+
+const isDurbin = (data: { status?: string; category?: string; durbin?: boolean }) =>
+  data.status !== "draft" && (data.category === "Durbin" || data.durbin === true);
+
+const newsItems: Item[] = (await getCollection("news", ({ data }) => isDurbin(data))).map((p) => ({
+  href: `/news/${p.id}`,
+  date: p.data.date,
+  title: p.data.title,
+  summary: p.data.summary,
+  category: p.data.category ?? "Durbin",
+  lang: p.data.lang,
+  hero: p.data.hero,
+  heroAlt: p.data.heroAlt,
+}));
+
+const eventItems: Item[] = (await getCollection("events", ({ data }) => isDurbin(data))).map((e) => ({
+  href: `/events/${e.id}`,
+  date: e.data.start,
+  title: e.data.title,
+  summary: e.data.summary,
+  category: e.data.category ?? "Durbin",
+  lang: e.data.lang,
+  hero: e.data.hero,
+  heroAlt: e.data.heroAlt,
+}));
+
+const all = [...newsItems, ...eventItems].sort((a, b) => +b.date - +a.date);
 
 const TZ = "Asia/Dhaka";
 const fmtDate = (d: Date) =>
@@ -20,9 +55,9 @@ const fmtDate = (d: Date) =>
 const yearOf = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { timeZone: TZ, year: "numeric" }).format(d);
 
-const byYear = new Map<string, typeof all>();
+const byYear = new Map<string, Item[]>();
 for (const p of all) {
-  const y = yearOf(p.data.date);
+  const y = yearOf(p.date);
   if (!byYear.has(y)) byYear.set(y, []);
   byYear.get(y)!.push(p);
 }
@@ -56,24 +91,24 @@ const years = [...byYear.keys()].sort((a, b) => Number(b) - Number(a));
               {byYear.get(yr)!.map((p, i) => (
                 <li>
                   <a
-                    class:list={["nfrow", "nf-news", { "nfrow--media": p.data.hero }]}
-                    href={withBase(`/news/${p.id}`)}
+                    class:list={["nfrow", "nf-news", { "nfrow--media": p.hero }]}
+                    href={withBase(p.href)}
                     data-reveal
                     style={`--reveal-delay:${Math.min(i, 6) * 40}ms`}
                   >
-                    {p.data.hero && (
+                    {p.hero && (
                       <span class="nfrow__thumb">
-                        <Image src={p.data.hero} alt={p.data.heroAlt ?? ""} width={240} loading="lazy" />
+                        <Image src={p.hero} alt={p.heroAlt ?? ""} width={240} loading="lazy" />
                       </span>
                     )}
                     <span class="nfrow__body">
                       <span class="nfrow__meta">
-                        <span class="nftag nf-news">{p.data.category ?? "Durbin"}</span>
-                        {p.data.lang === "bn" && <span class="nftag nftag--bn" lang="bn">বাংলা</span>}
-                        <time class="nfrow__date" datetime={p.data.date.toISOString()}>{fmtDate(p.data.date)}</time>
+                        <span class="nftag nf-news">{p.category}</span>
+                        {p.lang === "bn" && <span class="nftag nftag--bn" lang="bn">বাংলা</span>}
+                        <time class="nfrow__date" datetime={p.date.toISOString()}>{fmtDate(p.date)}</time>
                       </span>
-                      <span class="nfrow__title">{p.data.title}</span>
-                      {p.data.summary && <span class="nfrow__sum">{p.data.summary}</span>}
+                      <span class="nfrow__title">{p.title}</span>
+                      {p.summary && <span class="nfrow__sum">{p.summary}</span>}
                       <span class="nfrow__more">Read <span aria-hidden="true">→</span></span>
                     </span>
                   </a>

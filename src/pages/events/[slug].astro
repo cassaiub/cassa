@@ -30,8 +30,17 @@ const sameDay =
 
 let whenDate: string;
 let whenTime: string | null = null;
-if (d.allDay) {
+if (d.timeNote) {
+  // Explicit override — per-day windows differ; the date is shown as a range.
   whenDate = d.end && !sameDay ? `${dateFull(d.start)} – ${dateFull(d.end)}` : dateFull(d.start);
+  whenTime = d.timeNote;
+} else if (d.allDay) {
+  whenDate = d.end && !sameDay ? `${dateFull(d.start)} – ${dateFull(d.end)}` : dateFull(d.start);
+} else if (d.daily && d.end && !sameDay) {
+  // Multi-day event with the same window each day (e.g. 3–6 PM on both days),
+  // not one continuous run from start to end.
+  whenDate = `${dateFull(d.start)} – ${dateFull(d.end)}`;
+  whenTime = `${timeLabel(d.start)} – ${timeLabel(d.end)} daily`;
 } else {
   whenDate = dateFull(d.start);
   whenTime = d.end
@@ -42,6 +51,10 @@ if (d.allDay) {
 }
 
 const seriesLabel = d.category ?? d.series;
+
+// Registration link: external URLs open in a new tab; internal paths get base-resolved.
+const registerExternal = !!d.register && /^https?:\/\//.test(d.register);
+const registerHref = d.register ? (registerExternal ? d.register : withBase(d.register)) : null;
 
 // RSVP: one site-wide form, opted into per-event via frontmatter.
 const rsvp = resolveRsvp(d.rsvp as any);
@@ -103,6 +116,16 @@ const eventLd = eventSchema({
           <p class="ev-meta__val">{seriesLabel}</p>
         </div>
         </div>
+        {registerHref && (
+          <a
+            class="btn btn--solid ev-register"
+            href={registerHref}
+            target={registerExternal ? "_blank" : undefined}
+            rel={registerExternal ? "noopener" : undefined}
+          >
+            Register{registerExternal ? " ↗" : ""}
+          </a>
+        )}
         {rsvp && (
           <RsvpForm
             client:visible
@@ -128,6 +151,18 @@ const eventLd = eventSchema({
         {d.link && (
           <p class="ev-cta">
             <a class="btn btn--solid" href={d.link} target="_blank" rel="noopener">Event link ↗</a>
+          </p>
+        )}
+        {registerHref && (
+          <p class="ev-cta">
+            <a
+              class="btn btn--solid"
+              href={registerHref}
+              target={registerExternal ? "_blank" : undefined}
+              rel={registerExternal ? "noopener" : undefined}
+            >
+              Register{registerExternal ? " ↗" : ""}
+            </a>
           </p>
         )}
         <p class="ev-back"><a href={withBase("/events")}>← All events</a></p>
@@ -160,6 +195,9 @@ const eventLd = eventSchema({
   }
   .ev-figure :global(img) { width:100%; height:auto; display:block; }
   [data-theme="light"] .ev-figure { box-shadow:0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+
+  /* Registration button under the meta card (left column). */
+  .ev-register { width:100%; justify-content:center; text-align:center; }
 
   .ev-cta { margin-top:1.8rem; }
   .ev-back { margin-top:1.8rem; }

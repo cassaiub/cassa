@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Reveal from "../../../components/immersive/Reveal.astro";
+import CampRegisterForm from "../../../components/CampRegisterForm.tsx";
+import { withBase } from "../../../data/site-nav.ts";
+
+// Dedicated registration form for the BDOAA Women's Astronomy Olympiad
+// Preparation Camp. Separate from the site-wide RSVP system; posts to
+// camp-register.php (which stores alongside RSVPs for the admin viewer).
+const EVENT_SLUG = "bdoaa-womens-camp";
+const EVENT_TITLE = "BDOAA Women's Astronomy Olympiad Preparation Camp";
+const ENDPOINT = "/api/camp-register.php";
+const DEADLINE = "2026-07-04T23:59:59+06:00";
+---
+
+<BaseLayout
+  title={`Register — ${EVENT_TITLE}`}
+  description="Register for the BDOAA Women's Astronomy Olympiad Preparation Camp — a free two-day camp for girls in Classes 6–10, 10–11 July 2026 at CASSA, IUB."
+  current="/outreach"
+>
+  <section class="section section--elev creg-page">
+    <div class="wrap creg-wrap">
+      <Reveal>
+        <p class="eyebrow">BDOAA · Durbin · CASSA</p>
+        <h1 class="creg-h1">Register for the camp</h1>
+        <p class="creg-lede">
+          BDOAA Women's Astronomy Olympiad Preparation Camp — a free two-day camp for girls in
+          Classes 6–10, <strong>10–11 July 2026</strong> at CASSA, IUB. Seats are limited and
+          registration closes <strong>4 July 2026</strong>.
+        </p>
+        <p class="creg-back"><a href={withBase(`/events/${EVENT_SLUG}`)}>← Back to the event details</a></p>
+      </Reveal>
+
+      <Reveal delay={80}>
+        <CampRegisterForm
+          client:visible
+          eventSlug={EVENT_SLUG}
+          eventTitle={EVENT_TITLE}
+          endpoint={withBase(ENDPOINT)}
+          deadline={DEADLINE}
+          intro="Please fill in every field. We'll email the selected participants by 6 July 2026."
+        />
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .creg-wrap { max-width: 640px; }
+  .creg-h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.02em; margin: 0.4rem 0 0; color: var(--ink); }
+  .creg-lede { margin: 0.9rem 0 0; color: var(--ink-soft); line-height: 1.6; }
+  .creg-back { margin: 0.8rem 0 1.6rem; }
+  .creg-back a { color: var(--accent); }
+</style>

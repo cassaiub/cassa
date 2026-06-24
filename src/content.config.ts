@@ -110,11 +110,30 @@ const events = defineCollection({
       start: z.coerce.date(),
       end: z.coerce.date().optional(),
       allDay: z.boolean().default(false),
+      // Multi-day event with the SAME daily window. start/end times are the
+      // per-day window (e.g. 3–6 PM) repeated across the start..end date span,
+      // NOT one continuous run. Renders "3:00 pm – 6:00 pm daily" on the detail page.
+      daily: z.boolean().default(false),
+      // Free-text override for the detail-page time line. Use for multi-day events
+      // whose per-day windows differ (e.g. "Day 1: 10 am–1 pm · Day 2: 10 am–4 pm"),
+      // which neither `daily` nor a start–end span can express. When set, the date
+      // renders as a full range and this string replaces the computed time.
+      timeNote: z.string().optional(),
       venue: z.string().optional(),
       organizer: z.string().optional(),
       series: z.enum(["colloquium", "journal-talk", "workshop", "outreach", "other"]).default("other"),
       category: z.string().optional(),
+      // Cross-list a non-"Durbin"-category event into the Durbin Updates feed
+      // (mirrors news.durbin). A bare category:"Durbin" event is included anyway.
+      durbin: z.boolean().default(false),
+      // Cross-list an event onto the /bdoaa page's events list (mirrors `durbin`).
+      // A bare category:"BDOAA" event is included there anyway.
+      bdoaa: z.boolean().default(false),
       link: z.string().optional(),
+      // Registration URL — external (e.g. a Google Form) or an internal path.
+      // Rendered as a "Register" button in the sidebar (under the meta card) and
+      // at the foot of the detail page; do NOT also put it inline in the body.
+      register: z.string().optional(),
       summary: z.string().optional(),
       // Featured image (downloaded from cassa.bd): hero on the detail page,
       // thumbnail in the listing + calendar. Resolved to ImageMetadata via image().

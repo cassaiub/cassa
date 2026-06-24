@@ -22,7 +22,8 @@ type View = "list" | "week" | "month" | "year";
 type EventVM = CalendarEvent & {
   _start: Date;
   _end: Date | null;
-  dayKey: string; // YYYY-MM-DD in Asia/Dhaka
+  dayKey: string; // start day, YYYY-MM-DD in Asia/Dhaka (used for sorting/anchoring)
+  dayKeys: string[]; // every day the event spans (start..end inclusive)
 };
 
 /* ── Date helpers — civil-date grid + Dhaka-pinned bucketing ───────────── */
@@ -36,6 +37,26 @@ const civilKey = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(
 const dhakaKeyFmt = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" });
 const eventDayKey = (iso: string) => dhakaKeyFmt.format(new Date(iso));
 const todayKey = () => dhakaKeyFmt.format(new Date());
+
+// Every Asia/Dhaka day an event covers, from its start day through its end day
+// (inclusive). Single-day or end-less events yield just their start day. This is
+// what makes a multi-day event show in every day cell it spans, not only day one.
+const eventDayKeys = (startIso: string, endIso: string | null): string[] => {
+  const s = eventDayKey(startIso);
+  if (!endIso) return [s];
+  const e = eventDayKey(endIso);
+  if (e <= s) return [s];
+  const [sy, sm, sd] = s.split("-").map(Number);
+  const [ey, em, ed] = e.split("-").map(Number);
+  const cur = new Date(sy, sm - 1, sd);
+  const last = new Date(ey, em - 1, ed);
+  const keys: string[] = [];
+  for (let guard = 0; cur <= last && guard < 400; guard++) {
+    keys.push(civilKey(cur.getFullYear(), cur.getMonth(), cur.getDate()));
+    cur.setDate(cur.getDate() + 1);
+  }
+  return keys;
+};
 
 // Formatters for instants (event times) — pinned to Dhaka.
 const tCache = new Map<string, Intl.DateTimeFormat>();
@@ -77,6 +98,7 @@ export default function EventsCalendar({ events }: { events: CalendarEvent[] }) 
           _start: new Date(e.start),
           _end: e.end ? new Date(e.end) : null,
           dayKey: eventDayKey(e.start),
+          dayKeys: eventDayKeys(e.start, e.end),
         }))
         .sort((a, b) => +a._start - +b._start),
     [events]
@@ -85,8 +107,10 @@ export default function EventsCalendar({ events }: { events: CalendarEvent[] }) 
   const byDay = useMemo(() => {
     const m = new Map<string, EventVM[]>();
     for (const v of vms) {
-      if (!m.has(v.dayKey)) m.set(v.dayKey, []);
-      m.get(v.dayKey)!.push(v);
+      for (const k of v.dayKeys) {
+        if (!m.has(k)) m.set(k, []);
+        m.get(k)!.push(v);
+      }
     }
     // all-day first, then by start time
     for (const list of m.values())

@@ -4,7 +4,25 @@ import AnimatedHero from "../components/immersive/AnimatedHero.astro";
 import AnimatedBand from "../components/immersive/AnimatedBand.astro";
 import Reveal from "../components/immersive/Reveal.astro";
 import Prose from "../components/immersive/Prose.astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 import { withBase } from "../data/site-nav.ts";
+
+// BDOAA-tagged events surface here automatically: any src/content/events/*.md
+// with `category: "BDOAA"` or `bdoaa: true` (mirrors the Durbin Updates feed).
+const isBdoaa = (data: { status?: string; category?: string; bdoaa?: boolean }) =>
+  data.status !== "draft" && (data.category === "BDOAA" || data.bdoaa === true);
+const bdoaaEvents = (await getCollection("events", ({ data }) => isBdoaa(data)))
+  .sort((a, b) => +a.data.start - +b.data.start);
+
+// Date/time display pinned to Asia/Dhaka, matching the /events listing.
+const TZ = "Asia/Dhaka";
+const f = (d: Date, o: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, ...o }).format(d);
+const dayNum = (d: Date) => f(d, { day: "2-digit" });
+const monShort = (d: Date) => f(d, { month: "short" });
+const yearNum = (d: Date) => f(d, { year: "numeric" });
+const timeLabel = (d: Date) => f(d, { hour: "numeric", minute: "2-digit", hour12: true });
 
 // Content drawn from the official BDOAA site (https://bdoaa.org/, About Us and
 // homepage). BDOAA is the national astronomy-olympiad body that selects and
@@ -57,6 +75,9 @@ const pipeline = [
       <a href={withBase('/outreach')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Outreach</a>
       <a href="#how" style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">How it works</a>
       <a href="#results" style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">On the world stage</a>
+      {bdoaaEvents.length > 0 && (
+        <a href="#events" style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">At CASSA</a>
+      )}
       <a href="https://bdoaa.org/" target="_blank" rel="noopener" style="font-size:.85rem;padding:.3rem .75rem;border-radius:999px;color:var(--ink-soft);border:1px solid var(--line)">bdoaa.org ↗</a>
     </div>
   </nav>
@@ -165,6 +186,43 @@ const pipeline = [
     </div>
   </section>
 
+  <!-- ── BDOAA events at CASSA ──────────────────────────────────────────── -->
+  {bdoaaEvents.length > 0 && (
+    <section class="section" id="events">
+      <div class="wrap">
+        <Reveal><p class="eyebrow">At CASSA</p></Reveal>
+        <Reveal delay={60}><h2 class="b-h2">BDOAA camps & events at CASSA</h2></Reveal>
+
+        <ol class="evlist" aria-label="BDOAA events at CASSA">
+          {bdoaaEvents.map((e, i) => (
+            <li>
+              <a class="evrow" href={withBase(`/events/${e.id}`)} data-reveal style={`--reveal-delay:${Math.min(i, 6) * 50}ms`}>
+                <span class="evrow__date">
+                  <span class="evrow__d">{dayNum(e.data.start)}</span>
+                  <span class="evrow__m">{monShort(e.data.start)}</span>
+                  <span class="evrow__y">{yearNum(e.data.start)}</span>
+                </span>
+                {e.data.hero && (
+                  <span class="evrow__thumb">
+                    <Image src={e.data.hero} alt={e.data.heroAlt ?? ""} width={120} height={120} loading="lazy" />
+                  </span>
+                )}
+                <span class="evrow__body">
+                  <span class="evrow__meta">
+                    <span class="evtag">{e.data.category ?? e.data.series}</span>
+                    <span class="evrow__time">{e.data.allDay ? "All day" : timeLabel(e.data.start)}</span>
+                  </span>
+                  <span class="evrow__title">{e.data.title}</span>
+                  {e.data.venue && <span class="evrow__venue">{e.data.venue}</span>}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
   <!-- ── CTA ────────────────────────────────────────────────────────────── -->
   <section class="section">
     <div class="wrap" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
@@ -182,6 +240,44 @@ const pipeline = [
 
 <style>
   .b-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
+
+  /* Events list — mirrors the /events upcoming list. */
+  .evlist { list-style:none; margin:1.8rem 0 0; padding:0; display:flex; flex-direction:column; gap:.7rem; }
+  .evrow {
+    display:flex; gap:1.1rem; align-items:flex-start; text-decoration:none;
+    background:var(--bg-elev-2); border:1px solid var(--line); border-radius:14px;
+    padding:1rem 1.2rem; transition:border-color .2s, transform .2s;
+  }
+  .evrow:hover { border-color:color-mix(in srgb,var(--accent) 40%,transparent); transform:translateY(-2px); }
+  [data-theme="light"] .evrow { box-shadow:0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .evrow__date {
+    flex-shrink:0; width:54px; text-align:center; display:flex; flex-direction:column;
+    line-height:1.05; padding-top:.15rem; font-variant-numeric:tabular-nums;
+  }
+  .evrow__d { font-size:1.5rem; font-weight:700; color:var(--ink); }
+  .evrow__m { font-size:.72rem; text-transform:uppercase; letter-spacing:.12em; color:var(--accent); font-weight:700; margin-top:.1rem; }
+  .evrow__y { font-size:.7rem; color:var(--ink-faint); margin-top:.05rem; }
+  .evrow__thumb {
+    flex-shrink:0; width:72px; height:72px; border-radius:10px; overflow:hidden;
+    border:1px solid var(--line); background:var(--bg-elev-2);
+  }
+  .evrow__thumb :global(img) { width:100%; height:100%; object-fit:cover; display:block; }
+  .evrow__body { display:flex; flex-direction:column; gap:.3rem; min-width:0; }
+  .evrow__meta { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; }
+  .evrow__time { font-size:.78rem; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+  .evrow__title { font-size:1.04rem; color:var(--ink); line-height:1.35; font-weight:600; }
+  .evrow:hover .evrow__title { color:var(--accent); }
+  .evrow__venue { font-size:.82rem; color:var(--ink-soft); line-height:1.5; }
+  .evtag {
+    font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    padding:.28em .7em; border-radius:999px; border:1px solid color-mix(in srgb,var(--accent) 38%,transparent);
+    color:var(--accent); white-space:nowrap;
+  }
+  @media (max-width:520px) {
+    .evrow { gap:.85rem; padding:.9rem 1rem; }
+    .evrow__date { width:42px; }
+    .evrow__d { font-size:1.25rem; }
+  }
 
   /* Stat row */
   .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:2.4rem; }
