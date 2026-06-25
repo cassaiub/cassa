@@ -48,14 +48,24 @@ $slug = preg_replace('/[^a-z0-9-]/', '', strtolower((string)($in['slug'] ?? ''))
 if ($slug === '') creg_fail(400, 'Missing event.');
 
 // --- field rules ---
-// type: 'text' | 'email' | 'choice'; options listed for 'choice'.
+// type:
+//   'text'   — free text, truncated to 'max' characters.
+//   'choice' — must exactly match one of 'options'.
+//   'multi'  — comma-separated multi-select; every token must match 'pattern'.
+// 'requiredIf' makes an otherwise-optional field required when another field
+// equals a given value (mirrors the client's conditional fields).
+//
+// KEEP IN SYNC with src/components/CampRegisterForm.tsx (FIELDS). The 'multi'
+// pattern is intentionally loose (matches the "Day 1 / Day 2" shape, not the
+// exact time text) so cosmetic label tweaks on the client don't break saves.
 $fields = [
     'class'              => ['required' => true,  'type' => 'choice', 'options' => ['6', '7', '8', '9', '10']],
     'school'             => ['required' => true,  'type' => 'text', 'max' => 160],
     'parentPhone'        => ['required' => true,  'type' => 'text', 'max' => 32],
     'district'           => ['required' => true,  'type' => 'text', 'max' => 120],
-    'attendance'         => ['required' => true,  'type' => 'choice', 'options' => ['Yes', 'No', 'Only 1 Day', 'Not Sure']],
+    'attendance'         => ['required' => true,  'type' => 'multi', 'pattern' => '/^Day [12]\b/u'],
     'howHeard'           => ['required' => true,  'type' => 'choice', 'options' => ['Books', 'YouTube', 'Teacher', 'Social Media', 'Other']],
+    'howHeardOther'      => ['required' => false, 'type' => 'text', 'max' => 160, 'requiredIf' => ['field' => 'howHeard', 'equals' => 'Other']],
     'priorOlympiad'      => ['required' => true,  'type' => 'choice', 'options' => ['Yes', 'No']],
     'priorDetails'       => ['required' => false, 'type' => 'text', 'max' => 1000],
     'whyJoin'            => ['required' => true,  'type' => 'text', 'max' => 1000],
@@ -79,12 +89,32 @@ $record = ['ts' => gmdate('c'), 'name' => $name, 'email' => $email];
 // --- catalog fields ---
 foreach ($fields as $key => $rule) {
     $val = trim((string)($in[$key] ?? ''));
+
+    // A field is required if flagged outright, or if its 'requiredIf' condition
+    // matches an already-validated earlier field (e.g. "Please specify" when
+    // howHeard = Other).
+    $required = $rule['required'];
+    if (!$required && isset($rule['requiredIf'])) {
+        $cond = $rule['requiredIf'];
+        if (($record[$cond['field']] ?? '') === $cond['equals']) $required = true;
+    }
+
     if ($val === '') {
-        if ($rule['required']) creg_fail(422, 'Please complete every required field.');
+        if ($required) creg_fail(422, 'Please complete every required field.');
         continue;
     }
+
     if ($rule['type'] === 'choice') {
         if (!in_array($val, $rule['options'], true)) creg_fail(422, 'Invalid selection.');
+    } elseif ($rule['type'] === 'multi') {
+        // Comma-separated multi-select; drop blanks, validate each token's shape,
+        // and re-store a normalised "A, B" string.
+        $picked = array_values(array_filter(array_map('trim', explode(',', $val)), 'strlen'));
+        if (!$picked) creg_fail(422, 'Please complete every required field.');
+        foreach ($picked as $p) {
+            if (!preg_match($rule['pattern'], $p)) creg_fail(422, 'Invalid selection.');
+        }
+        $val = implode(', ', $picked);
     } else {
         $val = mb_substr($val, 0, $rule['max']);
     }

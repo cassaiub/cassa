@@ -24,41 +24,46 @@ type Field = {
 
 // Order mirrors the original Google Form (name/email first by convention).
 const FIELDS: Field[] = [
-  { key: "name", label: "Full name", type: "text", required: true, placeholder: "Your full name", maxLength: 120 },
-  { key: "email", label: "Email", type: "email", required: true, placeholder: "you@example.com", maxLength: 160 },
-  { key: "class", label: "Class", type: "select", required: true, options: ["6", "7", "8", "9", "10"], placeholder: "Select your class" },
-  { key: "school", label: "School", type: "text", required: true, placeholder: "Your school's name", maxLength: 160 },
-  { key: "parentPhone", label: "Parent / guardian phone number", type: "tel", required: true, placeholder: "01XXXXXXXXXX", maxLength: 32 },
-  { key: "district", label: "District / area of residence", type: "text", required: true, placeholder: "e.g. Dhaka", maxLength: 120 },
+  { key: "name", label: "Full name", type: "text", required: true, placeholder: "Your full name", maxLength: 120, hint: "(required · up to 120 characters)" },
+  { key: "email", label: "Email", type: "email", required: true, placeholder: "you@example.com", maxLength: 160, hint: "(required · a valid email, up to 160 characters · we email selected participants here)" },
+  { key: "class", label: "Class", type: "select", required: true, options: ["6", "7", "8", "9", "10"], placeholder: "Select your class", hint: "(required · choose your class, 6–10)" },
+  { key: "school", label: "School", type: "text", required: true, placeholder: "Your school's name", maxLength: 160, hint: "(required · up to 160 characters)" },
+  { key: "parentPhone", label: "Parent / guardian phone number", type: "tel", required: true, placeholder: "01XXXXXXXXXX", maxLength: 32, hint: "(required · up to 32 characters)" },
+  { key: "district", label: "District / area of residence", type: "text", required: true, placeholder: "e.g. Dhaka", maxLength: 120, hint: "(required · up to 120 characters)" },
   {
     key: "attendance", label: "Attendance Confirmation", type: "checkboxes", required: true,
     options: [
       "Day 1: 10 July 2026 (10:00 AM – 4:00 PM)",
       "Day 2: 11 July 2026 (10:00 AM – 4:00 PM)",
     ],
-    hint: "Tick the day(s) you can attend at CASSA, IUB.",
+    hint: "(required · tick at least one day you can attend at CASSA, IUB)",
   },
   {
     key: "howHeard", label: "How did you first learn about astronomy?", type: "radio", required: true,
     options: ["Books", "YouTube", "Teacher", "Social Media", "Other"],
+    hint: "(required · choose one)",
   },
   {
     key: "howHeardOther", label: "Please specify", type: "text", required: true, maxLength: 160,
     placeholder: "How you first learned about astronomy", showIf: { field: "howHeard", equals: "Other" },
+    hint: "(required when you choose “Other” · up to 160 characters)",
   },
   {
     key: "priorOlympiad", label: "Have you taken part in a BDOAA / astronomy olympiad before?", type: "radio", required: true,
     options: ["Yes", "No"],
+    hint: "(required · choose one)",
   },
   {
     key: "priorDetails", label: "If yes, tell us about it", type: "textarea", maxLength: 1000,
     placeholder: "Which olympiad, year, and result…", showIf: { field: "priorOlympiad", equals: "Yes" },
+    hint: "(optional · up to 1000 characters)",
   },
-  { key: "whyJoin", label: "Which aspect(s) of the camp inspired you to apply?", type: "textarea", required: true, maxLength: 1000 },
-  { key: "whatLearn", label: "What do you hope to learn?", type: "textarea", required: true, maxLength: 1000 },
+  { key: "whyJoin", label: "Which aspect(s) of the camp inspired you to apply?", type: "textarea", required: true, maxLength: 1000, hint: "(required · up to 1000 characters)" },
+  { key: "whatLearn", label: "What do you hope to learn?", type: "textarea", required: true, maxLength: 1000, hint: "(required · up to 1000 characters)" },
   {
     key: "parentalPermission", label: "Do you have your parent's / guardian's permission to attend?", type: "radio", required: true,
     options: ["Yes", "No"],
+    hint: "(required · choose one)",
   },
   {
     key: "declaration", label: "Declaration", type: "checkbox", required: true,
@@ -224,6 +229,7 @@ export default function CampRegisterForm({ eventSlug, eventTitle, endpoint, dead
                     </label>
                   ))}
                 </div>
+                {f.hint && <span className="rsvp__hint">{f.hint}</span>}
               </fieldset>
             );
           }
