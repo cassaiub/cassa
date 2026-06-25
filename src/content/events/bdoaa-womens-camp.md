@@ -6,7 +6,7 @@ timeNote: "Day 1 (Fri, 10 Jul) & Day 2 (Sat, 11 Jul): 10:00 am – 4:00 pm"
 venue: "CASSA, Independent University, Bangladesh (IUB)"
 organizer: "BDOAA & Durbin"
 series: "outreach"
-category: "Durbin Workshop"
+category: "BDOAA Workshop"
 durbin: true
 bdoaa: true
 register: "/events/bdoaa-womens-camp/register"
