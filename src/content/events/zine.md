@@ -22,15 +22,16 @@ The workshop is open to both Durbin volunteers and interested members of the pub
 
 ## Schedule & details
 
-**3 July**
+**3 July (Day 1)**
 
-- **3:00 PM** — Introduction to Zine Making
+- **3:00 – 4:30 PM** — Introduction to Zine Making
 - **4:30 – 6:00 PM** — Zine Making
 
-**4 July**
+**4 July (Day 2)**
 
-- **3:00 – 6:00 PM** — Drawing to Digital (please bring a laptop)
+- **3:00 – 3:30 PM** — Introduction
 - **3:30 – 4:30 PM** — Her Stargaze: storytelling with the stars
+- **4:30 – 6:00 PM** — Drawing to Digital (please bring a laptop)
 
 **Bonus:** stargazing from 6:00 PM onwards on both days (weather permitting).
 
