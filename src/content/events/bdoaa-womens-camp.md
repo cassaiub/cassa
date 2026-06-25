@@ -47,7 +47,7 @@ Learn directly from an incredible team of accomplished women in STEM:
 
 Led by **Tahiatun Nahar Juthi**, with **Labib Bin Azad** (University of Dhaka) conducting the afternoon session. The first day kicks off with an essential orientation to the Bangladesh Olympiad on Astronomy and Astrophysics (BDOAA), an overview of the competitive syllabus, and a deep-dive into navigating the night sky.
 
-✨ **Special session:** Hear firsthand from **Faria Mahbub**, Silver Medalist at the 2024 IOAA Junior, as she shares her inspiring journey competing on the international stage!
+✨ **Special session:** Hear firsthand from **Faria Mahmud**, Silver Medalist at the 2024 IOAA Junior, as she shares her inspiring journey competing on the international stage!
 
 | Time | Session |
 |---|---|
@@ -55,7 +55,7 @@ Led by **Tahiatun Nahar Juthi**, with **Labib Bin Azad** (University of Dhaka) c
 | 10:10 – 10:20 AM | Syllabus & topic overview |
 | 10:20 – 11:10 AM | Hands-on skymap session |
 | 11:10 – 11:30 AM | Break |
-| 11:30 – 12:00 PM | Previous international participant experience (with Faria Mahbub) |
+| 11:30 – 12:00 PM | Previous international participant experience (with Faria Mahmud) |
 | 12:00 – 1:00 PM | Celestial mechanics (building physical intuition) |
 | 1:00 – 2:30 PM | Lunch break |
 | 2:30 – 4:00 PM | Observational astronomy & introduction to cosmology (with Labib Bin Azad) |
