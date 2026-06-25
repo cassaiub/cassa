@@ -37,6 +37,7 @@ This exclusive camp is tailored to build the physical intuition and mathematical
 Learn directly from an incredible team of accomplished women in STEM:
 
 - **Tahiatun Nahar Juthi** — Bangladesh University of Engineering and Technology (BUET)
+- **Labib Bin Azad** — University of Dhaka
 - **Mohtasiba Hossain** — Islamic University of Technology (IUT)
 - **Fairooz Shaira** — Chittagong University of Engineering and Technology (CUET)
 
@@ -44,7 +45,7 @@ Learn directly from an incredible team of accomplished women in STEM:
 
 ### Day 1 — Friday, 10 July
 
-Led by **Tahiatun Nahar Juthi**. The first day kicks off with an essential orientation to the Bangladesh Olympiad on Astronomy and Astrophysics (BDOAA), an overview of the competitive syllabus, and a deep-dive into navigating the night sky.
+Led by **Tahiatun Nahar Juthi**, with **Labib Bin Azad** (University of Dhaka) conducting the afternoon session. The first day kicks off with an essential orientation to the Bangladesh Olympiad on Astronomy and Astrophysics (BDOAA), an overview of the competitive syllabus, and a deep-dive into navigating the night sky.
 
 ✨ **Special session:** Hear firsthand from **Faria Mahbub**, Silver Medalist at the 2024 IOAA Junior, as she shares her inspiring journey competing on the international stage!
 
@@ -56,6 +57,8 @@ Led by **Tahiatun Nahar Juthi**. The first day kicks off with an essential orien
 | 11:10 – 11:30 AM | Break |
 | 11:30 – 12:00 PM | Previous international participant experience (with Faria Mahbub) |
 | 12:00 – 1:00 PM | Celestial mechanics (building physical intuition) |
+| 1:00 – 2:30 PM | Lunch break |
+| 2:30 – 4:00 PM | Observational astronomy & introduction to cosmology (with Labib Bin Azad) |
 
 ### Day 2 — Saturday, 11 July
 
