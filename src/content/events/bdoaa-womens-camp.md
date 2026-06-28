@@ -34,7 +34,7 @@ This exclusive camp is tailored to build the physical intuition and mathematical
 
 ## Meet your instructors
 
-Learn directly from an incredible team of accomplished women in STEM:
+Learn directly from an incredible team of accomplished people in STEM:
 
 - **Tahiatun Nahar Juthi** — Bangladesh University of Engineering and Technology (BUET)
 - **Labib Bin Azad** — University of Dhaka
