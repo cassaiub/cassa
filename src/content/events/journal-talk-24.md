@@ -1,12 +1,11 @@
 ---
-title: "Journal Talk 24: Sarker & Oyon (2026)"
+title: "Journal Talk 24: Mohammad & Oyon (2026)"
 start: "2026-06-30T13:30:00+06:00"
 end: "2026-06-30T14:10:00+06:00"
 venue: "CASSA, IUB Main Building Rooftop, Plot 16, Aftabuddin Ahmed Road, Block B, Bashundhara RA (Main Building Rooftop)"
 organizer: "CASSA, Independent University, Bangladesh"
 series: "journal-talk"
 category: "Journal Talk"
-summary: "A Bayesian Hubble-flow analysis of modern galaxy catalogs measures the total mass of the Local Group."
 paperTitle: "The Local Group Mass from Hubble Flow Perturbations: A Bayesian Analysis of Modern Catalogs"
 ---
 
