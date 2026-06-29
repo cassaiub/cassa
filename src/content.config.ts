@@ -78,6 +78,9 @@ const news = defineCollection({
       // thumbnail in the /news and /durbin/updates list views.
       hero: image().optional(),
       heroAlt: z.string().optional(),
+      // Optional visible caption rendered under the hero figure on the detail
+      // page (e.g. a figure credit/explanation when the hero is a paper plot).
+      heroCaption: z.string().optional(),
       summary: z.string().optional(),
       featured: z.boolean().default(false),
       theme: z.enum(["cosmic", "lensing", "galaxy"]).optional(),

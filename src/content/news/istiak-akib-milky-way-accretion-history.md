@@ -1,10 +1,11 @@
 ---
-title: "CASSA Graduate Member Istiak Akib leads new A&A study on the Milky Way's accretion history"
+title: "A new A&A study on the Milky Way's accretion history"
 date: "2026-06-28T11:00:00+06:00"
 category: "Milestones"
 summary: "Istiak Hossain Akib, a Graduate Member of CASSA, is the first and corresponding author of a new Astronomy & Astrophysics paper showing how the kinematics of globular clusters trace the Milky Way's ancient merger epochs."
-hero: "../../assets/news/istiak-akib-milky-way-accretion-history/akib.webp"
-heroAlt: "Portrait of Istiak Hossain Akib, CASSA Graduate Member and lead author of the study."
+hero: "../../assets/news/istiak-akib-milky-way-accretion-history/elz-plane.webp"
+heroAlt: "Three-panel scatter plot of orbital energy versus angular momentum (E–Lz plane) showing Milky Way stars, GSE stars, and colour-coded halo, disc, and merger-formed globular clusters for three simulated merger models."
+heroCaption: "Distribution of Milky Way stars (grey), GSE stars (blue/cyan), and globular clusters — halo (red), disc (green), and merger-formed (orange) — in the energy–angular momentum (E–Lz) plane for the three simulated models, 9 Gyr after the merger. Credit: Akib, Hammer & Yang, A&A 710, A349 (2026), CC BY 4.0."
 featured: true
 theme: "galaxy"
 author: "CASSA Admin"

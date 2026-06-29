@@ -78,6 +78,7 @@ const articleLd = articleSchema({
             {d.hero && (
               <figure class="article-figure" data-figure>
                 <Image src={d.hero} alt={d.heroAlt ?? ""} widths={[480, 768, 1100, 1600]} sizes="(max-width: 880px) 92vw, 900px" loading="lazy" />
+                {d.heroCaption && <figcaption>{d.heroCaption}</figcaption>}
               </figure>
             )}
             <Content />
