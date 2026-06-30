@@ -19,7 +19,3 @@ Link: [doi:10.48550/arXiv.2512.04031](https://ui.adsabs.harvard.edu/link_gateway
 ---
 
 Both in person and online.
-
-To get notifications and the Google Meet link, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

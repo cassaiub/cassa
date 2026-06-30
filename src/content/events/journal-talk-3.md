@@ -22,7 +22,3 @@ Presenter: Md Shahadat Hossain Shahal
 2. [Identification of 4876 Bent-tail Radio Galaxies in the FIRST Survey Using Deep Learning Combined with Visual Inspection](https://doi.org/10.3847/1538-4365/ad9c6d)
 
 Both in person and online.
-
-To get notifications and the Google Meet link subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

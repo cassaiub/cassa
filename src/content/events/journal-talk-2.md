@@ -17,7 +17,3 @@ Link: [https://doi.org/10.1093/mnras/stae979](https://doi.org/10.1093/mnras/stae
 Presenter: Adrita Khan
 
 Both in person and online.
-
-To get notifications and the Google Meet link subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

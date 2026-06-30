@@ -19,7 +19,3 @@ Link: [https://doi.org/10.3847/2041-8213/ac90ca](https://doi.org/10.3847/2041-82
 ---
 
 Both in person and online.
-
-To get notifications and the Google Meet link subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

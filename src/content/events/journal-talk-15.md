@@ -19,7 +19,3 @@ paperTitle: "Radio-loud AGN morphology and host-galaxy properties in the LOFAR T
 ---
 
 Both in person and online.
-
-To get notifications and the Google Meet link, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

@@ -19,7 +19,3 @@ paperTitle: "SKA-LOW SIMULATIONS FOR A COSMIC DAWN/EPOCH OF REIONISATION DEEP FI
 ---
 
 Both in person and online.
-
-To get notifications and the Google Meet link, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

@@ -19,7 +19,3 @@ paperTitle: "Detecting the H I power spectrum in the post-reionization Universe 
 ---
 
 Both in person and online.
-
-To get notifications and the Google Meet link, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

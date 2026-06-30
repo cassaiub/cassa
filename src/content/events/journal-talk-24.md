@@ -21,10 +21,3 @@ The total mass of the Local Group (LG) is a simple, but poorly determined parame
 - **Hritom Sarker Oyon** (Undergraduate Research Intern at CASSA; 1st Year Undergraduate Student, School of Physical and Mathematical Sciences, NTU Singapore)
 
 **Supervisor:** **Istiak H. Akib** (Graduate Member of CASSA; LIRA, Observatoire de Paris, Université PSL, CNRS)
-
----
-
-
-To get notifications, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

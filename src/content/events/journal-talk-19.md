@@ -21,9 +21,3 @@ The formation and quenching mechanisms of massive galaxies at high redshift rema
 **Link:** [https://docs.google.com/presentation/d/1plgX7tQJdRSfYA3rwAsktoAbKSD9Am6z/edit?usp=sharing](https://docs.google.com/presentation/d/1plgX7tQJdRSfYA3rwAsktoAbKSD9Am6z/edit?usp=sharing)
 
 **Presenter:** **Ahmad Al-Imtiaz** (Graduate Research Assistant at CASSA; M.Sc. in Physics from Shahjalal University of Science & Technology)
-
----
-
-To get notified, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

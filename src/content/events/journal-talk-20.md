@@ -19,10 +19,3 @@ The reliability of Type Ia Supernovae (SNe Ia) may be limited by the imprint of 
 **Link:** [https://doi.org/10.3847/1538-4357/ab0704](https://doi.org/10.3847/1538-4357/ab0704)
 
 **Presenter:** **Deba Priyo Guha** (Postbac Research Assistant at CASSA; M.Sc. (ongoing) in Theoretical Physics, University of Dhaka)
-
----
-
-
-To get notifications, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

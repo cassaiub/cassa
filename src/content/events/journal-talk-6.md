@@ -17,7 +17,3 @@ Link: [https://arxiv.org/abs/2504.02483](https://arxiv.org/abs/2504.02483)
 Presenter: Jannatul Feardous Nishi, postbac from RUET.
 
 Both in person and online.
-
-To get notifications and the Google Meet link subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

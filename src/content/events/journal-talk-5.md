@@ -17,7 +17,3 @@ Link: [https://arxiv.org/abs/2506.20712](https://arxiv.org/abs/2506.20712)
 Presenter: Afnan Uzzaman, IUB EEE
 
 Both in person and online.
-
-To get notifications and the Google Meet link subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

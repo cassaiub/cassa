@@ -23,10 +23,3 @@ The main goal of this work is to investigate whether galaxies in dense environme
 **Presenter:** **Md Fardin Islam** (Undergraduate Research Assistant at CASSA; B.Sc. (ongoing) in Physics, Independent University, Bangladesh)
 
 **Supervisor:** **Syeda Lammim Ahad, PhD** (Associate Member at CASSA; WCA Postdoctoral Fellow, Waterloo Center for Astrophysics, University of Waterloo, Canada)
-
----
-
-
-To get notifications, subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)

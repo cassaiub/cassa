@@ -17,7 +17,3 @@ Link: [https://doi.org/10.48550/arXiv.2503.22657](https://doi.org/10.48550/arXiv
 Presenter: Nafis Sadik Nihal
 
 Both in person and online.
-
-To get notifications and the Google Meet link subscribe using the Google Form:
-
-[https://forms.gle/fikhmc7Y2whjJWKK9](https://forms.gle/fikhmc7Y2whjJWKK9)
