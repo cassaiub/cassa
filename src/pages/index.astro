@@ -76,19 +76,6 @@ const dTime = (d: Date) => fmt(d, { hour: "numeric", minute: "2-digit", hour12: 
 const newsDate = (d: Date) => fmt(d, { day: "numeric", month: "short", year: "numeric" });
 const seriesLabel = (e: (typeof allEvents)[number]) => e.data.category ?? e.data.series;
 
-// ── Key stats — derived live from the people roster (stay accurate as it grows);
-// the research-area count and Timaeus HPC spec are constants.
-const people = await getCollection("people", ({ data }) => data.status !== "draft");
-const tier = (t: string) => people.filter((p) => p.data.tier === t).length;
-const STATS: { n: number; label: string; sub?: string }[] = [
-  { n: 5, label: "Research areas", sub: "radio, cosmology & time-domain" },
-  { n: tier("Director"), label: "Directors" },
-  { n: tier("Core Member"), label: "Core members" },
-  { n: tier("Associate Member"), label: "Associate members" },
-  { n: people.length, label: "Number of people" },
-  { n: 32, label: "Timaeus HPC cores", sub: "64 threads · RTX A4000 GPU" },
-];
-
 // The three missions (Constitution cl. 30) — each routes to its hub.
 const MISSIONS = [
   {
@@ -160,27 +147,6 @@ const MISSIONS = [
       </ul>
     </div>
   </section>
-
-  <!-- 3 · STRENGTH IN NUMBERS — immersive count-up stats over the animated sky -->
-  <AnimatedBand theme="cosmic">
-    <Reveal>
-      <p class="eyebrow" style="color:#fff;opacity:.85">By the numbers</p>
-      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">The strength of CASSA</h2>
-    </Reveal>
-    <ul class="stats">
-      {STATS.map((s, i) => (
-        <li class="stat" data-reveal style={`--reveal-delay:${i * 70}ms`}>
-          <span class="stat__n" data-count={s.n}>{s.n}</span>
-          <span class="stat__label">{s.label}</span>
-          {s.sub && <span class="stat__sub">{s.sub}</span>}
-        </li>
-      ))}
-    </ul>
-    <div class="stats-cta" data-reveal style="--reveal-delay:480ms">
-      <a class="btn-dark" href={withBase('/people')}>Meet the team <span aria-hidden="true">→</span></a>
-      <a class="btn-dark" href={withBase('/research')}>Explore the research <span aria-hidden="true">→</span></a>
-    </div>
-  </AnimatedBand>
 
   <!-- 4 · LATEST — upcoming events (left) + recent news (right) -->
   <section class="section">
@@ -342,25 +308,7 @@ const MISSIONS = [
   .hp-more { display: inline-block; margin-top: 1.2rem; color: var(--accent); font-weight: 600; font-size: .9rem; }
   .hp-more:hover { opacity: .75; }
 
-  /* ── Strength in numbers — count-up stats over the animated sky ─────────── */
-  .stats {
-    list-style: none; margin: 2.6rem 0 0; padding: 0;
-    display: grid; gap: 1.8rem 1.6rem; grid-template-columns: repeat(3, 1fr);
-  }
-  @media (max-width: 760px) { .stats { grid-template-columns: 1fr 1fr; gap: 1.6rem 1.1rem; } }
-
-  .stat::before {
-    content: ""; display: block; width: 34px; height: 3px; border-radius: 2px;
-    background: var(--accent); margin-bottom: .85rem; opacity: .9;
-  }
-  .stat__n {
-    display: block; font-size: clamp(2.6rem, 6vw, 4rem); font-weight: 700; line-height: 1;
-    letter-spacing: -.02em; color: #fff; font-variant-numeric: tabular-nums;
-  }
-  .stat__label { display: block; margin-top: .5rem; font-size: 1rem; font-weight: 600; color: rgba(255,255,255,.92); }
-  .stat__sub { display: block; margin-top: .2rem; font-size: .8rem; color: rgba(255,255,255,.62); }
-
-  /* CTA buttons used on the dark bands (stats + closing) */
+  /* CTA buttons used on the dark bands (closing) */
   .stats-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2.8rem; }
   .btn-dark {
     display: inline-block; padding: .6rem 1.15rem; border-radius: 999px;
@@ -369,32 +317,3 @@ const MISSIONS = [
   }
   .btn-dark:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); }
 </style>
-
-<script>
-  // Count-up the key-stats numbers when the band scrolls into view.
-  // Reduced motion → show the final value immediately (meaningful static state).
-  const nums = Array.from(document.querySelectorAll<HTMLElement>(".stat__n[data-count]"));
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduce) {
-    nums.forEach((n) => (n.textContent = n.dataset.count ?? n.textContent));
-  } else {
-    nums.forEach((n) => (n.textContent = "0"));
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        const el = e.target as HTMLElement;
-        io.unobserve(el);
-        const target = Number(el.dataset.count ?? 0);
-        const dur = 1100, t0 = performance.now();
-        const tick = (t: number) => {
-          const p = Math.min(1, (t - t0) / dur);
-          el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
-          if (p < 1) requestAnimationFrame(tick);
-          else el.textContent = String(target);
-        };
-        requestAnimationFrame(tick);
-      }
-    }, { threshold: 0.4 });
-    nums.forEach((n) => io.observe(n));
-  }
-</script>
