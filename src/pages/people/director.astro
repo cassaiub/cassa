@@ -1,0 +1,403 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import { withBase } from "../../data/site-nav.ts";
+import { hasProfile } from "../../data/people/profiles.ts";
+
+/* ── Content ──────────────────────────────────────────────────────────── */
+const published = await getCollection("people", ({ data }) => data.status === "published");
+
+/* Current Director — the person holding the (rotating) office. */
+const director = published.find((p) => p.data.tier === "Director");
+
+/* Current Manager (Science) — matched on the role string in `institution`. */
+const manager = published.find((p) => p.data.institution?.startsWith("Manager (Science)"));
+
+/* Bespoke ~150-word intro (split into editorial paragraphs) + ~100-word bios.
+   Update the director bio when the office rotates (every two years). */
+const officeIntro = [
+  `The Office of the Director is a rotating office, held for two years by a Core Member from Astronomy and Astrophysics. Its role is deliberately modest: it does not lead CASSA. At CASSA, the scientists lead — they direct their own research groups, set the academic agenda, and drive the centre's projects.`,
+  `The Office exists to make that leadership possible. It facilitates the scientists' work by coordinating shared resources, removing day-to-day obstacles, and keeping the practical machinery of a research centre running smoothly. Working hand in hand with the Manager (Science), the Director looks after the logistics that a growing community depends on — space, equipment, scheduling, and the many small arrangements that would otherwise distract from research.`,
+  `The Office also supports CASSA's students in their general logistics, helping them find their footing, access the people and tools they need, and take a full part in the life of the centre.`,
+];
+
+const directorBio = `Khan Muhammad Bin Asad is an astrophysicist at CASSA and an Assistant Professor in the Department of Physical Sciences at Independent University, Bangladesh, which he joined in 2020. He earned his PhD in cosmology and radio astronomy from the University of Groningen, working with LOFAR, and was a postdoctoral fellow at the South African Radio Astronomy Observatory, working with MeerKAT, a precursor to the Square Kilometre Array. His research probes the cosmic dawn and reionization through the redshifted 21-cm signal and images diffuse radio halos in galaxy clusters. As principal proposer, he led the effort that established CASSA on 14 August 2025.`;
+
+const managerBio = `Muhammad Jobair Hasan is CASSA's Manager (Science), with a BSc and an MSc in Physics from Shahjalal University of Science and Technology (SUST). Working closely with the Office of the Director, he oversees the centre's day-to-day science operations and observatory logistics — the practical backbone that keeps research and teaching moving. His work spans coordinating equipment and facilities, running programmes and events, and supporting researchers and students in their everyday needs. As Manager (Science), he acts as a bridge between the scientists, the students, and the centre's shared resources, making sure CASSA's growing community has the logistical support it needs to concentrate on doing science.`;
+
+/* At-a-glance facts (left rail of the intro). */
+const facts = [
+  { label: "Term",       value: "Two years, rotating" },
+  { label: "Held by",    value: "A Core Member in A&A" },
+  { label: "Mandate",    value: "Facilitation, not leadership" },
+  { label: "Supported by", value: "The Manager (Science)" },
+];
+
+/* What the Office does (numbered cards). */
+const roles = [
+  { title: "Facilitate the scientists", body: "Coordinate shared resources and clear day-to-day obstacles, so researchers can lead their groups and projects." },
+  { title: "Support the students", body: "Help students with their general logistics — finding the people, tools, and footing they need in the centre." },
+  { title: "Steward the logistics", body: "With the Manager (Science), keep space, equipment, and scheduling running so science stays the focus." },
+];
+
+/* ── Subpage nav ──────────────────────────────────────────────────────── */
+const CURRENT_HREF = "/people/director";
+const subNav = [
+  { href: "/people/director",             label: "Office of the Director" },
+  { href: "/people/core-members",         label: "Core Members" },
+  { href: "/people/associate-members",    label: "Associate Members" },
+  { href: "/people/affiliates",           label: "Affiliates" },
+  { href: "/people/research-assistants",  label: "Research Assistants" },
+  { href: "/people/project-managers",     label: "Project Managers" },
+  { href: "/people/students-on-duty",     label: "Students on Duty" },
+  { href: "/people/research-interns",     label: "Research Interns" },
+];
+---
+
+<BaseLayout
+  title="Office of the Director — CASSA People"
+  description="A rotating office that facilitates CASSA's scientists and supports its students — held for two years by a Core Member in Astronomy & Astrophysics."
+  current="/people"
+>
+  <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="People · Office of the Director"
+    title="Office of the Director"
+    lede="A rotating office that facilitates CASSA's scientists and supports its students."
+  />
+
+  <!-- ── Subpage navigation pill-strip ────────────────────────────────── -->
+  <nav style="border-bottom:1px solid var(--line);background:var(--bg-elev)">
+    <div class="wrap" style="display:flex;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/people')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← All People</a>
+      {subNav.map(s => (
+        <a
+          href={withBase(s.href)}
+          style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${
+            s.href === CURRENT_HREF
+              ? 'background:var(--accent);color:#1a1206;font-weight:600'
+              : 'color:var(--ink-soft);border:1px solid var(--line)'
+          }`}
+        >{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ══ Section 1 · The Office (editorial split intro) ════════════════ -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="intro-grid">
+        <div class="intro-head">
+          <Reveal><p class="eyebrow">The Office</p></Reveal>
+          <Reveal delay={60}>
+            <h2 class="intro-title">A rotating<br />office</h2>
+          </Reveal>
+          <Reveal delay={110}>
+            <dl class="facts">
+              {facts.map((f) => (
+                <div class="fact">
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+        </div>
+
+        <div class="intro-copy">
+          {officeIntro.map((para, i) => (
+            <Reveal delay={80 + i * 60}>
+              <p class:list={["intro-p", { "intro-p--lede": i === 0 }]}>{para}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+
+      <div class="roles">
+        {roles.map((r, i) => (
+          <Reveal delay={120 + i * 80}>
+            <div class="role-card">
+              <span class="role-idx">0{i + 1}</span>
+              <h3 class="role-title">{r.title}</h3>
+              <p class="role-body">{r.body}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Immersive divider ═════════════════════════════════════════════ -->
+  <AnimatedBand theme="lensing">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">2025 – 2027</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">The people holding the office</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ══ Section 2 · Current Director ══════════════════════════════════ -->
+  {director && (
+    <section class="section section--elev">
+      <div class="wrap">
+        <div class="person-grid">
+          <Reveal class="person-aside">
+            <div class="portrait">
+              {director.data.photo && (
+                <img src={director.data.photo} alt={`Photo of ${director.data.name}`} loading="lazy" decoding="async" />
+              )}
+            </div>
+          </Reveal>
+
+          <div class="person-main">
+            <Reveal><p class="eyebrow">Current Director</p></Reveal>
+            <Reveal delay={60}>
+              <h2 class="person-name">{director.data.name}</h2>
+            </Reveal>
+            <Reveal delay={90}>
+              <div class="person-pills">
+                <span class="pill pill--accent">Director</span>
+                {director.data.duration && <span class="pill">{director.data.duration}</span>}
+              </div>
+            </Reveal>
+            <Reveal delay={120}>
+              <p class="person-bio">{directorBio}</p>
+            </Reveal>
+            {hasProfile(director.id) && (
+              <Reveal delay={150}>
+                <a class="btn" href={withBase(`/people/${director.id}`)}>
+                  View full profile <span aria-hidden="true">→</span>
+                </a>
+              </Reveal>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ══ Section 3 · Current Manager (Science) ═════════════════════════ -->
+  {manager && (
+    <section class="section">
+      <div class="wrap">
+        <div class="person-grid">
+          <Reveal class="person-aside">
+            <div class="portrait">
+              {manager.data.photo && (
+                <img src={manager.data.photo} alt={`Photo of ${manager.data.name}`} loading="lazy" decoding="async" />
+              )}
+            </div>
+          </Reveal>
+
+          <div class="person-main">
+            <Reveal><p class="eyebrow">Current Manager (Science)</p></Reveal>
+            <Reveal delay={60}>
+              <h2 class="person-name">{manager.data.name}</h2>
+            </Reveal>
+            <Reveal delay={90}>
+              <div class="person-pills">
+                <span class="pill pill--accent">Manager (Science)</span>
+                {manager.data.duration && <span class="pill">{manager.data.duration}</span>}
+              </div>
+            </Reveal>
+            <Reveal delay={120}>
+              <p class="person-bio">{managerBio}</p>
+            </Reveal>
+            <Reveal delay={150}>
+              {hasProfile(manager.id) ? (
+                <a class="btn" href={withBase(`/people/${manager.id}`)}>
+                  View full profile <span aria-hidden="true">→</span>
+                </a>
+              ) : (
+                <span class="pill person-soon">Full profile coming soon</span>
+              )}
+            </Reveal>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  /* ══ Section 1 · editorial split intro ══════════════════════════════ */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .intro-title {
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0.5rem 0 0;
+  }
+
+  /* At-a-glance facts under the heading */
+  .facts {
+    margin: 2rem 0 0;
+    border-top: 1px solid var(--line);
+  }
+  .fact {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.72rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .fact dt {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .fact dd {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+
+  .intro-copy { max-width: 62ch; }
+  .intro-p {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.78;
+    margin: 0;
+  }
+  /* paragraphs sit inside Reveal wrappers — space the wrappers */
+  .intro-copy > :global(* + *) { margin-top: 1.15em; }
+  .intro-p--lede {
+    font-size: clamp(1.15rem, 1.8vw, 1.3rem);
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  /* ── Numbered role cards ────────────────────────────────────────────── */
+  .roles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+    margin-top: clamp(2.6rem, 6vw, 4rem);
+  }
+
+  .role-card {
+    height: 100%;
+    padding: 1.55rem 1.5rem 1.45rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--bg-elev-2);
+    transition: border-color 0.28s ease, transform 0.28s ease;
+  }
+  .role-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    transform: translateY(-3px);
+  }
+
+  .role-idx {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .role-title {
+    margin: 0.95rem 0 0.45rem;
+    font-size: 1.08rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .role-body {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.62;
+    color: var(--ink-soft);
+  }
+
+  /* ══ Person sections · fixed-column grid (image can never overflow) ═ */
+  .person-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 4.5rem);
+    align-items: start;
+    max-width: 1000px;
+  }
+
+  .portrait {
+    position: relative;
+    border-radius: 20px;
+  }
+  /* soft accent glow behind the portrait */
+  .portrait::before {
+    content: "";
+    position: absolute;
+    inset: -10% -14%;
+    background: radial-gradient(58% 58% at 32% 22%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 72%);
+    filter: blur(18px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .portrait img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 20px;
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 22px 48px rgba(3, 6, 14, 0.35);
+  }
+  :global([data-theme="light"]) .portrait img {
+    box-shadow: 0 2px 6px rgba(12, 18, 34, 0.08), 0 22px 48px rgba(12, 18, 34, 0.14);
+  }
+
+  .person-name {
+    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+    letter-spacing: -0.018em;
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0.45rem 0 0;
+  }
+
+  .person-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.95rem;
+  }
+
+  .person-bio {
+    margin: 1.35rem 0 0;
+    max-width: 58ch;
+    font-size: 1.05rem;
+    line-height: 1.78;
+    color: var(--ink-soft);
+  }
+
+  .person-main :global(.btn) { margin-top: 1.6rem; }
+  .person-soon {
+    margin-top: 1.6rem;
+    color: var(--ink-faint);
+  }
+
+  /* ══ Responsive ═════════════════════════════════════════════════════ */
+  @media (max-width: 860px) {
+    .intro-grid { grid-template-columns: 1fr; gap: 2.2rem; }
+    .roles { grid-template-columns: 1fr; }
+    .person-grid { grid-template-columns: 1fr; gap: 1.8rem; }
+    .portrait { max-width: 260px; }
+  }
+</style>

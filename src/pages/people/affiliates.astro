@@ -1,0 +1,276 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import PersonCard from "../../components/PersonCard.astro";
+import { withBase } from "../../data/site-nav.ts";
+import { personalSite } from "../../data/people/personal-site.ts";
+
+/* ── Subpage navigation ──────────────────────────────────────────────── */
+const subNav = [
+  { href: "/people/director",             label: "Office of the Director" },
+  { href: "/people/core-members",         label: "Core Members" },
+  { href: "/people/associate-members",    label: "Associate Members" },
+  { href: "/people/affiliates",           label: "Affiliates" },
+  { href: "/people/research-assistants",  label: "Research Assistants" },
+  { href: "/people/project-managers",     label: "Project Managers" },
+  { href: "/people/students-on-duty",     label: "Students on Duty" },
+  { href: "/people/research-interns",     label: "Research Interns" },
+];
+const currentHref = "/people/affiliates";
+
+const lastName = (n: string) => n.trim().split(/\s+/).at(-1) ?? n;
+
+/* ── Content queries ─────────────────────────────────────────────────── */
+const allPeople = await getCollection("people", ({ data }) => data.status === "published");
+
+const gradMembers = allPeople
+  .filter((p) => p.data.tier === "Graduate Member")
+  .sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
+
+const allAffiliates = allPeople
+  .filter((p) => p.data.tier === "Affiliate")
+  .sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
+
+const technicalIds = new Set(["mirza"]);
+const affiliates = allAffiliates.filter((p) => !technicalIds.has(p.id));
+const technicalAffiliates = allAffiliates.filter((p) => technicalIds.has(p.id));
+---
+
+<BaseLayout
+  title="Affiliates — CASSA People"
+  description="Graduate Members pursuing PhDs at international institutions, and research & technical affiliates contributing to CASSA's mission."
+  current="/people"
+>
+
+  <!-- ── Fullscreen hero ───────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="People · Affiliates"
+    title="Affiliates"
+    lede="Graduate Members pursuing PhDs at international institutions, and research & technical affiliates contributing to CASSA's mission."
+  />
+
+  <!-- ── Subpage pill navigation ───────────────────────────────────────── -->
+  <div class="subnav-wrap">
+    <div class="wrap subnav-inner">
+      <a class="back-link" href={withBase("/people")}>← All People</a>
+      <nav class="pill-strip" aria-label="People subpages">
+        {subNav.map((item) => (
+          <a
+            href={withBase(item.href)}
+            class:list={["subnav-pill", { "subnav-pill--active": item.href === currentHref }]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </div>
+  </div>
+
+  <!-- ── Section A: Graduate Members ─────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Graduate Members</p></Reveal>
+      <Reveal delay={60}>
+        <h2 class="section-h2">Graduate Members</h2>
+      </Reveal>
+      <Reveal delay={80}>
+        <p style="color:var(--ink-soft);margin-top:.8rem;max-width:65ch">
+          CASSA Graduate Members are PhD candidates at leading international institutions who maintain an active research connection with CASSA.
+        </p>
+      </Reveal>
+
+      {gradMembers.length > 0 ? (
+        <div class="card-grid" style="margin-top:2rem">
+          {gradMembers.map((p, i) => (
+            <Reveal delay={i * 90}>
+              <PersonCard
+                name={p.data.name}
+                title={p.data.title}
+                tier={p.data.tier}
+                interests={p.data.interests}
+                institution={p.data.institution}
+                education={p.data.education}
+                research={p.data.research}
+                email={p.data.email}
+                photo={p.data.photo}
+                links={p.data.links}
+                website={personalSite(p.id, p.data)}
+              />
+            </Reveal>
+          ))}
+        </div>
+      ) : (
+        <Reveal delay={80}>
+          <p class="empty-note">Graduate Member profiles will appear here once they are published.</p>
+        </Reveal>
+      )}
+    </div>
+  </section>
+
+  <!-- ── Animated interstitial band ──────────────────────────────────── -->
+  <AnimatedBand theme="lensing">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">Research · Instrumentation</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:26ch">Affiliates bringing expertise from across IUB</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- ── Section B: Research Affiliates ──────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Research Affiliates</p></Reveal>
+      <Reveal delay={60}>
+        <h2 class="section-h2">Research Affiliates</h2>
+      </Reveal>
+
+      {affiliates.length > 0 ? (
+        <div class="card-grid" style="margin-top:2rem">
+          {affiliates.map((p, i) => (
+            <Reveal delay={i * 90}>
+              <PersonCard
+                name={p.data.name}
+                title={p.data.title}
+                tier={p.data.tier}
+                interests={p.data.interests}
+                institution={p.data.institution}
+                education={p.data.education}
+                research={p.data.research}
+                email={p.data.email}
+                photo={p.data.photo}
+                links={p.data.links}
+                website={personalSite(p.id, p.data)}
+              />
+            </Reveal>
+          ))}
+        </div>
+      ) : (
+        <Reveal delay={80}>
+          <p class="empty-note">Affiliate profiles will appear here once they are published.</p>
+        </Reveal>
+      )}
+
+      <Reveal delay={120}>
+        <p style="color:var(--ink-faint);font-size:.85rem;margin-top:1.6rem">
+          Rafia Rokaiya Hossain also serves as CASSA's Central Safeguarding Focal Point (CSFP).
+        </p>
+      </Reveal>
+
+      {technicalAffiliates.length > 0 && (
+        <>
+          <Reveal delay={60}>
+            <p class="eyebrow" style="margin-top:3.5rem">Technical Affiliates</p>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2 class="section-h2">Technical Affiliates</h2>
+          </Reveal>
+          <div class="card-grid" style="margin-top:2rem">
+            {technicalAffiliates.map((p, i) => (
+              <Reveal delay={i * 90}>
+                <PersonCard
+                  name={p.data.name}
+                  title={p.data.title}
+                  tier={p.data.tier}
+                  interests={p.data.interests}
+                  institution={p.data.institution}
+                  education={p.data.education}
+                  research={p.data.research}
+                  email={p.data.email}
+                  photo={p.data.photo}
+                  links={p.data.links}
+                  website={personalSite(p.id, p.data)}
+                />
+              </Reveal>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* ── Section heading ────────────────────────────────────────────────── */
+  .section-h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    letter-spacing: -0.015em;
+    margin: 0.3rem 0 0;
+    color: var(--ink);
+  }
+
+  /* ── Card grid ──────────────────────────────────────────────────────── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  @media (max-width: 860px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .card-grid { grid-template-columns: 1fr; } }
+
+  /* ── Subpage nav strip ──────────────────────────────────────────────── */
+  .subnav-wrap {
+    background: var(--bg-elev);
+    border-bottom: 1px solid var(--line);
+    padding: 0.85rem 0;
+  }
+
+  .subnav-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .back-link {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .back-link:hover {
+    color: var(--ink);
+  }
+
+  .pill-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .subnav-pill {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    text-decoration: none;
+  }
+
+  .subnav-pill:hover:not(.subnav-pill--active) {
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+
+  .subnav-pill--active {
+    background: var(--accent);
+    color: #1a1206;
+    font-weight: 600;
+    border-color: transparent;
+  }
+
+  /* ── Empty state ────────────────────────────────────────────────────── */
+  .empty-note {
+    color: var(--ink-faint);
+    font-size: 0.95rem;
+    margin-top: 2rem;
+    max-width: 60ch;
+  }
+</style>

@@ -1,8 +1,9 @@
 ---
 name: "Syed Ashraf Uddin"
 title: "PhD"
-tier: "Director"
+tier: "Core Member"
 interests: ["Supernova cosmology", "Type Ia supernovae", "Dark energy", "Time-domain astronomy"]
+cmArea: "A&A"
 institution: "Associate Professor, Department of Physical Sciences, IUB (Independent University, Bangladesh)"
 education: "PhD: Swinburne University of Technology, Australia · Postdoc: Texas A&M University, USA · Postdoc: Carnegie Observatories (Carnegie Institution for Science), USA"
 research: "Uses Type Ia supernovae as standard candles to measure cosmic distances, probe dark energy, and address the Hubble tension."
@@ -12,7 +13,7 @@ links:
   Google Scholar: "https://scholar.google.com/citations?user=3wJqZc8AAAAJ&hl=en"
 photo: "/people/uddin.webp"
 duration: "4 Jan 2026 – while at IUB"
-order: 1
+order: 2
 status: "published"
 ---
 

@@ -1,0 +1,134 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import PersonCard from "../../components/PersonCard.astro";
+import { personalSite } from "../../data/people/personal-site.ts";
+import { withBase } from "../../data/site-nav.ts";
+import { hasProfile } from "../../data/people/profiles.ts";
+
+/* ── Content ──────────────────────────────────────────────────────────── */
+const lastName = (n: string) => n.trim().split(/\s+/).at(-1) ?? n;
+
+/* A Core Member is anyone tagged with a cmArea — including a Director who is
+   also a Core Member (Asad), so he appears here AND on the director page. */
+const members = await getCollection("people", ({ data }) =>
+  data.cmArea != null && data.status === "published"
+);
+
+/* Three discipline groups, in the required display order. */
+const GROUPS = [
+  { area: "A&A",                 label: "Astronomy & Astrophysics" },
+  { area: "Theoretical Physics", label: "Theoretical Physics" },
+  { area: "Engineering",         label: "Engineering" },
+] as const;
+
+const grouped = GROUPS.map((g) => ({
+  ...g,
+  people: members
+    .filter((p) => p.data.cmArea === g.area)
+    .sort((a, b) =>
+      (a.data.order - b.data.order) ||
+      lastName(a.data.name).localeCompare(lastName(b.data.name))
+    ),
+}));
+
+/* ── Subpage nav ──────────────────────────────────────────────────────── */
+const CURRENT_HREF = "/people/core-members";
+const subNav = [
+  { href: "/people/director",             label: "Office of the Director" },
+  { href: "/people/core-members",         label: "Core Members" },
+  { href: "/people/associate-members",    label: "Associate Members" },
+  { href: "/people/affiliates",           label: "Affiliates" },
+  { href: "/people/research-assistants",  label: "Research Assistants" },
+  { href: "/people/project-managers",     label: "Project Managers" },
+  { href: "/people/students-on-duty",     label: "Students on Duty" },
+  { href: "/people/research-interns",     label: "Research Interns" },
+];
+---
+
+<BaseLayout
+  title="Core Members — CASSA People"
+  description="CASSA's Core Members across Astronomy & Astrophysics, Theoretical Physics, and Engineering."
+  current="/people"
+>
+  <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
+  <AnimatedHero
+    theme="lensing"
+    eyebrow="People · Members"
+    title="Core Members"
+    lede="CASSA's Core Members across Astronomy & Astrophysics, Theoretical Physics, and Engineering."
+  />
+
+  <!-- ── Subpage navigation pill-strip ────────────────────────────────── -->
+  <nav style="border-bottom:1px solid var(--line);background:var(--bg-elev)">
+    <div class="wrap" style="display:flex;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
+      <a href={withBase('/people')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← All People</a>
+      {subNav.map(s => (
+        <a
+          href={withBase(s.href)}
+          style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${
+            s.href === CURRENT_HREF
+              ? 'background:var(--accent);color:var(--accent-ink,#1a1206);font-weight:600'
+              : 'color:var(--ink-soft);border:1px solid var(--line)'
+          }`}
+        >{s.label}</a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- ── Discipline groups ────────────────────────────────────────────── -->
+  {grouped.map((g, gi) => (
+    <section class={gi % 2 === 0 ? "section section--elev" : "section"}>
+      <div class="wrap">
+        <Reveal><p class="eyebrow">Core Members</p></Reveal>
+        <Reveal delay={60}>
+          <h2 style="font-size:clamp(1.6rem,3.4vw,2.3rem);letter-spacing:-.015em;margin:.3rem 0 0;color:var(--ink)">
+            {g.label}
+          </h2>
+        </Reveal>
+
+        {g.people.length > 0 ? (
+          <div class="pg">
+            {g.people.map((p, i) => (
+              <Reveal delay={(i % 3) * 80}>
+                <PersonCard
+                  name={p.data.name}
+                  title={p.data.title}
+                  tier={p.data.tier}
+                  interests={p.data.interests}
+                  institution={p.data.institution}
+                  education={p.data.education}
+                  research={p.data.research}
+                  email={p.data.email}
+                  photo={p.data.photo}
+                  links={p.data.links}
+                  website={personalSite(p.id, p.data)}
+                  href={hasProfile(p.id) ? withBase(`/people/${p.id}`) : undefined}
+                />
+              </Reveal>
+            ))}
+          </div>
+        ) : (
+          <Reveal delay={80}>
+            <p style="color:var(--ink-faint);font-size:.95rem;margin-top:2rem;max-width:60ch">
+              Core member profiles will appear here once they are published.
+            </p>
+          </Reveal>
+        )}
+      </div>
+    </section>
+  ))}
+</BaseLayout>
+
+<style>
+.pg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+@media (max-width: 860px) { .pg { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .pg { grid-template-columns: 1fr; } }
+</style>

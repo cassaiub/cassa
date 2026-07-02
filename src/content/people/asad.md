@@ -3,6 +3,7 @@ name: "Khan Muhammad Bin Asad"
 title: "PhD"
 tier: "Director"
 interests: ["Epoch of reionization", "21-cm cosmology", "Galaxy clusters", "Radio astronomy"]
+cmArea: "A&A"
 institution: "Assistant Professor, Department of Physical Sciences, IUB (Independent University, Bangladesh)"
 education: "PhD: University of Groningen, Netherlands · Postdoc: SARAO (South African Radio Astronomy Observatory), South Africa"
 research: "Probes the cosmic dawn and reionization through the redshifted 21-cm signal with LOFAR, and images diffuse radio halos in galaxy clusters with MeerKAT."
@@ -10,8 +11,8 @@ email: "kasad@iub.edu.bd"
 links:
   Google Scholar: "https://scholar.google.com/citations?user=w09mn4sAAAAJ&hl=en"
 photo: "/people/asad.webp"
-duration: "14 Aug 2025 – while at IUB"
-order: 2
+duration: "14 Aug 2025 – 13 Aug 2027"
+order: 1
 status: "published"
 ---
 

@@ -10,46 +10,52 @@ import PersonDrawer from "../../components/PersonDrawer.astro";
 /* ── Helpers ─────────────────────────────────────────────────────────── */
 const lastName = (name: string) => name.trim().split(/\s+/).at(-1) ?? name;
 
-const tierLabel = (tier: string) => {
-  if (tier === "Staff" || tier === "Alumni") return tier;
-  if (tier === "Research Intern" || tier === "Undergraduate Research Assistant" || tier === "Outreach Ambassador") return "Research Interns & Undergraduates";
-  return tier + "s";
-};
-
 /* ── People directory ────────────────────────────────────────────────── */
-const TIER_ORDER = [
-  "Director",
-  "Core Member",
-  "Associate Member",
-  "Graduate Member",
-  "Affiliate",
-  "Staff",
-  "Research Assistant",
-  "Research Intern",
-  "Outreach Ambassador",
-  "Alumni",
-];
-
 const allPeople = (
   await getCollection("people", ({ data }) => data.status === "published")
-).sort((a, b) => {
-  const td = TIER_ORDER.indexOf(a.data.tier) - TIER_ORDER.indexOf(b.data.tier);
-  return td !== 0 ? td : lastName(a.data.name).localeCompare(lastName(b.data.name));
-});
+).sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
 
+type Person = (typeof allPeople)[number];
+
+/* The office/manager roles live in the `institution` role string. */
+const isScienceManager = (p: Person) => p.data.institution?.startsWith("Manager (Science)") ?? false;
+const isProjectManager = (p: Person) => !isScienceManager(p) && (p.data.institution?.includes("Project Manager") ?? false);
+
+/* The "CASSA Role" pill. Asad is a Director who is also a Core Member: he gets
+   no separate Director row — listed once under Core Members, flagged as both. */
+const roleLabel = (p: Person) => {
+  if (p.data.tier === "Director" && p.data.cmArea != null) return "Core Member & Director";
+  if (isScienceManager(p)) return "Science Manager";
+  if (isProjectManager(p)) return "Project Manager";
+  return p.data.tier;
+};
+
+/* Groups mirror the People subpages — same names, same order — except the
+   Science Manager, who gets his own group above the Research Assistants
+   (no "Office of the Director" group here). The trailing Staff group is a
+   safety net for future staff entries that are neither manager role (empty
+   today, so hidden). */
 const grouped = [
-  ...["Director","Core Member","Associate Member","Graduate Member","Affiliate","Staff","Research Assistant"].map(tier => ({
-    label: tierLabel(tier),
-    people: allPeople.filter((p) => p.data.tier === tier),
-  })),
-  {
-    label: "Research Interns & Undergraduates",
-    people: allPeople.filter((p) => p.data.tier === "Research Intern" || p.data.tier === "Undergraduate Research Assistant" || p.data.tier === "Outreach Ambassador"),
-  },
-  {
-    label: "Alumni",
-    people: allPeople.filter((p) => p.data.tier === "Alumni"),
-  },
+  { label: "Core Members",
+    people: allPeople.filter((p) => p.data.tier === "Core Member" || (p.data.tier === "Director" && p.data.cmArea != null)) },
+  { label: "Associate Members",
+    people: allPeople.filter((p) => p.data.tier === "Associate Member") },
+  { label: "Affiliates",
+    people: allPeople.filter((p) => p.data.tier === "Graduate Member" || p.data.tier === "Affiliate") },
+  { label: "Science Manager",
+    people: allPeople.filter(isScienceManager) },
+  { label: "Research Assistants",
+    people: allPeople.filter((p) => p.data.tier === "Research Assistant") },
+  { label: "Project Managers",
+    people: allPeople.filter(isProjectManager) },
+  { label: "Students on Duty",
+    people: allPeople.filter((p) => p.data.tier === "Undergraduate Research Assistant" || p.data.tier === "Outreach Ambassador") },
+  { label: "Research Interns",
+    people: allPeople.filter((p) => p.data.tier === "Research Intern") },
+  { label: "Staff",
+    people: allPeople.filter((p) => p.data.tier === "Staff" && !isScienceManager(p) && !isProjectManager(p)) },
+  { label: "Alumni",
+    people: allPeople.filter((p) => p.data.tier === "Alumni") },
 ].filter((g) => g.people.length > 0);
 
 const hasAnyPeople = allPeople.length > 0;
@@ -60,7 +66,7 @@ const drawerPeople = allPeople
     slug: p.id,
     name: p.data.name,
     title: p.data.title,
-    tier: p.data.tier,
+    tier: roleLabel(p),
     interests: p.data.interests,
     institution: p.data.institution,
     education: p.data.education,
@@ -72,13 +78,13 @@ const drawerPeople = allPeople
   }));
 ---
 
-<BaseLayout title="People — CASSA" description="Directors, members, affiliates, staff, and student researchers — the community making CASSA's science happen." current="/people">
+<BaseLayout title="People — CASSA" description="The Office of the Director, members, affiliates, managers, and student researchers — the community making CASSA's science happen." current="/people">
 
   <AnimatedHero
     theme="galaxy"
     eyebrow="People"
     title="The CASSA Community"
-    lede="Directors, members, affiliates, staff, and student researchers — the community making CASSA's science happen."
+    lede="The Office of the Director, members, affiliates, managers, and student researchers — the community making CASSA's science happen."
   />
 
   <section class="section">
@@ -97,14 +103,13 @@ const drawerPeople = allPeople
                   <th>Name</th>
                   <th>CASSA Role</th>
                   <th>Email</th>
-                  <th>Duration</th>
                 </tr>
               </thead>
               <tbody>
                 {grouped.map(({ label, people }) => (
                   <>
                     <tr class="tier-header-row">
-                      <td colspan="4">
+                      <td colspan="3">
                         <span class="eyebrow tier-header-label">{label}</span>
                       </td>
                     </tr>
@@ -114,7 +119,7 @@ const drawerPeople = allPeople
                           <button type="button" class="name-link" data-person={p.id} aria-haspopup="dialog">{p.data.name}</button>
                         </td>
                         <td class="col-role">
-                          <span class="pill">{p.data.tier}</span>
+                          <span class="pill">{roleLabel(p)}</span>
                         </td>
                         <td class="col-email">
                           {p.data.email ? (
@@ -124,12 +129,6 @@ const drawerPeople = allPeople
                           ) : (
                             <span class="no-email">—</span>
                           )}
-                        </td>
-                        <td class="col-duration">
-                          {p.data.duration
-                            ? <span class="duration-val">{p.data.duration}</span>
-                            : <span class="no-email">—</span>
-                          }
                         </td>
                       </tr>
                     ))}
@@ -144,6 +143,12 @@ const drawerPeople = allPeople
           <p class="empty-note">People profiles will appear here once they are published.</p>
         </Reveal>
       )}
+
+      <Reveal delay={140}>
+        <p style="color:var(--ink-faint);font-size:.9rem;margin-top:2rem">
+          Former members are listed on the <a href={withBase('/people/alumni')} style="color:var(--accent)">Alumni page</a>.
+        </p>
+      </Reveal>
     </div>
   </section>
 
@@ -213,9 +218,7 @@ const drawerPeople = allPeople
   .name-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; border-bottom: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); transition: color .2s, border-color .2s; }
   .name-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
   .col-role  { white-space: nowrap; }
-  .col-email    { font-size: 0.88rem; }
-  .col-duration { font-size: 0.85rem; white-space: nowrap; }
-  .duration-val { color: var(--ink-soft); }
+  .col-email { font-size: 0.88rem; }
 
   .email-link { color: var(--accent); transition: opacity 0.2s; word-break: break-all; }
   .email-link:hover { opacity: 0.75; }

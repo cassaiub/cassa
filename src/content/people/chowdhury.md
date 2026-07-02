@@ -3,6 +3,7 @@ name: "Mustafa Habib Chowdhury"
 title: "PhD"
 tier: "Core Member"
 interests: ["Photonics", "Plasmonics", "Thin-film solar cells", "FDTD simulation"]
+cmArea: "Engineering"
 institution: "Professor and Head, Department of Electrical and Electronic Engineering, IUB (Independent University, Bangladesh)"
 education: "PhD: Texas A&M University, USA · Postdoc: University of Maryland, USA"
 research: "Designs plasmonic metal nanostructures with FDTD simulations to boost light absorption in thin-film solar cells and enable optical biosensing."

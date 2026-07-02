@@ -17,6 +17,10 @@ const people = defineCollection({
       "Affiliate", "Staff", "Research Assistant", "Research Intern", "Undergraduate Research Assistant", "Outreach Ambassador", "Alumni",
     ]),
     interests: z.array(z.string()).default([]),
+    // Core-Member discipline. Set on anyone shown on /people/core-members —
+    // including a Director who is also a Core Member (e.g. Asad), which is how
+    // one person appears on BOTH the Office of the Director and Core Members pages.
+    cmArea: z.enum(["A&A", "Theoretical Physics", "Engineering"]).optional(),
     institution: z.string().optional(),
     // Immersive PersonCard rows (directors + members): `education` = PhD &
     // postdoc institutes + countries; `research` = a concise, student-facing

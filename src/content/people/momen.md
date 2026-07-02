@@ -3,6 +3,7 @@ name: "M Arshad Momen"
 title: "PhD"
 tier: "Core Member"
 interests: ["Quantum field theory", "Gravitation and black holes", "Mathematical physics", "Particle physics"]
+cmArea: "Theoretical Physics"
 institution: "Professor, Department of Physical Sciences, IUB (Independent University, Bangladesh); formerly Professor of Theoretical Physics, University of Dhaka"
 education: "PhD: Syracuse University, USA"
 research: "Theoretical physicist working on quantum field theory, gravitation and black holes, known for work on edge states and boundary phenomena in gravity."
