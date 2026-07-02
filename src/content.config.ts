@@ -184,6 +184,10 @@ const opportunities = defineCollection({
     hero: z.string().optional(),
     summary: z.string().optional(),
     outcome: z.enum(["filled", "closed"]).optional(), // explicit close before deadline
+    // Eligible for the home hero carousel (mirrors news.featured). A flagged
+    // vacancy is merged with featured news, newest-first, capped at 3 slides.
+    featured: z.boolean().default(false),
+    theme: z.enum(["cosmic", "lensing", "galaxy"]).optional(), // SkyCanvas backdrop when featured
     lang: z.enum(["en", "bn"]).default("en"),
     status: z.enum(["published", "draft"]).default("published"),
   }),

@@ -5,6 +5,7 @@ import Prose from "../../components/immersive/Prose.astro";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 import { categoryForKind, pathForKind } from "../../data/opportunities.ts";
+import Countdown from "../../components/Countdown.tsx";
 
 export async function getStaticPaths() {
   const opps = await getCollection("opportunities", ({ data }) => data.status !== "draft");
@@ -73,6 +74,9 @@ const categoryPath = pathForKind(d.kind);
             <p class="od__lbl">{isOpen ? "Apply by" : "Deadline was"}</p>
             <p class="od__val">{dateShort(d.deadline)}</p>
           </div>
+        )}
+        {isOpen && d.deadline && (
+          <Countdown client:idle closesAt={d.deadline.toISOString()} />
         )}
         {isOpen && d.applyUrl && (
           <a class="od__apply" href={d.applyUrl} target="_blank" rel="noopener">Apply now →</a>
