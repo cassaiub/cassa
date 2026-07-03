@@ -357,11 +357,27 @@ without explicit instruction. Deployment is deferred.
     fresh `npm install` otherwise resolves Vite 8 + rolldown, which the pinned
     `@tailwindcss/vite@4.3.0` cannot bind to — the build dies with a
     `tsconfigPaths` error. If you bump Astro, re-verify Vite stays on 7.x.
-19. **After an immersive dark hero/band, lead with an ELEVATED section.** The
-    animated heroes sit at roughly `--bg`, so a plain `.section` directly below
-    blends into them. Start the content with `.section--elev` (lighter panel)
-    and alternate `.section` / `.section--elev` down the page. Reason: the user
-    flagged the Research hero↔mission seam as invisible on 2026-05-28.
+19. **No two consecutive surfaces may share the same background palette — in
+    BOTH themes.** SkyCanvas heroes/bands sit at roughly `--bg` (near-black in
+    dark, near-page-pale in light), so a plain `.section` touching a canvas
+    surface on EITHER side blends into it — as does `.section--elev` next to
+    `.section--elev`. Three flat tones exist: `.section` (`--bg`),
+    `.section--elev` (`--bg-elev`), `.section--elev-2` (`--bg-elev-2`); treat a
+    canvas hero/band as the `--bg` tone and alternate so every neighbor pair
+    differs (photo bands are always distinct). Reason: the user flagged the
+    Research hero↔mission seam on 2026-05-28 and generalized the rule on
+    2026-07-03 (home "What is CASSA"↔"Get involved" seam); a site-wide audit
+    fixed 17 pages that day — keep new pages clean.
+21. **Intrinsic min-content must never widen a page on phones.** Grid/flex
+    tracks holding arbitrary content need `minmax(0, 1fr)` (a bare `1fr`
+    refuses to shrink below content); single-column link tables need
+    `table-layout: fixed`; `overflow-wrap: break-word` is inherited from
+    `body`; wide-by-nature tables get an `overflow-x: auto` wrapper. After any
+    layout work, probe key pages headlessly at 360px AND 320px
+    (`scrollWidth == clientWidth`). Reason: this trap bit three separate
+    surfaces in one day (home news column, profile grid, profile link tables)
+    — user demanded dynamic fit on low-res phones on 2026-07-03.
+
 20. **The Bangla webfont (`Noto Serif Bengali`, via Google Fonts) goes LAST in
     `--font-sans` — never first — so it never touches the English/Latin text.**
     Google ships `latin`/`latin-ext` faces for it too, so listing it first makes
