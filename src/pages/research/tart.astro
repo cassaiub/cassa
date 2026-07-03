@@ -5,6 +5,7 @@ import SkyCanvas from "../../components/SkyCanvas.tsx";
 import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
 import Reveal from "../../components/immersive/Reveal.astro";
 import Prose from "../../components/immersive/Prose.astro";
+import HeroIdent from "../../components/immersive/HeroIdent.astro";
 import { withBase } from "../../data/site-nav.ts";
 import tartArray from "../../assets/heroes/tart-array.webp";
 
@@ -36,6 +37,7 @@ const repos = [
 >
   <!-- ── Hero — the real TART array floating over a galaxy sky ──────────── -->
   <header class="hero hero--sky tart-hero" data-tart-hero>
+    <HeroIdent />
     <div class="hero__media"><SkyCanvas theme="galaxy" client:load /></div>
 
     <!-- Floating array: the actual fabricated TART structure -->

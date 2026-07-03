@@ -51,11 +51,11 @@ export default function FeatureSlider({ slides }: { slides: Slide[] }) {
         else if (e.key === "ArrowLeft") { e.preventDefault(); go(index - 1); }
       }}
     >
-      {/* Institutional identity — fixed under the logo, unchanged as slides fade. */}
-      <div className="fslider__ident">
+      {/* Institutional identity — shared hero stamp (see HeroIdent.astro), fixed
+          under the logo and unchanged as slides fade. Full name, one sentence. */}
+      <div className="hero-ident" aria-hidden="true">
         <div className="wrap">
-          <p className="fslider__ident-a">Center for Astronomy, Space Science and Astrophysics</p>
-          <p className="fslider__ident-b">Independent University, Bangladesh (IUB)</p>
+          <p className="hero-ident__line">Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh (IUB)</p>
         </div>
       </div>
 

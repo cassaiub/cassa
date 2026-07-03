@@ -10,8 +10,11 @@ import type { CollectionEntry } from "astro:content";
 
 interface Props {
   items: CollectionEntry<"opportunities">[];
+  /** Show the "Now open / Open positions" heading above the list. The Vacancies
+   *  page hides it because its hero already serves as the open-positions heading. */
+  leadHeading?: boolean;
 }
-const { items } = Astro.props;
+const { items, leadHeading = true } = Astro.props;
 type Opp = CollectionEntry<"opportunities">;
 
 const now = new Date();
@@ -55,8 +58,12 @@ const closedYears = [...closedByYear.keys()].sort((a, b) => Number(b) - Number(a
 <!-- Open positions (elevated — sits after an AnimatedBand on the category pages) -->
 <section class="section section--elev" id="open">
   <div class="wrap">
-    <Reveal><p class="eyebrow">Now open</p></Reveal>
-    <Reveal delay={60}><h2 class="op-h2">Open positions</h2></Reveal>
+    {leadHeading && (
+      <Fragment>
+        <Reveal><p class="eyebrow">Now open</p></Reveal>
+        <Reveal delay={60}><h2 class="op-h2">Open positions</h2></Reveal>
+      </Fragment>
+    )}
 
     {open.length > 0 ? (
       <ol class="oplist" aria-label="Open positions">
@@ -125,6 +132,8 @@ const closedYears = [...closedByYear.keys()].sort((a, b) => Number(b) - Number(a
   .op-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
 
   .oplist { list-style:none; margin:1.8rem 0 0; padding:0; display:flex; flex-direction:column; gap:.7rem; }
+  /* When the Vacancies page hides the heading, the open list leads the section. */
+  .oplist:first-child { margin-top:0; }
 
   .oprow {
     display:flex; flex-direction:column; gap:.4rem;

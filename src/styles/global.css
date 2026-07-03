@@ -283,12 +283,19 @@ a { color: inherit; text-decoration: none; }
    like the dots/arrows), left-aligned directly beneath the nav logo (shares the
    .wrap gutter, so it lines up with the logo and the slide title); never changes
    as the feature stories advance. Non-interactive so it never blocks a slide. */
-.fslider__ident { position: absolute; z-index: 3; top: clamp(5.5rem, 12vh, 7rem); left: 0; right: 0; pointer-events: none; }
-.fslider__ident-a { margin: 0; font-family: var(--font-display); font-weight: 600; line-height: 1.35;
-  font-size: clamp(.68rem, 1.15vw, .82rem); letter-spacing: .1em; text-transform: uppercase; color: rgba(255, 255, 255, .92); }
-.fslider__ident-b { margin: .34rem 0 0; font-size: clamp(.68rem, 1.1vw, .8rem); letter-spacing: .09em; text-transform: uppercase; color: rgba(255, 255, 255, .58); }
-[data-theme="light"] .fslider__ident-a { color: var(--ink); }
-[data-theme="light"] .fslider__ident-b { color: var(--ink-soft); }
+/* Institutional identity stamp — shared by EVERY hero (home slider + sub-page
+   heroes via HeroIdent.astro). Pinned top-left under the nav, in the .wrap
+   gutter so it lines up with the logo and clears the bottom-anchored title.
+   The full name reads as one elegant sentence; it wraps gracefully (balanced
+   lines) rather than being forced onto one line. */
+.hero-ident { position: absolute; z-index: 3; top: clamp(5.25rem, 12vh, 6.75rem); left: 0; right: 0; pointer-events: none; }
+.hero-ident__line { margin: 0; max-width: 46ch;
+  font-family: var(--font-display); font-weight: 500; line-height: 1.5;
+  font-size: clamp(.72rem, 1.15vw, .9rem); letter-spacing: .02em; text-wrap: balance;
+  color: rgba(255, 255, 255, .85); }
+/* Light theme only flips the text on pale SkyCanvas heroes (home slider + sky
+   sub-heroes); photo heroes keep their dark scrim, so white stays legible. */
+[data-theme="light"] :where(.hero--sky, .fslider) .hero-ident__line { color: var(--ink-soft); }
 .fslide { position: absolute; inset: 0; display: flex; align-items: flex-end; opacity: 0; visibility: hidden; transition: opacity 1.2s ease, visibility 0s linear 1.2s; }
 .fslide.is-active { opacity: 1; visibility: visible; transition: opacity 1.2s ease; }
 .fslide__img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }

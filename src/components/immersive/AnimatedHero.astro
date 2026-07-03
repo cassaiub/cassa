@@ -1,5 +1,6 @@
 ---
 import SkyCanvas, { type SkyTheme } from "../SkyCanvas.tsx";
+import HeroIdent from "./HeroIdent.astro";
 
 interface Props {
   theme: SkyTheme;
@@ -12,6 +13,7 @@ const { theme, eyebrow, title, lede, cue = true } = Astro.props;
 ---
 
 <header class="hero hero--sky">
+  <HeroIdent />
   <div class="hero__media"><SkyCanvas theme={theme} client:load /></div>
   <div class="hero__scrim"></div>
 
