@@ -929,6 +929,10 @@ const hasData = papers.length > 0;
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--bg-elev-2);
+    /* very small phones: let the pill row wrap instead of overflowing */
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
   }
   .sort-btn {
     appearance: none;

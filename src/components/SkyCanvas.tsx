@@ -7,6 +7,9 @@ export type SkyTheme = "cosmic" | "lensing" | "galaxy";
  *   - cosmic  : an expanding field of galaxies linked into a distance network
  *   - lensing : a star field warped by a drifting gravitational lens
  *   - galaxy  : a slowly rotating spiral disk with star-forming knots
+ *  Theme-aware: each motif has a night palette (dark, the default) and a "day"
+ *  palette (pale sky, ink-dark marks) picked from <html data-theme>; a
+ *  MutationObserver repaints live when the ThemeToggle flips it.
  *  Animation runs only when the canvas is on-screen, the tab is visible,
  *  `active` is true, and reduced-motion is off — otherwise a single static
  *  frame is painted. */
@@ -20,6 +23,7 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
     if (!ctx) return;
 
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let isLight = document.documentElement.dataset.theme === "light";
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 
@@ -58,10 +62,12 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
     function draw(now: number) {
       if (!ctx) return;
       const cx = w / 2, cy = h / 2, time = now / 1000;
+      const L = isLight; // day palette: pale sky, ink-dark marks
 
       if (theme === "cosmic") {
         const g = ctx.createRadialGradient(cx, cy * 0.85, 0, cx, cy, Math.hypot(w, h) / 1.4);
-        g.addColorStop(0, "#0b1126"); g.addColorStop(1, "#05060d");
+        if (L) { g.addColorStop(0, "#e4edf9"); g.addColorStop(1, "#bfd1ea"); }
+        else { g.addColorStop(0, "#0b1126"); g.addColorStop(1, "#05060d"); }
         ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
 
         const maxR = Math.hypot(w, h) / 2;
@@ -74,21 +80,24 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
           for (let j = i + 1; j < Math.min(i + 6, pts.length); j++) {
             const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, d2 = dx * dx + dy * dy;
             if (d2 < 14400) {
-              const a = (1 - Math.sqrt(d2) / 120) * 0.16;
-              ctx.strokeStyle = `rgba(120,175,230,${a})`;
+              const a = (1 - Math.sqrt(d2) / 120) * (L ? 0.22 : 0.16);
+              ctx.strokeStyle = L ? `rgba(36,84,156,${a})` : `rgba(120,175,230,${a})`;
               ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
             }
           }
         for (const { x, y, p } of pts) {
           const near = 1 - p.rad / maxR;
-          ctx.fillStyle = `rgba(${(210 + p.warm * 40) | 0},${(195 - p.warm * 20) | 0},${(160 + near * 90) | 0},${0.45 + near * 0.5})`;
+          ctx.fillStyle = L
+            ? `rgba(${(60 + p.warm * 85) | 0},${(78 + p.warm * 15) | 0},${(130 - p.warm * 80) | 0},${0.4 + near * 0.45})`
+            : `rgba(${(210 + p.warm * 40) | 0},${(195 - p.warm * 20) | 0},${(160 + near * 90) | 0},${0.45 + near * 0.5})`;
           ctx.beginPath(); ctx.arc(x, y, p.size, 0, 7); ctx.fill();
         }
         const core = ctx.createRadialGradient(cx, cy * 0.85, 0, cx, cy * 0.85, 160);
-        core.addColorStop(0, "rgba(236,180,90,0.10)"); core.addColorStop(1, "rgba(236,180,90,0)");
+        core.addColorStop(0, L ? "rgba(179,116,26,0.16)" : "rgba(236,180,90,0.10)");
+        core.addColorStop(1, L ? "rgba(179,116,26,0)" : "rgba(236,180,90,0)");
         ctx.fillStyle = core; ctx.fillRect(0, 0, w, h);
       } else if (theme === "lensing") {
-        ctx.fillStyle = "#05060d"; ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = L ? "#d9e4f4" : "#05060d"; ctx.fillRect(0, 0, w, h);
         const lx = cx + Math.cos(time * 0.14) * w * 0.18;
         const ly = cy + Math.sin(time * 0.1) * h * 0.12;
         const k = Math.min(w, h) * 0.6;
@@ -98,15 +107,19 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
           const nx = p.x + (dx / r) * defl, ny = p.y + (dy / r) * defl;
           const tw = 0.6 + 0.4 * Math.sin(time * p.tws + p.tw);
           const bright = Math.min(1, k / (r * 1.3));
-          ctx.fillStyle = `rgba(${(200 + bright * 55) | 0},215,235,${(0.32 + bright * 0.5) * tw})`;
+          ctx.fillStyle = L
+            ? `rgba(${(70 - bright * 40) | 0},${(90 - bright * 42) | 0},${(138 - bright * 50) | 0},${(0.4 + bright * 0.45) * tw})`
+            : `rgba(${(200 + bright * 55) | 0},215,235,${(0.32 + bright * 0.5) * tw})`;
           ctx.beginPath(); ctx.arc(nx, ny, p.size * (0.8 + bright), 0, 7); ctx.fill();
         }
         const rg = ctx.createRadialGradient(lx, ly, k * 0.05, lx, ly, k * 0.42);
-        rg.addColorStop(0, "rgba(94,200,214,0)"); rg.addColorStop(0.72, "rgba(94,200,214,0.12)"); rg.addColorStop(1, "rgba(94,200,214,0)");
+        const halo = L ? "18,118,132" : "94,200,214";
+        rg.addColorStop(0, `rgba(${halo},0)`); rg.addColorStop(0.72, `rgba(${halo},${L ? 0.16 : 0.12})`); rg.addColorStop(1, `rgba(${halo},0)`);
         ctx.fillStyle = rg; ctx.fillRect(0, 0, w, h);
       } else {
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w, h) * 0.62);
-        g.addColorStop(0, "#150f24"); g.addColorStop(1, "#05060d");
+        if (L) { g.addColorStop(0, "#e9e2f5"); g.addColorStop(1, "#c6d3ec"); }
+        else { g.addColorStop(0, "#150f24"); g.addColorStop(1, "#05060d"); }
         ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
         ctx.save(); ctx.translate(cx, cy);
         const R = Math.min(w, h) * 0.46;
@@ -115,12 +128,18 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
           const a = p.angle + time * speed;
           const x = Math.cos(a) * p.radius, y = Math.sin(a) * p.radius * 0.42;
           const tw = 0.6 + 0.4 * Math.sin(time * 1.5 + p.tw);
-          if (p.knot) ctx.fillStyle = `rgba(255,150,190,${0.45 * tw + 0.3})`;
-          else { const c = 1 - Math.min(1, p.radius / R); ctx.fillStyle = `rgba(${(190 + c * 65) | 0},${(200 - c * 15) | 0},${(255 - c * 35) | 0},${0.42 + 0.4 * tw})`; }
+          if (p.knot) ctx.fillStyle = L ? `rgba(168,36,92,${0.45 * tw + 0.32})` : `rgba(255,150,190,${0.45 * tw + 0.3})`;
+          else {
+            const c = 1 - Math.min(1, p.radius / R);
+            ctx.fillStyle = L
+              ? `rgba(${(92 - c * 42) | 0},${(84 - c * 30) | 0},${(148 - c * 40) | 0},${0.42 + 0.35 * tw})`
+              : `rgba(${(190 + c * 65) | 0},${(200 - c * 15) | 0},${(255 - c * 35) | 0},${0.42 + 0.4 * tw})`;
+          }
           ctx.beginPath(); ctx.arc(x, y, p.size, 0, 7); ctx.fill();
         }
         const bg = ctx.createRadialGradient(0, 0, 0, 0, 0, R * 0.36);
-        bg.addColorStop(0, "rgba(255,220,150,0.22)"); bg.addColorStop(1, "rgba(255,220,150,0)");
+        bg.addColorStop(0, L ? "rgba(186,122,32,0.26)" : "rgba(255,220,150,0.22)");
+        bg.addColorStop(1, L ? "rgba(186,122,32,0)" : "rgba(255,220,150,0)");
         ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(0, 0, R * 0.36, 0, 7); ctx.fill();
         ctx.restore();
       }
@@ -146,9 +165,16 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
 
     const io = new IntersectionObserver((es) => { onScreen = es[0].isIntersecting; sync(); }, { threshold: 0 });
     const onVis = () => sync();
+    // Repaint in the new palette the moment ThemeToggle flips <html data-theme>
+    // (a static/reduced-motion frame would otherwise keep the old sky).
+    const mo = new MutationObserver(() => {
+      const next = document.documentElement.dataset.theme === "light";
+      if (next !== isLight) { isLight = next; if (!animating) draw(performance.now()); }
+    });
 
     resize();
     io.observe(canvas);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     document.addEventListener("visibilitychange", onVis);
     window.addEventListener("resize", resize);
     sync();
@@ -156,6 +182,7 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
+      mo.disconnect();
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("resize", resize);
     };

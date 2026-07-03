@@ -71,6 +71,9 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   line-height: 1.6;
+  /* inherited by all text: long words/URLs/titles break instead of poking past
+     narrow screens (the site-wide no-horizontal-overflow guarantee) */
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   transition: background-color .4s ease, color .4s ease;
@@ -89,6 +92,10 @@ a { color: inherit; text-decoration: none; }
 }
 .section { padding-block: clamp(4rem, 9vw, 7.5rem); }
 .section--elev { background: var(--bg-elev); }
+/* Third tone — used where a section sits between an elevated section and a
+   SkyCanvas band/hero (canvas ≈ --bg in both themes), so that no two
+   consecutive surfaces share a background palette. */
+.section--elev-2 { background: var(--bg-elev-2); }
 
 /* ── Prose (centred, readable column; left-aligned body) ────────────── */
 .prose-cassa { max-width: 68ch; margin-inline: auto; }
@@ -126,6 +133,13 @@ a { color: inherit; text-decoration: none; }
 @keyframes cue { 0%, 100% { transform: translateY(0); opacity: .35; } 50% { transform: translateY(7px); opacity: 1; } }
 .hero__media.kenburns :where(img) { animation: kenburns 24s ease-out both; transform-origin: 50% 42%; }
 @keyframes kenburns { from { scale: 1.0; } to { scale: 1.12; } }
+/* Small phones: the desktop clamp floors are too large for ≤420px screens —
+   long single words ("Astrophotography…") would exceed the viewport. */
+@media (max-width: 420px) {
+  .hero__title { font-size: clamp(1.9rem, 8.5vw, 2.3rem); }
+  .hero__lede { font-size: 1rem; }
+  .fslide__title { font-size: clamp(1.7rem, 8vw, 2rem); }
+}
 
 /* ── Full-bleed image band (rhythm between content blocks) ──────────── */
 .band { position: relative; min-height: clamp(58svh, 68svh, 80svh); display: flex; align-items: center; overflow: clip; isolation: isolate; }
@@ -133,6 +147,29 @@ a { color: inherit; text-decoration: none; }
 .band__media :where(img) { width: 100%; height: 100%; object-fit: cover; }
 .band__scrim { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(4, 6, 12, .5), rgba(4, 6, 12, .68)); }
 .band__inner { color: #fff; padding-block: 3rem; }
+
+/* ── Light ("day") theme — SkyCanvas heroes/bands flip to daylight ────
+   Scoped to the animated variants only (hero--sky / band--sky / .fslider):
+   the canvas repaints a pale day sky (see SkyCanvas.tsx), so scrims and
+   text flip with it. Photo heroes/bands (ImmersiveHero, ImageBand,
+   ImmersiveHeroSlider) keep the dark scrim + white text in both themes. */
+[data-theme="light"] .hero--sky .hero__scrim {
+  background: linear-gradient(180deg, rgba(236, 242, 250, .32) 0%, transparent 40%, rgba(244, 246, 251, .85) 100%);
+}
+[data-theme="light"] .hero--sky .hero__inner { color: var(--ink); }
+[data-theme="light"] .hero--sky .hero__lede { color: var(--ink-soft); }
+[data-theme="light"] .hero--sky .hero__meta { color: var(--ink-soft); }
+[data-theme="light"] .hero--sky .hero__meta a { color: var(--ink); }
+[data-theme="light"] .hero--sky .hero__cue { color: rgba(15, 20, 33, .55); }
+[data-theme="light"] .band--sky .band__scrim {
+  background: linear-gradient(180deg, rgba(236, 242, 250, .28), rgba(240, 244, 251, .48));
+}
+[data-theme="light"] .band--sky .band__inner { color: var(--ink); }
+/* Band slot content across pages hard-codes white inline (style="color:#fff")
+   for the dark canvas; inline styles outrank any selector, so the day flip
+   must win with !important — headings/copy inherit ink, eyebrows go accent. */
+[data-theme="light"] .band--sky .band__inner :where(h1, h2, h3, h4, p) { color: inherit !important; }
+[data-theme="light"] .band--sky .band__inner .eyebrow { color: var(--accent) !important; }
 
 /* ── Cards, pills, buttons ──────────────────────────────────────────── */
 .card { background: var(--bg-elev); border: 1px solid var(--line); border-radius: 16px; padding: clamp(1.4rem, 3vw, 2.1rem); }
@@ -276,6 +313,18 @@ a { color: inherit; text-decoration: none; }
   .fslide__img, .fslide__content { animation: none !important; }
   .fprogress__bar.run { animation: none !important; width: 100%; }
 }
+/* Light theme: the slider shell, scrim and controls flip to daylight
+   (the SkyCanvas backdrops repaint themselves — see SkyCanvas.tsx). */
+[data-theme="light"] .fslider { background: #cfdcef; }
+[data-theme="light"] .fslide__scrim {
+  background: linear-gradient(180deg, rgba(236,242,250,.24) 0%, transparent 30%, rgba(240,244,250,.42) 62%, rgba(244,246,251,.88) 100%); }
+[data-theme="light"] .fslide__content { color: var(--ink); }
+[data-theme="light"] .fslide__excerpt { color: rgba(15,20,33,.78); }
+[data-theme="light"] .farrow { border-color: rgba(12,18,34,.32); background: rgba(244,246,251,.4); color: var(--ink); }
+[data-theme="light"] .farrow:hover { background: rgba(244,246,251,.75); border-color: var(--ink); }
+[data-theme="light"] .fdot { border-color: rgba(12,18,34,.55); }
+[data-theme="light"] .fdot[aria-current="true"] { background: var(--ink); border-color: var(--ink); }
+[data-theme="light"] .fprogress { background: rgba(12,18,34,.15); }
 
 /* ── Brand logo (menubar) — larger over the hero, shrinks on scroll ───── */
 .nav__logo { height: 48px; width: auto; display: block; transition: height .35s ease; }
@@ -285,6 +334,18 @@ a { color: inherit; text-decoration: none; }
    colour wordmark appears only once the LIGHT-theme bar turns solid on scroll. */
 [data-theme="light"] .nav.is-scrolled .nav__logo--white { display: none; }
 [data-theme="light"] .nav.is-scrolled .nav__logo--color { display: block; }
+
+/* Over a LIGHT animated hero (sky heroes + the home slider) the transparent
+   top-of-page bar must go ink — white text/wordmark would vanish on the pale
+   canvas. Pages with photo heroes (no .hero--sky/.fslider) keep the white bar. */
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__brand,
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__burger,
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .toggle { color: var(--ink); }
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__link { color: var(--ink-soft); }
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__link:hover,
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__link[aria-current="page"] { color: var(--ink); }
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__logo--white { display: none; }
+[data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__logo--color { display: block; }
 
 /* ── Events calendar island ───────────────────────────────────────────── */
 /* No-JS fallback list (rendered by events.astro) hides once the island mounts. */
@@ -457,7 +518,8 @@ html[data-cal-ready] .ev-fallback { display: none; }
 .prose-cassa blockquote { border-left: 3px solid var(--accent); padding-left: 1.1em; margin-left: 0; color: var(--ink-soft); font-style: italic; }
 .prose-cassa hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 .prose-cassa sub, .prose-cassa sup { font-size: .75em; }
-.prose-cassa table { width: 100%; border-collapse: collapse; font-size: .95rem; margin: 1.2em 0; }
+/* Markdown tables scroll sideways on narrow screens instead of overflowing. */
+.prose-cassa table { width: 100%; border-collapse: collapse; font-size: .95rem; margin: 1.2em 0; display: block; overflow-x: auto; }
 .prose-cassa th, .prose-cassa td { border: 1px solid var(--line); padding: .5em .7em; text-align: left; color: var(--ink-soft); }
 .prose-cassa th { color: var(--ink); font-weight: 700; background: var(--bg-elev-2); }
 .prose-cassa iframe { max-width: 100%; border-radius: 12px; border: 1px solid var(--line); margin: 1.2em 0; }

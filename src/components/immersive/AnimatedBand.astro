@@ -7,7 +7,7 @@ interface Props {
 const { theme } = Astro.props;
 ---
 
-<section class="band">
+<section class="band band--sky">
   <div class="band__media"><SkyCanvas theme={theme} client:visible /></div>
   <div class="band__scrim"></div>
   <div class="wrap band__inner"><slot /></div>

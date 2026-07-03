@@ -35,7 +35,7 @@ const repos = [
   current="/research/tart"
 >
   <!-- ── Hero — the real TART array floating over a galaxy sky ──────────── -->
-  <header class="hero tart-hero" data-tart-hero>
+  <header class="hero hero--sky tart-hero" data-tart-hero>
     <div class="hero__media"><SkyCanvas theme="galaxy" client:load /></div>
 
     <!-- Floating array: the actual fabricated TART structure -->
@@ -191,7 +191,7 @@ const repos = [
   </section>
 
   <!-- ── Section 4: Live from TART (embedded map + viewer) ──────────────── -->
-  <section class="section">
+  <section class="section section--elev-2">
     <div class="wrap">
       <Reveal><p class="eyebrow">Live data</p></Reveal>
       <Reveal delay={70}>
@@ -400,6 +400,12 @@ const repos = [
     background:
       linear-gradient(to top, rgba(2,4,12,.92) 0%, rgba(2,4,12,.55) 32%, rgba(2,4,12,.12) 60%, transparent 100%);
     z-index:-2;
+  }
+  /* Day theme: the galaxy canvas repaints pale (SkyCanvas), so the scrim
+     flips pale too — :global() because data-theme lives on <html>. */
+  :global([data-theme="light"]) .tart-hero__scrim {
+    background:
+      linear-gradient(to top, rgba(244,246,251,.92) 0%, rgba(244,246,251,.5) 32%, rgba(244,246,251,.1) 60%, transparent 100%);
   }
   .tart-hero__stage {
     position:absolute; inset:0; z-index:-1; pointer-events:none;

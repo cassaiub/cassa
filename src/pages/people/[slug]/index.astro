@@ -389,7 +389,10 @@ const personLd = personSchema({
 
     /* ── Single-column clickable link tables (programs · teaching & outreach) ── */
     .link-table-wrap { margin-top: 1.1rem; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-    .link-table { width: 100%; border-collapse: collapse; }
+    /* table-layout: fixed — auto layout sizes the column to the cells' intrinsic
+       min-content, which overflows narrow phones; fixed makes the single column
+       track the wrapper width so the text wraps instead. */
+    .link-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .link-table td { padding: 0; border-bottom: 1px solid var(--line); }
     .link-table tr:last-child td { border-bottom: none; }
     .link-row {
@@ -496,7 +499,7 @@ const personLd = personSchema({
       .we-table th, .we-table td { padding: 0.6rem 0.7rem; }
     }
     @media (max-width: 860px) {
-      .profile { grid-template-columns: 1fr; }
+      .profile { grid-template-columns: minmax(0, 1fr); }
       .profile__aside { max-width: 340px; margin-inline: auto; }
       .profile__card { position: static; }
     }
