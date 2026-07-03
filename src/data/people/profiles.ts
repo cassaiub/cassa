@@ -7,8 +7,8 @@
  *      (its markdown BODY is the biography, rendered on the page);
  *   2. create src/data/people/<slug>.ts exporting a ProfileData object;
  *   3. import + add it to PROFILES here.
- * The /people directory + the directors page link to a person automatically
- * once hasProfile(slug) is true; everyone else stays card/table-only.
+ * The /people directory + the Office of the Director page link to a person
+ * automatically once hasProfile(slug) is true; everyone else stays card/table-only.
  *
  * Assets convention: downloads (PDFs) live in public/people/<slug>/…,
  * optimizable images in src/assets/people/<slug>/…, the card photo at

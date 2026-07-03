@@ -11,7 +11,7 @@ summary: "A full-time, two-year science-and-computing manager role — CASSA adm
 
 **THIS POSITION HAS BEEN FILLED.**
 
-We are looking for a highly motivated candidate with a strong science and computing background to work as the **Science Manager of CASSA**. The Manager will be based at the CASSA office and will work under the supervision of the Director, in coordination with the Core Members of CASSA. Serving as the primary point of contact, the Manager will oversee all administrative activities and procedures related to CASSA, both within IUB and in dealings with external entities. The role requires a blend of scientific and technical expertise, as responsibilities include managing research funds and maintaining a computing server.
+We are looking for a highly motivated candidate with a strong science and computing background to work as the **Science Manager of CASSA**. The Manager will be based at the CASSA office and will work under the supervision of the Office of the Director, in coordination with the Core Members of CASSA. Serving as the primary point of contact, the Manager will oversee all administrative activities and procedures related to CASSA, both within IUB and in dealings with external entities. The role requires a blend of scientific and technical expertise, as responsibilities include managing research funds and maintaining a computing server.
 
 In addition to core managerial responsibilities, the Manager will have the opportunity to participate in research under the guidance of CASSA’s Core or Associate Members. Hence, the position also offers a strong career pathway for individuals seeking to pursue PhDs or to advance professionally as scientists, researchers, or executives in science and technology industries.
 

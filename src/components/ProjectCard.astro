@@ -1,0 +1,101 @@
+---
+/* One project tile for the /research/projects landing (a flat, filterable grid).
+   Card head = acronym; text after the ":" in the title becomes the expansion.
+   A stage badge marks Ongoing vs Completed. `data-supervisor` (surname) and
+   `data-stage` drive the client-side filters. The card shows only Supervisor +
+   Lead; the full team/alumni appear in the project page's sidebar. */
+import { withBase } from "../data/site-nav.ts";
+
+const { project } = Astro.props;
+const d = project.data;
+const head = d.acronym ?? d.title;
+const full = d.acronym && d.title.includes(":") ? d.title.slice(d.title.indexOf(":") + 1).trim() : "";
+const stage = d.stage ?? "ongoing";
+const stageLabel = stage === "completed" ? "Completed" : "Ongoing";
+const supSurname = (d.supervisor ?? "").trim().split(/\s+/).pop() ?? "";
+/* Displayed supervisors: co-supervisors first, then the grouping supervisor.
+   (The filter chip still keys off `supervisor` only, via data-supervisor.) */
+const supers = [...(d.coSupervisors ?? []), ...(d.supervisor ? [d.supervisor] : [])];
+---
+
+<a
+  class="pcard"
+  href={withBase(`/research/projects/${project.id}`)}
+  data-supervisor={supSurname}
+  data-stage={stage}
+>
+  <span class={`pcard__stage pcard__stage--${stage}`}>{stageLabel}</span>
+  <h3 class="pcard__head">{head}</h3>
+  {full && <p class="pcard__full">{full}</p>}
+  <p class="pcard__sum">{d.summary}</p>
+
+  {(supers.length > 0 || d.leads.length > 0) && (
+    <div class="pcard__people">
+      {supers.length > 0 && (
+        <div class="pcard__prow"><span class="pcard__plabel">{supers.length > 1 ? "Supervisors" : "Supervisor"}</span><span class="pcard__pname">{supers.join(" · ")}</span></div>
+      )}
+      {d.leads.length > 0 && (
+        <div class="pcard__prow"><span class="pcard__plabel">{d.leads.length === 1 ? "Lead" : "Leads"}</span><span class="pcard__pname">{d.leads.join(" · ")}</span></div>
+      )}
+    </div>
+  )}
+
+  <span class="pcard__go">View project <span class="pcard__arrow" aria-hidden="true">→</span></span>
+</a>
+
+<style>
+  .pcard {
+    position: relative; display: flex; flex-direction: column; height: 100%;
+    padding: 1.7rem 1.6rem;
+    border: 1px solid var(--line); border-radius: 18px;
+    background:
+      radial-gradient(130% 90% at 100% 0%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 58%),
+      var(--bg-elev-2);
+    transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+  }
+  .pcard:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+    box-shadow: 0 20px 46px color-mix(in srgb, var(--accent) 13%, transparent);
+  }
+  :global([data-theme="light"]) .pcard { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 12px 30px rgba(12,18,34,.05); }
+  :global([data-theme="light"]) .pcard:hover { box-shadow: 0 20px 42px color-mix(in srgb, var(--accent) 20%, transparent); }
+
+  /* Status badge — pill with a leading status dot */
+  .pcard__stage {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: 0.42rem;
+    font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+    padding: 0.28rem 0.62rem 0.28rem 0.52rem; border-radius: 999px; border: 1px solid var(--line);
+  }
+  .pcard__stage::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .pcard__stage--ongoing {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  .pcard__stage--completed { color: var(--ink-faint); }
+
+  .pcard__head { margin: 0.85rem 0 0; font-size: 1.55rem; letter-spacing: -0.02em; color: var(--ink); line-height: 1.08; }
+  .pcard__full { margin: 0.3rem 0 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.4; }
+  .pcard__sum { margin: 0.95rem 0 0; font-size: 0.94rem; color: var(--ink-soft); line-height: 1.6; }
+
+  /* People — Supervisor + Lead only (full team lives in the project sidebar) */
+  .pcard__people {
+    margin: 1.2rem 0 0; padding-top: 1.1rem; border-top: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 0.55rem;
+  }
+  .pcard__prow { display: grid; grid-template-columns: 4.8rem minmax(0, 1fr); gap: 0.7rem; align-items: baseline; }
+  .pcard__plabel {
+    font-size: 0.57rem; letter-spacing: 0.13em; text-transform: uppercase; font-weight: 700;
+    color: var(--ink-faint);
+  }
+  .pcard__pname { font-size: 0.85rem; line-height: 1.4; color: var(--ink); }
+
+  .pcard__go {
+    margin-top: auto; padding-top: 1.2rem;
+    font-size: 0.82rem; font-weight: 600; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .pcard__arrow { transition: transform 0.24s ease; }
+  .pcard:hover .pcard__arrow { transform: translateX(4px); }
+</style>

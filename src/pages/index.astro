@@ -8,6 +8,10 @@ import { Image } from "astro:assets";
 import { withBase } from "../data/site-nav";
 import { getCollection } from "astro:content";
 import { isBanglaSeries } from "../data/bangla-series.ts";
+import { recentPublications } from "../data/recent-publications.ts";
+
+// The 7 most recent CASSA papers (same local ADS snapshot as /research/publications).
+const recentPapers = recentPublications(7);
 
 // ── Hero slider ─────────────────────────────────────────────────────────────
 // Top recent research / colloquia feature stories. Each slide's background is an
@@ -141,7 +145,7 @@ const MISSIONS = [
         <section class="hp-col" aria-labelledby="hp-events-h" data-reveal>
           <div class="hp-col__head">
             <p class="eyebrow eyebrow--sm">What's on</p>
-            <h3 id="hp-events-h" class="hp-col__h">Upcoming &amp; recent events</h3>
+            <h3 id="hp-events-h" class="hp-col__h"><a class="hp-col__link" href={withBase('/events')}>Upcoming &amp; recent events</a></h3>
           </div>
           {featuredEvents.length > 0 ? (
             <ol class="hp-tl">
@@ -171,7 +175,7 @@ const MISSIONS = [
         <section class="hp-col" aria-labelledby="hp-news-h" data-reveal style="--reveal-delay:90ms">
           <div class="hp-col__head">
             <p class="eyebrow eyebrow--sm">Latest</p>
-            <h3 id="hp-news-h" class="hp-col__h">Recent news</h3>
+            <h3 id="hp-news-h" class="hp-col__h"><a class="hp-col__link" href={withBase('/news')}>Recent news</a></h3>
           </div>
           {recentNews.length > 0 ? (
             <ul class="hp-news">
@@ -203,6 +207,66 @@ const MISSIONS = [
           <a class="hp-more" href={withBase('/news')}>All news <span aria-hidden="true">→</span></a>
         </section>
       </div>
+    </div>
+  </section>
+
+  <!-- 2.5 · RECENT PUBLICATIONS — the 7 newest CASSA papers (BG tone: sits between
+       the elevated News&Events above and the elev-2 What-is-CASSA below) -->
+  <section class="section hp-pubs" aria-label="Recent publications">
+    <div class="wrap">
+      <div class="hp-col__head" data-reveal>
+        <p class="eyebrow eyebrow--sm">From the journals</p>
+        <h3 class="hp-col__h"><a class="hp-col__link" href={withBase('/research/publications')}>Recent publications</a></h3>
+      </div>
+
+      {recentPapers.length > 0 && (
+        <div class="rp-outer" data-reveal style="--reveal-delay:80ms">
+          <button class="rp-btn" id="rp-prev" type="button" aria-label="Newer papers" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+
+          <div class="rp-scroll" id="rp-scroll" tabindex="0" aria-label="Recent publications timeline — newest first; drag or pan right for older">
+            <div class="rp-track" id="rp-track">
+              {recentPapers.map((p) => (
+                <div class="rp-col">
+                  <div class="rp__above">
+                    {p.pubMonth && <span class="rp__mon">{p.pubMonth}</span>}
+                    <span class="rp__yr">{p.year}</span>
+                  </div>
+                  <div class="rp__node"></div>
+                  <a
+                    class="rp__card"
+                    href={p.doiUrl ?? withBase('/research/publications')}
+                    target={p.doiUrl ? "_blank" : undefined}
+                    rel={p.doiUrl ? "noopener noreferrer" : undefined}
+                  >
+                    <span class="rp__journal">{p.journal}</span>
+                    <span class="rp__title">{p.title}</span>
+                    <span class="rp__by">
+                      <span class="rp__lead">{p.firstAuthor}{p.etAl ? " et al." : ""}</span>
+                      {p.cassaAuthors.length > 0 && (
+                        <span class="rp__cassa"><span class="rp__cassa-lbl">CASSA</span><span class="rp__cassa-names">{p.cassaAuthors.join(" · ")}</span></span>
+                      )}
+                    </span>
+                    <span class="rp__foot">
+                      <span class="rp__cite">{p.reference}</span>
+                      <span class="rp__go" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>
+                      </span>
+                    </span>
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button class="rp-btn" id="rp-next" type="button" aria-label="Older papers">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      )}
+      <div class="rp-bar" aria-hidden="true"><div class="rp-bar__thumb" id="rp-bar-thumb"></div></div>
+      <a class="hp-more" href={withBase('/research/publications')}>All publications <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
@@ -261,7 +325,152 @@ const MISSIONS = [
   </AnimatedBand>
 </BaseLayout>
 
+<script>
+  // Recent-publications horizontal timeline: arrows / keyboard / wheel / drag,
+  // progress thumb, spine-fill on reveal, and start at the newest (right) end.
+  const scroll = document.getElementById("rp-scroll");
+  const track  = document.getElementById("rp-track");
+  const prev   = document.getElementById("rp-prev") as HTMLButtonElement | null;
+  const next   = document.getElementById("rp-next") as HTMLButtonElement | null;
+  const thumb  = document.getElementById("rp-bar-thumb");
+  if (scroll && prev && next) {
+    const JUMP = 300 * 2;
+    prev.addEventListener("click", () => scroll.scrollBy({ left: -JUMP, behavior: "smooth" }));
+    next.addEventListener("click", () => scroll.scrollBy({ left:  JUMP, behavior: "smooth" }));
+    scroll.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft")  { e.preventDefault(); scroll.scrollBy({ left: -JUMP, behavior: "smooth" }); }
+      if (e.key === "ArrowRight") { e.preventDefault(); scroll.scrollBy({ left:  JUMP, behavior: "smooth" }); }
+    });
+    scroll.addEventListener("wheel", (e) => {
+      if (Math.abs(e.deltaX) > 4) return;
+      e.preventDefault();
+      scroll.scrollBy({ left: e.deltaY * 1.4, behavior: "smooth" });
+    }, { passive: false });
+    let drag = false, sx = 0, sl = 0;
+    scroll.addEventListener("mousedown", (e) => { drag = true; sx = e.pageX; sl = scroll.scrollLeft; scroll.style.cursor = "grabbing"; });
+    window.addEventListener("mouseup", () => { drag = false; scroll.style.cursor = ""; });
+    window.addEventListener("mousemove", (e) => { if (drag) scroll.scrollLeft = sl - (e.pageX - sx); });
+    const updateUI = () => {
+      const max = scroll.scrollWidth - scroll.clientWidth;
+      prev.disabled = scroll.scrollLeft <= 1;
+      next.disabled = scroll.scrollLeft >= max - 1;
+      if (thumb && max > 0) {
+        const w = (scroll.clientWidth / scroll.scrollWidth) * 100;
+        thumb.style.width = w + "%";
+        thumb.style.left = ((scroll.scrollLeft / max) * (100 - w)) + "%";
+      }
+    };
+    scroll.addEventListener("scroll", updateUI, { passive: true });
+    window.addEventListener("resize", updateUI, { passive: true });
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (track) {
+      if (reduced) track.style.setProperty("--rp-fill", "100%");
+      else {
+        const obs = new IntersectionObserver(([en]) => {
+          if (!en.isIntersecting) return;
+          obs.disconnect();
+          let start: number | null = null;
+          const D = 1600;
+          const anim = (ts: number) => { if (start === null) start = ts; const pct = Math.min(100, ((ts - start) / D) * 100); track.style.setProperty("--rp-fill", pct + "%"); if (pct < 100) requestAnimationFrame(anim); };
+          requestAnimationFrame(anim);
+        }, { threshold: 0.25 });
+        obs.observe(track);
+      }
+    }
+    // Default view = newest (leftmost); pan right for older.
+    requestAnimationFrame(updateUI);
+  }
+</script>
+
 <style>
+  /* ── Recent publications — full-width immersive paper cards ─────────────── */
+  .hp-pubs { position: relative; overflow: hidden; }
+  .hp-pubs::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(48% 40% at 88% -6%, color-mix(in srgb, var(--accent-2) 12%, transparent), transparent 70%);
+  }
+  .hp-pubs .wrap { position: relative; z-index: 1; }
+
+  /* Horizontal pannable publication timeline (drag / wheel / arrows / keys). */
+  .rp-outer { display: flex; align-items: stretch; gap: 10px; margin-top: 2rem; }
+  .rp-btn {
+    flex-shrink: 0; width: 42px; border-radius: 12px; align-self: center; height: 42px;
+    border: 1px solid var(--line-strong); background: var(--bg-elev); color: var(--ink);
+    cursor: pointer; display: grid; place-items: center; z-index: 4;
+    transition: border-color .2s, transform .15s, opacity .2s;
+  }
+  .rp-btn:hover:not(:disabled) { border-color: var(--accent); transform: scale(1.1); }
+  .rp-btn:disabled { opacity: .22; cursor: default; }
+  [data-theme="light"] .rp-btn { box-shadow: 0 1px 4px rgba(12,18,34,.08); }
+
+  .rp-scroll { flex: 1; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; cursor: grab; outline: none; border-radius: 4px; -webkit-overflow-scrolling: touch; }
+  .rp-scroll::-webkit-scrollbar { display: none; }
+  .rp-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* align-items: stretch → every column (and its card) grows to the tallest
+     card's natural height: equal-size cards, minimal whitespace, no cropping,
+     fully dynamic across screens/fonts (no fixed pixel height). */
+  .rp-track { display: flex; align-items: stretch; position: relative; padding: 0 28px; --rp-fill: 0%; }
+  /* the spine + its old→new glowing fill */
+  .rp-track::before { content: ""; position: absolute; top: 62px; left: 0; right: 0; height: 2px; background: var(--line-strong); z-index: 0; }
+  .rp-track::after {
+    content: ""; position: absolute; top: 62px; left: 0; width: var(--rp-fill); height: 2px;
+    background: linear-gradient(to right, var(--accent-2), var(--accent));
+    box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 60%, transparent); z-index: 1;
+  }
+
+  .rp-col { width: 300px; flex-shrink: 0; padding: 0 12px; display: flex; flex-direction: column; align-items: center; }
+  .rp__above { height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: .05rem; padding-bottom: 12px; }
+  .rp__mon { font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--accent); }
+  .rp__yr { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.02em; color: var(--ink-soft); font-variant-numeric: tabular-nums; line-height: 1; }
+
+  .rp__node {
+    width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; z-index: 2; position: relative;
+    background: var(--bg); border: 2px solid var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent); transition: transform .2s;
+  }
+  /* newest (first / leftmost column) pulses */
+  .rp-col:first-child .rp__node { background: var(--accent); animation: rp-pulse 2.6s ease-in-out infinite; }
+  @keyframes rp-pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); } 50% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--accent) 0%, transparent); } }
+  @media (prefers-reduced-motion: reduce) { .rp-col:first-child .rp__node { animation: none; } }
+  .rp-col:hover .rp__node { transform: scale(1.28); }
+
+  /* flex:1 → the card fills its (stretched) column, so all cards match the
+     tallest card's height. Variable parts are clamped (journal 2, title 3,
+     author lines 1) so the tallest is bounded; footer pins to the bottom. */
+  .rp__card {
+    margin-top: 14px; width: 100%; flex: 1; display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+    background: var(--bg-elev); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.15rem;
+    transition: border-color .22s, transform .22s, box-shadow .22s;
+  }
+  .rp__card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(var(--accent), var(--accent-2)); transform: scaleY(0); transform-origin: top; transition: transform .3s ease; }
+  .rp-col:hover .rp__card { border-color: color-mix(in srgb, var(--accent) 40%, transparent); transform: translateY(-3px); }
+  .rp-col:hover .rp__card::before { transform: scaleY(1); }
+  [data-theme="light"] .rp__card { box-shadow: 0 1px 3px rgba(12,18,34,.05), 0 8px 20px rgba(12,18,34,.045); }
+
+  .rp__journal { font-size: .72rem; font-weight: 600; font-style: italic; color: var(--accent-2); letter-spacing: .01em;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .rp__title {
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    margin-top: .4rem; font-size: .98rem; font-weight: 600; color: var(--ink); line-height: 1.32; letter-spacing: -.01em; transition: color .2s;
+  }
+  .rp-col:hover .rp__title { color: var(--accent); }
+  .rp__by { display: flex; flex-direction: column; gap: .3rem; margin-top: .6rem; font-size: .78rem; min-width: 0; }
+  .rp__lead { color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rp__cassa { display: flex; align-items: center; gap: .45rem; color: var(--accent); font-weight: 500; min-width: 0; }
+  .rp__cassa-lbl { font-size: .52rem; letter-spacing: .13em; text-transform: uppercase; font-weight: 700; padding: .16em .5em; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); flex-shrink: 0; }
+  .rp__cassa-names { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .rp__foot { margin-top: auto; padding-top: .75rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .rp__cite { font-size: .7rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .rp__go { color: var(--ink-faint); flex-shrink: 0; transition: color .2s, transform .2s; }
+  .rp-col:hover .rp__go { color: var(--accent); transform: translate(2px, -2px); }
+
+  .rp-bar { position: relative; height: 3px; margin-top: 16px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .rp-bar__thumb { position: absolute; top: 0; bottom: 0; width: 30%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); border-radius: 2px; }
+
+  @media (max-width: 640px) { .rp-col { width: 260px; } .rp-btn { display: none; } }
+
   /* ── News & Events — the lead section after the hero ───────────────────── */
   .hp-latest { position: relative; overflow: hidden; }
   /* soft accent glow behind the header — immersive depth, legible in both themes */
@@ -278,6 +487,10 @@ const MISSIONS = [
 
   .hp-col__head { margin-bottom: 1.3rem; }
   .hp-col__h { font-size: clamp(1.3rem, 2.6vw, 1.7rem); letter-spacing: -.015em; margin: .2rem 0 0; color: var(--ink); }
+  .hp-col__link { color: inherit; transition: color .2s; }
+  .hp-col__link:hover, .hp-col__link:focus-visible { color: var(--accent); }
+  .hp-col__link::after { content: " →"; opacity: 0; transition: opacity .2s; font-weight: 400; }
+  .hp-col__link:hover::after, .hp-col__link:focus-visible::after { opacity: .8; }
   .eyebrow--sm { font-size: .72rem; }
 
   /* ── Events — a quiet vertical timeline (no card boxes) ─────────────────── */

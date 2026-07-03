@@ -9,7 +9,7 @@ applyUrl: "https://forms.gle/tVgsXpgYH1s4XXHy6"
 summary: "The Outreach Ambassador will lead the organization of all CASSA outreach events at IUB and liaise with external partners involved in CASSA’s outreach initiatives…"
 ---
 
-The Outreach Ambassador will lead the organization of all CASSA outreach events at IUB and liaise with external partners involved in CASSA’s outreach initiatives (primarily BDOAA and Durbin). The role will be carried out under the supervision of a Faculty Coordinator and the Director of CASSA. The position is open to undergraduate students from all departments, regardless of major or minor; however, prior experience in teamwork, leadership, entrepreneurship, or science outreach will be considered a strong advantage.
+The Outreach Ambassador will lead the organization of all CASSA outreach events at IUB and liaise with external partners involved in CASSA’s outreach initiatives (primarily BDOAA and Durbin). The role will be carried out under the supervision of a Faculty Coordinator and the Office of the Director of CASSA. The position is open to undergraduate students from all departments, regardless of major or minor; however, prior experience in teamwork, leadership, entrepreneurship, or science outreach will be considered a strong advantage.
 
 ## Responsibilities
 

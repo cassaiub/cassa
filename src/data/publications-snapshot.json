@@ -1,15 +1,77 @@
 {
-  "fetchedAt": "2026-06-02T09:46:07.325Z",
+  "fetchedAt": "2026-07-03T09:16:14.197Z",
   "source": {
     "affiliation": "aff:\"Center for Astronomy, Space Science and Astrophysics\"",
     "libraryUrl": "https://ui.adsabs.harvard.edu/user/libraries/znTrvN1iRXOBQvd17VhYmA"
   },
-  "totalFound": 41,
+  "totalFound": 43,
   "libOnlyCount": 9,
   "papers": [
     {
+      "bibcode": "2026MNRAS.549g1093R",
+      "aff": [
+        "Waterloo Centre for Astrophysics, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada; Department of Physics and Astronomy, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada;",
+        "Waterloo Centre for Astrophysics, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada; Department of Physics and Astronomy, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada; Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladessh, Dhaka 1229, Bangladesh;",
+        "Waterloo Centre for Astrophysics, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada; Department of Physics and Astronomy, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada;",
+        "NASA Goddard Space Flight Center, 8800 Greenbelt Rd, Greenbelt, MD 20771, USA;",
+        "Waterloo Centre for Astrophysics, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada; Department of Physics and Astronomy, University of Waterloo, Waterloo, Ontario N2L 3G1, Canada;"
+      ],
+      "author": [
+        "Reid, Rashaad",
+        "Ahad, Syeda Lammim",
+        "Haggar, Roan",
+        "Mpetha, Charlie T.",
+        "Taylor, James E."
+      ],
+      "author_count": 5,
+      "bibstem": [
+        "MNRAS",
+        "MNRAS.549"
+      ],
+      "doctype": "article",
+      "doi": [
+        "10.1093/mnras/stag1093",
+        "10.48550/arXiv.2605.30595"
+      ],
+      "pub": "Monthly Notices of the Royal Astronomical Society",
+      "pubdate": "2026-07-00",
+      "title": [
+        "Tracing the dynamical states and mass accretion histories of galaxy clusters in IllustrisTNG"
+      ],
+      "year": "2026",
+      "citation_count": 0
+    },
+    {
+      "bibcode": "2026A&A...710A.349A",
+      "title": [
+        "The accretion history of the Milky Way. V. The kinematics of most globular clusters trace the merger epochs"
+      ],
+      "author": [
+        "Akib, Istiak Hossain",
+        "Hammer, François",
+        "Yang, Yanbin"
+      ],
+      "author_count": 3,
+      "aff": [
+        "Laboratoire d'Instrumentation et de Recherche en Astrophysique (LIRA), Observatoire de Paris, Université PSL, Sorbonne Université, CNRS, 5 place Jules Janssen, 92190 Meudon, France; Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh, Dhaka 1229, Bangladesh",
+        "Laboratoire d'Instrumentation et de Recherche en Astrophysique (LIRA), Observatoire de Paris, Université PSL, Sorbonne Université, CNRS, 5 place Jules Janssen, 92190 Meudon, France",
+        "Laboratoire d'Instrumentation et de Recherche en Astrophysique (LIRA), Observatoire de Paris, Université PSL, Sorbonne Université, CNRS, 5 place Jules Janssen, 92190 Meudon, France"
+      ],
+      "year": "2026",
+      "pubdate": "2026-06-00",
+      "pub": "Astronomy and Astrophysics",
+      "bibstem": [
+        "A&A",
+        "A&A...710"
+      ],
+      "doi": [
+        "10.1051/0004-6361/202659473"
+      ],
+      "citation_count": 0,
+      "doctype": "article"
+    },
+    {
       "bibcode": "2026A&A...708A.166H",
-      "citation_count": 60,
       "aff": [
         "-",
         "-",
@@ -105,7 +167,8 @@
       "title": [
         "The Local Distance Network: A community consensus report on the measurement of the Hubble constant at ∼1% precision"
       ],
-      "year": "2026"
+      "year": "2026",
+      "citation_count": 66
     },
     {
       "bibcode": "2026ApJ..1000..178K",
@@ -175,44 +238,7 @@
         "The Search for Stable Nickel: Investigating the Origins of Type Ia Supernovae with Late-time Near-infrared Spectroscopy from the Carnegie Supernova Project-II"
       ],
       "year": "2026",
-      "citation_count": 7
-    },
-    {
-      "bibcode": "2026JOSS...11.9685H",
-      "aff": [
-        "Department of Physics and Astronomy, Stony Brook University, Stony Brook, NY 1794, USA",
-        "Department of Physics and Astronomy, Stony Brook University, Stony Brook, NY 1794, USA",
-        "Laboratoire Univers et Particules de Montpellier, CNRS and Université de Montpellier (UMR-5299), 34095 Montpellier, France",
-        "Max-Planck-Institut für Astrophysik, Karl-Schwarzschild Straße 1, 85748 Garching, Germany, Technical University of Munich, TUM School of Natural Sciences, Physics Department, James-Franck-Straße 1, 85748 Garching, Germany",
-        "Department of Astronomy and Astrophysics, University of Chicago, Chicago, IL 60637, USA",
-        "Department of Astronomy and Astrophysics, University of Chicago, Chicago, IL 60637, USA, Kavli Institute for Cosmological Physics, University of Chicago, Chicago, IL 60637, USA, Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh, Dhaka 1229, Bangladesh",
-        "Department of Physics, University of Illinois, 1110 West Green St., Urbana, IL 61801, USA"
-      ],
-      "author": [
-        "Huang, Alan",
-        "Birrer, Simon",
-        "Hogg, Natalie",
-        "Galan, Aymeric",
-        "Gilman, Daniel",
-        "Shajib, Anowar",
-        "Zhang, Nan"
-      ],
-      "author_count": 7,
-      "bibstem": [
-        "JOSS",
-        "JOSS...11"
-      ],
-      "doctype": "article",
-      "doi": [
-        "10.21105/joss.09685"
-      ],
-      "pub": "The Journal of Open Source Software",
-      "pubdate": "2026-04-00",
-      "title": [
-        "JAXtronomy: A JAX port of lenstronomy"
-      ],
-      "year": "2026",
-      "citation_count": 0
+      "citation_count": 9
     },
     {
       "bibcode": "2026FrASS..1397722M",
@@ -295,6 +321,44 @@
       "citation_count": 0
     },
     {
+      "bibcode": "2026JOSS...11.9685H",
+      "aff": [
+        "Department of Physics and Astronomy, Stony Brook University, Stony Brook, NY 1794, USA",
+        "Department of Physics and Astronomy, Stony Brook University, Stony Brook, NY 1794, USA",
+        "Laboratoire Univers et Particules de Montpellier, CNRS and Université de Montpellier (UMR-5299), 34095 Montpellier, France",
+        "Max-Planck-Institut für Astrophysik, Karl-Schwarzschild Straße 1, 85748 Garching, Germany, Technical University of Munich, TUM School of Natural Sciences, Physics Department, James-Franck-Straße 1, 85748 Garching, Germany",
+        "Department of Astronomy and Astrophysics, University of Chicago, Chicago, IL 60637, USA",
+        "Department of Astronomy and Astrophysics, University of Chicago, Chicago, IL 60637, USA, Kavli Institute for Cosmological Physics, University of Chicago, Chicago, IL 60637, USA, Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh, Dhaka 1229, Bangladesh",
+        "Department of Physics, University of Illinois, 1110 West Green St., Urbana, IL 61801, USA"
+      ],
+      "author": [
+        "Huang, Alan",
+        "Birrer, Simon",
+        "Hogg, Natalie",
+        "Galan, Aymeric",
+        "Gilman, Daniel",
+        "Shajib, Anowar",
+        "Zhang, Nan"
+      ],
+      "author_count": 7,
+      "bibstem": [
+        "JOSS",
+        "JOSS...11"
+      ],
+      "doctype": "article",
+      "doi": [
+        "10.21105/joss.09685",
+        "10.48550/arXiv.2606.01547"
+      ],
+      "pub": "The Journal of Open Source Software",
+      "pubdate": "2026-04-00",
+      "title": [
+        "JAXtronomy: A JAX port of lenstronomy"
+      ],
+      "year": "2026",
+      "citation_count": 0
+    },
+    {
       "bibcode": "2026A&A...707A.314S",
       "aff": [
         "Department of Astronomy &amp; Astrophysics, University of Chicago, Chicago, IL, 60637, USA; Kavli Institute for Cosmological Physics, University of Chicago, Chicago, IL, 60637, USA; Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh, Dhaka, 1229, Bangladesh;",
@@ -352,10 +416,11 @@
         "TDCOSMO: XXIV. First spatially resolved kinematics of the lens galaxy obtained using JWST-NIRSpec to improve time-delay cosmography"
       ],
       "year": "2026",
-      "citation_count": 9
+      "citation_count": 10
     },
     {
       "bibcode": "2026NatSD..13..712R",
+      "citation_count": 0,
       "aff": [
         "Earth System Science Center, University of Alabama in Huntsville, Huntsville, AL, USA ; NASA Marshall Space Flight Center, Huntsville, AL, USA ;",
         "Department of Space Science, The University of Alabama in Huntsville, Huntsville, AL, USA ; Center for Space Plasma and Aeronomic Research (CSPAR), The University of Alabama in Huntsville, Huntsville, AL, USA",
@@ -424,8 +489,7 @@
       "title": [
         "SuryaBench: Benchmark Dataset for Advancing Machine Learning in Heliophysics and Space Weather Prediction"
       ],
-      "year": "2026",
-      "citation_count": 0
+      "year": "2026"
     },
     {
       "bibcode": "2026ApJ...998..101P",
@@ -487,11 +551,10 @@
         "Carnegie Supernova Project: Fast-declining Type Ia Supernovae as Cosmological Distance Indicators"
       ],
       "year": "2026",
-      "citation_count": 5
+      "citation_count": 7
     },
     {
       "bibcode": "2026A&A...706A.270P",
-      "citation_count": 2,
       "aff": [
         "Research Center for the Early Universe, Graduate School of Science, The University of Tokyo, 7-3-1 Hongo Bunkyo-ku, Tokyo, 113-0033, Japan; Institute of Physics, Laboratory of Astrophysics, Ecole Polytechnique Fédérale de Lausanne (EPFL), Observatoire de Sauverny, 1290, Versoix, Switzerland;",
         "Institut de Ciències del Cosmos (ICCUB), Universitat de Barcelona (IEEC-UB), Martí i Franquès 1, 08028, Barcelona, Spain; Institució Catalana de Recerca i Estudis Avançats (ICREA), Passeig de Lluís Companys 23, 08010, Barcelona, Spain;",
@@ -553,7 +616,8 @@
       "title": [
         "TDCOSMO: XXIII. Measurement of the Hubble constant from the doubly lensed quasar HE 1104−1805"
       ],
-      "year": "2026"
+      "year": "2026",
+      "citation_count": 3
     },
     {
       "bibcode": "2026ApJ...998..303L",
@@ -587,7 +651,7 @@
         "The Impact of Orbital Anisotropy Assumptions in Lensing-dynamics Modeling"
       ],
       "year": "2026",
-      "citation_count": 1
+      "citation_count": 2
     },
     {
       "bibcode": "2026AJ....171...57B",
@@ -717,7 +781,7 @@
         "TDCOSMO: XXI. Accurate stellar velocity dispersions of the SL2S lens sample and the fundamental plane of the lensing mass"
       ],
       "year": "2026",
-      "citation_count": 3
+      "citation_count": 5
     },
     {
       "bibcode": "2025A&A...703A.117K",
@@ -755,7 +819,7 @@
         "TDCOSMO: XIX. Measuring stellar velocity dispersion with sub-percent accuracy for cosmography"
       ],
       "year": "2025",
-      "citation_count": 22
+      "citation_count": 25
     },
     {
       "bibcode": "2025ApJ...993..124B",
@@ -859,7 +923,7 @@
         "TDCOSMO: XX. WFI2033─4723, the first quadruply imaged quasar modeled with JWST imaging"
       ],
       "year": "2025",
-      "citation_count": 5
+      "citation_count": 6
     },
     {
       "bibcode": "2025A&A...702L..12S",
@@ -897,7 +961,7 @@
         "An accurate measurement of the spectral resolution of the JWST Near Infrared Spectrograph"
       ],
       "year": "2025",
-      "citation_count": 19
+      "citation_count": 20
     },
     {
       "bibcode": "2025ApJ...992...40S",
@@ -1012,44 +1076,6 @@
       "citation_count": 4
     },
     {
-      "bibcode": "2025A&A...702A.271A",
-      "aff": [
-        "Leiden Observatory, Leiden University, P.O. Box 9513, 2300 RA, Leiden, The Netherlands; Waterloo Centre for Astrophysics, University of Waterloo, Waterloo, ON, N2L 3G1, Canada; Department of Physics and Astronomy, University of Waterloo, Waterloo, ON, N2L 3G1, Canada; Center for Astronomy, Space Science, and Astrophysics, Independent University, Dhaka, 1229, Bangladesh;",
-        "Leiden Observatory, Leiden University, P.O. Box 9513, 2300 RA, Leiden, The Netherlands;",
-        "School of Physics and Astronomy, University of Nottingham, University Park, Nottingham, NG7 2RD, UK; Laboratory of Astrophysics, Ecole Polytechnique Fédérale de Lausanne (EPFL), Observatoire de Sauverny, 1290, Versoix, Switzerland;",
-        "Astrophysics Research Institute, Liverpool John Moores University, IC2, Liverpool Science Park, 146 Brownlow Hill, Liverpool, L3 5RF, UK;",
-        "Leiden Observatory, Leiden University, P.O. Box 9513, 2300 RA, Leiden, The Netherlands;",
-        "School of Physics, University of New South Wales, Sydney, NSW, 2052, Australia;",
-        "Department of Physics and Astronomy, University of Louisville, Natural Science Building 102, Louisville, KY, 20494, USA;"
-      ],
-      "author": [
-        "Ahad, S. L.",
-        "Hoekstra, H.",
-        "Bahé, Y. M.",
-        "Baldry, I. K.",
-        "Kuijken, K.",
-        "Brough, S.",
-        "Holwerda, B. W."
-      ],
-      "author_count": 7,
-      "bibstem": [
-        "A&A",
-        "A&A...702"
-      ],
-      "doctype": "article",
-      "doi": [
-        "10.1051/0004-6361/202452001",
-        "10.48550/arXiv.2509.00233"
-      ],
-      "pub": "Astronomy and Astrophysics",
-      "pubdate": "2025-10-00",
-      "title": [
-        "The intragroup light in KiDS+GAMA groups: A stacking analysis"
-      ],
-      "year": "2025",
-      "citation_count": 2
-    },
-    {
       "bibcode": "2025A&A...702A.134M",
       "aff": [
         "Institute of Space Sciences (ICE, CSIC), Campus UAB, Carrer de Can Magrans, s/n, E-08193, Barcelona, Spain; Institut d'Estudis Espacials de Catalunya (IEEC), E-08034, Barcelona, Spain; School of Physics, Trinity College Dublin, The University of Dublin, Dublin 2, Ireland; Instituto de Ciencias Exactas y Naturales (ICEN), Universidad Arturo Prat, Chile;",
@@ -1096,6 +1122,44 @@
       "citation_count": 2
     },
     {
+      "bibcode": "2025A&A...702A.271A",
+      "aff": [
+        "Leiden Observatory, Leiden University, P.O. Box 9513, 2300 RA, Leiden, The Netherlands; Waterloo Centre for Astrophysics, University of Waterloo, Waterloo, ON, N2L 3G1, Canada; Department of Physics and Astronomy, University of Waterloo, Waterloo, ON, N2L 3G1, Canada; Center for Astronomy, Space Science, and Astrophysics, Independent University, Dhaka, 1229, Bangladesh;",
+        "Leiden Observatory, Leiden University, P.O. Box 9513, 2300 RA, Leiden, The Netherlands;",
+        "School of Physics and Astronomy, University of Nottingham, University Park, Nottingham, NG7 2RD, UK; Laboratory of Astrophysics, Ecole Polytechnique Fédérale de Lausanne (EPFL), Observatoire de Sauverny, 1290, Versoix, Switzerland;",
+        "Astrophysics Research Institute, Liverpool John Moores University, IC2, Liverpool Science Park, 146 Brownlow Hill, Liverpool, L3 5RF, UK;",
+        "Leiden Observatory, Leiden University, P.O. Box 9513, 2300 RA, Leiden, The Netherlands;",
+        "School of Physics, University of New South Wales, Sydney, NSW, 2052, Australia;",
+        "Department of Physics and Astronomy, University of Louisville, Natural Science Building 102, Louisville, KY, 20494, USA;"
+      ],
+      "author": [
+        "Ahad, S. L.",
+        "Hoekstra, H.",
+        "Bahé, Y. M.",
+        "Baldry, I. K.",
+        "Kuijken, K.",
+        "Brough, S.",
+        "Holwerda, B. W."
+      ],
+      "author_count": 7,
+      "bibstem": [
+        "A&A",
+        "A&A...702"
+      ],
+      "doctype": "article",
+      "doi": [
+        "10.1051/0004-6361/202452001",
+        "10.48550/arXiv.2509.00233"
+      ],
+      "pub": "Astronomy and Astrophysics",
+      "pubdate": "2025-10-00",
+      "title": [
+        "The intragroup light in KiDS+GAMA groups: A stacking analysis"
+      ],
+      "year": "2025",
+      "citation_count": 2
+    },
+    {
       "bibcode": "2025PhRvD.112f3508S",
       "aff": [
         "Department of Astronomy and Astrophysics, University of Chicago, Chicago, Illinois 60637, USA; Kavli Institute for Cosmological Physics, University of Chicago, Chicago, Illinois 60637, USA; Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh, Dhaka 1229, Bangladesh;",
@@ -1121,7 +1185,7 @@
         "Scalar-field dark energy models: Current and forecast constraints"
       ],
       "year": "2025",
-      "citation_count": 65
+      "citation_count": 66
     },
     {
       "bibcode": "2025ApJ...990...51K",
@@ -1255,7 +1319,7 @@
         "GPU-Accelerated Gravitational Lensing and Dynamical (GLaD) modeling for cosmology and galaxies"
       ],
       "year": "2025",
-      "citation_count": 8
+      "citation_count": 9
     },
     {
       "bibcode": "2025ApJ...991...86R",
@@ -1299,7 +1363,7 @@
         "Resolved Stellar and Nebular Kinematics of a Star-forming Galaxy at z ∼ 2"
       ],
       "year": "2025",
-      "citation_count": 4
+      "citation_count": 5
     },
     {
       "bibcode": "2025A&A...700A..92S",
@@ -1454,7 +1518,7 @@
         "Investigating the relation between the environment and internal structure of massive elliptical galaxies using strong lensing"
       ],
       "year": "2025",
-      "citation_count": 2
+      "citation_count": 3
     },
     {
       "bibcode": "2025RSPTA.38340117S",
@@ -1496,7 +1560,7 @@
         "Strong gravitational lenses from the Vera C. Rubin Observatory"
       ],
       "year": "2025",
-      "citation_count": 28
+      "citation_count": 29
     },
     {
       "bibcode": "2025RSPTA.38340134S",
@@ -1650,7 +1714,7 @@
         "Metallicity Scatter Originating from Subkiloparsec Starbursting Clumps in the Core of a Protocluster at z = 7.88"
       ],
       "year": "2025",
-      "citation_count": 15
+      "citation_count": 18
     },
     {
       "bibcode": "2024Natur.636..332M",
@@ -1718,7 +1782,7 @@
         "Formation of a low-mass galaxy from star clusters in a 600-million-year-old Universe"
       ],
       "year": "2024",
-      "citation_count": 132
+      "citation_count": 137
     },
     {
       "bibcode": "2024MNRAS.531..649G",
@@ -2002,7 +2066,7 @@
         "The SARAO MeerKAT 1.3 GHz Galactic Plane Survey"
       ],
       "year": "2024",
-      "citation_count": 80
+      "citation_count": 85
     },
     {
       "bibcode": "2023MNRAS.520.4410T",
@@ -2050,7 +2114,6 @@
     },
     {
       "bibcode": "2023PrCS..222..601H",
-      "citation_count": 3,
       "aff": [
         "Center for Computational &amp; Data Sciences, Independent University, Bangladesh",
         "Center for Computational &amp; Data Sciences, Independent University, Bangladesh",
@@ -2084,7 +2147,8 @@
       "title": [
         "Morphological Classification of Radio Galaxies using Semi-Supervised Group Equivariant CNNs"
       ],
-      "year": "2023"
+      "year": "2023",
+      "citation_count": 3
     },
     {
       "bibcode": "2022ApJ...925..165H",
@@ -2330,7 +2394,7 @@
         "The 1.28 GHz MeerKAT Galactic Center Mosaic"
       ],
       "year": "2022",
-      "citation_count": 143
+      "citation_count": 145
     },
     {
       "bibcode": "2021MNRAS.502.2970A",
@@ -2460,7 +2524,7 @@
         "Improved upper limits on the 21 cm signal power spectrum of neutral hydrogen at z ≈ 9.1 from LOFAR"
       ],
       "year": "2020",
-      "citation_count": 331
+      "citation_count": 332
     },
     {
       "bibcode": "2020MNRAS.493.4728G",
@@ -2760,7 +2824,7 @@
         "The 1.28 GHz MeerKAT DEEP2 Image"
       ],
       "year": "2020",
-      "citation_count": 141
+      "citation_count": 142
     }
   ]
 }

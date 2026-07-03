@@ -20,6 +20,7 @@ export const ADS_LIBRARY_URL = `https://ui.adsabs.harvard.edu/user/libraries/${A
 export const ADS_LIBRARY_BIBCODES: string[] = [
   // Hand-added (not from the public library above) — IUB papers the affiliation
   // search misses because ADS lacks the author's affiliation; see ADS_AFF_OVERRIDES.
+  "2026MNRAS.549g1093R", // S. L. Ahad — "Tracing the dynamical states and mass accretion histories of galaxy clusters in IllustrisTNG" (MNRAS 549)
   "2026A&A...708A.166H", // S. A. Uddin — "The Local Distance Network" (A&A 708, A166)
   "2024MNRAS.531..649G",
   "2023MNRAS.520.4410T",
@@ -48,3 +49,34 @@ export const ADS_AFF_OVERRIDES: Record<string, { author: string; aff: string }[]
     },
   ],
 };
+
+/* Hand-entered papers NOT (yet) in ADS — full metadata frozen here, so they can
+ * appear on the page before ADS indexes the published version. Same shape as an
+ * ADS search doc (the fields the snapshot + page use). fetch-publications.mjs
+ * merges these, deduped by bibcode: once ADS indexes the paper under this exact
+ * bibcode, the live ADS copy wins and the manual entry drops out automatically.
+ * `aff[i]` must name CASSA/IUB for the author whose IUB share should count. */
+export const MANUAL_PAPERS: Record<string, unknown>[] = [
+  {
+    // Published A&A 710, A349 (26 Jun 2026); not yet in ADS as a journal article
+    // (only the arXiv preprint 2026arXiv260606594A, which the doctype filter drops).
+    // Metadata from aanda.org/articles/aa/full_html/2026/06/aa59473-26 + the CASSA
+    // news post. Remove once ADS indexes 2026A&A...710A.349A. Added 2026-07-03.
+    bibcode: "2026A&A...710A.349A",
+    title: ["The accretion history of the Milky Way. V. The kinematics of most globular clusters trace the merger epochs"],
+    author: ["Akib, Istiak Hossain", "Hammer, François", "Yang, Yanbin"],
+    author_count: 3,
+    aff: [
+      "Laboratoire d'Instrumentation et de Recherche en Astrophysique (LIRA), Observatoire de Paris, Université PSL, Sorbonne Université, CNRS, 5 place Jules Janssen, 92190 Meudon, France; Center for Astronomy, Space Science and Astrophysics, Independent University, Bangladesh, Dhaka 1229, Bangladesh",
+      "Laboratoire d'Instrumentation et de Recherche en Astrophysique (LIRA), Observatoire de Paris, Université PSL, Sorbonne Université, CNRS, 5 place Jules Janssen, 92190 Meudon, France",
+      "Laboratoire d'Instrumentation et de Recherche en Astrophysique (LIRA), Observatoire de Paris, Université PSL, Sorbonne Université, CNRS, 5 place Jules Janssen, 92190 Meudon, France",
+    ],
+    year: "2026",
+    pubdate: "2026-06-00",
+    pub: "Astronomy and Astrophysics",
+    bibstem: ["A&A", "A&A...710"],
+    doi: ["10.1051/0004-6361/202659473"],
+    citation_count: 0,
+    doctype: "article",
+  },
+];

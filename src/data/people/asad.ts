@@ -14,9 +14,9 @@ import type { ProfileData } from "./profiles.ts";
 const IUB = "https://iub.ac.bd/";
 
 export const asad: ProfileData = {
-  eyebrow: "People · Director",
-  headline: "A Director of CASSA — custodian of the HPC, radio telescopes and instruments.",
-  roleEyebrow: "Director · CASSA",
+  eyebrow: "People · Core Member",
+  headline: "A Core Member of CASSA — custodian of the HPC, radio telescopes and instruments.",
+  roleEyebrow: "Core Member · CASSA",
 
   links: {
     "Google Scholar": "https://scholar.google.co.za/citations?hl=en&user=w09mn4sAAAAJ",

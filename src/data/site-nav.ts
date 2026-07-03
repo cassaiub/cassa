@@ -42,16 +42,17 @@ export const NAV: NavItem[] = [
         label: "Research",
         children: [
           { href: "/research", label: "Research Areas" },
+          { href: "/research/projects", label: "Projects" },
           { href: "/research/publications", label: "Publications" },
         ],
       },
       {
         label: "Facilities",
         children: [
-          { href: "/research/observatory", label: "IUB Observatory" },
           { href: "/research/core", label: "IUB CORE" },
           { href: "/research/hpc", label: "Timaeus HPC" },
           { href: "/research/tart", label: "TART" },
+          { href: "/research/observatory", label: "CIAO" },
         ],
       },
     ],
@@ -109,21 +110,9 @@ export const NAV: NavItem[] = [
     href: "/newsroom",
     label: "Newsroom",
     live: true,
-    groups: [
-      {
-        label: "Newsroom",
-        children: [
-          { href: "/news", label: "News" },
-          { href: "/events", label: "Events" },
-        ],
-      },
-      {
-        label: "In Bangla",
-        children: [
-          { href: "/outreach/bangla#notun-kotha", label: "নতুন কথা" },
-          { href: "/outreach/bangla#durer-kotha", label: "দূরের কথা" },
-        ],
-      },
+    children: [
+      { href: "/news", label: "News" },
+      { href: "/events", label: "Events" },
     ],
   },
   {

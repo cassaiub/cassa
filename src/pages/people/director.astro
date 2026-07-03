@@ -10,8 +10,10 @@ import { hasProfile } from "../../data/people/profiles.ts";
 /* ── Content ──────────────────────────────────────────────────────────── */
 const published = await getCollection("people", ({ data }) => data.status === "published");
 
-/* Current Director — the person holding the (rotating) office. */
-const director = published.find((p) => p.data.tier === "Director");
+/* Current holder of the (rotating) Office of the Director. Identified by slug —
+   "Director" is not a public tier/label anywhere else on the site (it lives only
+   here and in the holder's CV), so the office page names its holder explicitly. */
+const director = published.find((p) => p.id === "asad");
 
 /* Current Manager (Science) — matched on the role string in `institution`. */
 const manager = published.find((p) => p.data.institution?.startsWith("Manager (Science)"));

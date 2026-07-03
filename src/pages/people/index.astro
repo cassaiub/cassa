@@ -21,10 +21,10 @@ type Person = (typeof allPeople)[number];
 const isScienceManager = (p: Person) => p.data.institution?.startsWith("Manager (Science)") ?? false;
 const isProjectManager = (p: Person) => !isScienceManager(p) && (p.data.institution?.includes("Project Manager") ?? false);
 
-/* The "CASSA Role" pill. Asad is a Director who is also a Core Member: he gets
-   no separate Director row — listed once under Core Members, flagged as both. */
+/* The "CASSA Role" pill. "Director" is not a public label — the current holder
+   of the Office of the Director is listed here by their substantive tier (Core
+   Member); the office itself lives only on the Office of the Director page. */
 const roleLabel = (p: Person) => {
-  if (p.data.tier === "Director" && p.data.cmArea != null) return "Core Member & Director";
   if (isScienceManager(p)) return "Science Manager";
   if (isProjectManager(p)) return "Project Manager";
   return p.data.tier;
@@ -37,7 +37,7 @@ const roleLabel = (p: Person) => {
    today, so hidden). */
 const grouped = [
   { label: "Core Members",
-    people: allPeople.filter((p) => p.data.tier === "Core Member" || (p.data.tier === "Director" && p.data.cmArea != null)) },
+    people: allPeople.filter((p) => p.data.tier === "Core Member") },
   { label: "Associate Members",
     people: allPeople.filter((p) => p.data.tier === "Associate Member") },
   { label: "Affiliates",

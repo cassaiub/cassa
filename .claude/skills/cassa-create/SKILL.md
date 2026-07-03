@@ -312,15 +312,19 @@ without explicit instruction. Deployment is deferred.
    group) was removed site-wide on **2026-05-30**. Do not reintroduce divisions.
    Research is **five un-grouped research areas**, all under CASSA: **CHronOS,
    GATE, RAIN** (radio/cosmology) and **Supernova, Transient** (time-domain),
-   surfaced on one `/research` page. **MATRiX is retired** (→ RAIN). CASSA has
-   **two Directors — K.M.B. Asad and S.A. Uddin** (no "Division Director"). The
-   **"Executive Director" title is removed site-wide "for now"** (user, 2026-05-30);
-   do not add an ED label anywhere unless the user asks. See `references/cassa-facts.md`.
+   surfaced on one `/research` page. **MATRiX is retired** (→ RAIN). **"Director"
+   is NOT a public label** (user, 2026-07-03): there is a single **rotating Office
+   of the Director**, currently held by **Asad**, presented ONLY on the
+   `/people/director` page (which finds its holder by slug, not by tier).
+   Everyone else — including Asad away from that page, and **S.A. Uddin** — is a
+   **Core Member**. "Director" survives only (a) on the Office of the Director
+   page and (b) in Asad's CV work-experience row. Do not label anyone "Director"
+   (or "Division Director"/"Executive Director") anywhere else. See `references/cassa-facts.md`.
 3. **Flag, don't fabricate.** Where the constitution is silent or sources
    conflict, surface it; never invent. Still open: BDOAA officers
    (constitution vs. certification letter), GAM vs GM naming, "Manager
-   (Science)" vs "Science Manager". Two Directors total, no division wording, and
-   no "Executive Director" title anywhere (removed for now — see rule 2).
+   (Science)" vs "Science Manager". No division wording, and no "Director" label
+   for anyone outside the Office of the Director page + Asad's CV (see rule 2).
 4. **No AI-generated images.** Use real CASSA photos, astrophotography, and
    data plots — from the WP media manifest and constitution media. Concept art
    is replaced by a real image or a bespoke interactive, never a generated one.

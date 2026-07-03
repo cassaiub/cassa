@@ -11,8 +11,9 @@ import { hasProfile } from "../../data/people/profiles.ts";
 /* ── Content ──────────────────────────────────────────────────────────── */
 const lastName = (n: string) => n.trim().split(/\s+/).at(-1) ?? n;
 
-/* A Core Member is anyone tagged with a cmArea — including a Director who is
-   also a Core Member (Asad), so he appears here AND on the director page. */
+/* A Core Member is anyone tagged with a cmArea. The current holder of the
+   Office of the Director (Asad) is a Core Member, so he appears here AND on the
+   Office of the Director page. */
 const members = await getCollection("people", ({ data }) =>
   data.cmArea != null && data.status === "published"
 );

@@ -37,9 +37,12 @@ Reference for the **cassa-create** skill. Read this when authoring About / Resea
   SSD, 24 TB HDD; bought via IBSS; arrived 25 Sep 2023); **IUB CORE** (rooftop edu observatory: optical scopes + the STAR Telescope);
   **IUB Observatory** (Kaliakair, 0.5 m optical); **STAR Telescope**
   (Small Transient Array Radio Telescope, formerly START; a CASSA build of the open-source TART = Transient Array Radio Telescope, by Shoaib Mirza). Route: `/research/star`. **Naming:** write "STAR Telescope" (or "START", or "Small TART") — never bare "STAR", which expands to only "Small Transient Array Radio".
-- **Governance:** **two Directors — K.M.B. Asad and S.A. Uddin** (no "Division
-  Director"); the **"Executive Director" title is removed site-wide for now** (do not add it) · Core/Associate/Graduate
-  members · Affiliates · RAs/RIs · Scientific Advisory Board (cl. 18) · Core Meetings.
+- **Governance:** a single **rotating Office of the Director** (currently **K.M.B.
+  Asad**, term 14 Aug 2025 – 13 Aug 2027), presented ONLY on `/people/director`.
+  **"Director" is not a public label** anywhere else — Asad and **S.A. Uddin** are
+  **Core Members** on every other page (2026-07-03); it survives only on the office
+  page + Asad's CV row. No "Division Director"/"Executive Director" title (removed).
+  · Core/Associate/Graduate members · Affiliates · RAs/RIs · Scientific Advisory Board (cl. 18) · Core Meetings.
 - **Three missions (cl. 30):** research (SITO); teaching (**Minor in A&A** —
   15-credit, UGC-approved, core AST 201 + AST 301, began 28 May 2023; plus the
   AST 100 "Our Cosmic (Hi)story" gen-ed course); outreach — **Durbin**

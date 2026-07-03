@@ -51,6 +51,14 @@ export default function FeatureSlider({ slides }: { slides: Slide[] }) {
         else if (e.key === "ArrowLeft") { e.preventDefault(); go(index - 1); }
       }}
     >
+      {/* Institutional identity — fixed under the logo, unchanged as slides fade. */}
+      <div className="fslider__ident">
+        <div className="wrap">
+          <p className="fslider__ident-a">Center for Astronomy, Space Science and Astrophysics</p>
+          <p className="fslider__ident-b">Independent University, Bangladesh (IUB)</p>
+        </div>
+      </div>
+
       {slides.map((s, i) => (
         <article
           key={i}

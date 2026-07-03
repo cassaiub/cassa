@@ -18,8 +18,9 @@ const people = defineCollection({
     ]),
     interests: z.array(z.string()).default([]),
     // Core-Member discipline. Set on anyone shown on /people/core-members —
-    // including a Director who is also a Core Member (e.g. Asad), which is how
-    // one person appears on BOTH the Office of the Director and Core Members pages.
+    // including the current holder of the Office of the Director (Asad), which is
+    // how one person appears on BOTH the Office of the Director and Core Members pages.
+    // ("Director" stays a valid tier for the office but is not a public label.)
     cmArea: z.enum(["A&A", "Theoretical Physics", "Engineering"]).optional(),
     institution: z.string().optional(),
     // Immersive PersonCard rows (directors + members): `education` = PhD &
@@ -45,11 +46,34 @@ const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
   schema: z.object({
     title: z.string(),
+    acronym: z.string().optional(),
+    // The supervisor a project is grouped under on /research/projects. The
+    // landing page's filter bar shows one chip per distinct `supervisor` SURNAME
+    // (last token, alphabetical); the card/detail rail show the full name.
+    // Distinct from `leads` (the project's lead student/person).
+    supervisor: z.string().optional(),
+    // Additional supervisors DISPLAYED alongside `supervisor` (card + detail rail)
+    // but NOT surfaced as their own filter chip — the project still groups under
+    // `supervisor`. e.g. START groups under Asad but also credits Tim Molteno.
+    coSupervisors: z.array(z.string()).default([]),
+    // Lifecycle stage — drives the Ongoing/Completed badge and the "by status"
+    // grouping on /research/projects. Separate from `status` (published/draft).
+    stage: z.enum(["ongoing", "completed"]).default("ongoing"),
+    // Sidebar timeline. Free-form strings so precision can vary ("2024", "Nov 2025",
+    // "17 Nov 2025"). endDate is omitted for ongoing projects (renders "– present").
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+    leads: z.array(z.string()).default([]), // lead student(s)/person
+    mentors: z.array(z.string()).default([]), // advisory mentor(s), distinct from supervisor
+    team: z.array(z.string()).default([]), // other current members
+    alumni: z.array(z.string()).default([]), // past members
+    // Legacy research-area tag. No longer drives grouping/filter (regrouped by
+    // supervisor 2026-07-03); kept optional so old frontmatter still validates.
     area: z.string().optional(),
-    leads: z.array(z.string()).default([]),
     summary: z.string().optional(),
     hero: z.string().optional(),
     links: z.record(z.string(), z.string()).default({}),
+    order: z.number().default(0),
     status: z.enum(["published", "draft"]).default("published"),
   }),
 });

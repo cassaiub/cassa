@@ -70,10 +70,13 @@ const schemas = [organizationSchema(), websiteSchema(), ...pageSchemas];
       noindex={noindex}
     />
     {schemas.map((s) => <JsonLd schema={s} />)}
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.png" type="image/png" sizes="256x256" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {/* ?v= cache-buster — favicons are cached hard by Cloudflare + browsers;
+        bump this token whenever the icon changes so the new URL bypasses the
+        stale cache instead of serving the old icon for up to a week. */}
+    <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
+    <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png?v=2" type="image/png" sizes="256x256" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
     {/* Bangla webfont — Noto Serif Bengali. unicode-range (from Google) limits
         it to the Bengali block, so it only loads on pages with Bangla text and
         Latin glyphs keep using the system stack. */}

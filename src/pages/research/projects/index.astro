@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
+import Reveal from "../../../components/immersive/Reveal.astro";
+import ProjectCard from "../../../components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = await getCollection("projects", ({ data }) => data.status !== "draft");
+
+/* Supervisor SURNAME (last token of the full name) — the filter key + button label. */
+const surname = (n?: string) => (n ?? "").trim().split(/\s+/).pop() ?? "";
+/* Flat list, alphabetical by displayed name (acronym → title). No grouping. */
+const headOf = (p: (typeof projects)[number]) => p.data.acronym ?? p.data.title;
+const sorted = [...projects].sort((a, b) => headOf(a).localeCompare(headOf(b), "en"));
+
+/* Supervisor filter chips — alphabetical surnames. */
+const supervisors = [...new Set(projects.map((p) => surname(p.data.supervisor)).filter(Boolean))].sort((a, b) =>
+  a.localeCompare(b, "en"),
+);
+---
+
+<BaseLayout
+  title="Research Projects — CASSA"
+  description="The research projects of CASSA — from radio-galaxy classification and cluster X-ray mapping to cosmic-hydrogen observation and radio-telescope instrumentation. Filter by supervisor or by status."
+  current="/research/projects"
+>
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="Research"
+    title="Research Projects"
+    lede="The specific investigations under way across CASSA — the questions, the instruments, and the people driving each. Filter by supervisor or by status."
+  />
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal>
+        <div class="pfilters">
+          <div class="pfilters__group">
+            <span class="pfilters__label">Supervisor</span>
+            <div class="pchips" role="group" aria-label="Filter projects by supervisor">
+              <button type="button" class="pchip is-active" data-sup="all" aria-pressed="true">All</button>
+              {supervisors.map((s) => (
+                <button type="button" class="pchip" data-sup={s} aria-pressed="false">{s}</button>
+              ))}
+            </div>
+          </div>
+
+          <span class="pfilters__sep" aria-hidden="true"></span>
+
+          <div class="pfilters__group">
+            <span class="pfilters__label">Status</span>
+            <div class="pchips" role="group" aria-label="Filter projects by status">
+              <button type="button" class="pchip is-active" data-stage-filter="all" aria-pressed="true">All</button>
+              <button type="button" class="pchip" data-stage-filter="ongoing" aria-pressed="false">Ongoing</button>
+              <button type="button" class="pchip" data-stage-filter="completed" aria-pressed="false">Completed</button>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal delay={60}>
+        <p class="pcount"><span data-pcount>{sorted.length}</span> projects</p>
+      </Reveal>
+
+      <div class="pgrid" id="project-list">
+        {sorted.map((p, i) => (
+          <Reveal delay={40 + (i % 6) * 50}><ProjectCard project={p} /></Reveal>
+        ))}
+      </div>
+      <p class="pempty" data-pempty hidden>No projects match this filter.</p>
+    </div>
+  </section>
+
+  {/* is:inline — a hoisted bare script in slot content is dropped from the build. */}
+  <script is:inline>
+    (function () {
+      var list = document.getElementById("project-list");
+      if (!list) return;
+      var cards = Array.prototype.slice.call(list.querySelectorAll(".pcard"));
+      var empty = document.querySelector("[data-pempty]");
+      var countEl = document.querySelector("[data-pcount]");
+      var cur = { sup: "all", stage: "all" };
+
+      function apply() {
+        var shown = 0;
+        cards.forEach(function (c) {
+          var okSup = cur.sup === "all" || c.getAttribute("data-supervisor") === cur.sup;
+          var okStage = cur.stage === "all" || c.getAttribute("data-stage") === cur.stage;
+          var m = okSup && okStage;
+          c.parentElement.hidden = !m; // the Reveal wrapper is the grid item
+          if (m) shown++;
+        });
+        if (empty) empty.hidden = shown !== 0;
+        if (countEl) countEl.textContent = String(shown);
+      }
+
+      function wire(selector, attr, key) {
+        var btns = Array.prototype.slice.call(document.querySelectorAll(selector));
+        btns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            cur[key] = btn.getAttribute(attr);
+            btns.forEach(function (b) {
+              var on = b === btn;
+              b.classList.toggle("is-active", on);
+              b.setAttribute("aria-pressed", on ? "true" : "false");
+            });
+            apply();
+          });
+        });
+      }
+
+      wire("button[data-sup]", "data-sup", "sup");
+      wire("button[data-stage-filter]", "data-stage-filter", "stage");
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  /* ── Filter bar — airy, warm-gold active state (accent-ink, not white) ── */
+  .pfilters {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem 1.9rem;
+    margin-top: 0.4rem;
+  }
+  .pfilters__group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; }
+  .pfilters__label {
+    font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 700; color: var(--ink-faint);
+  }
+  .pfilters__sep { width: 1px; align-self: stretch; min-height: 1.7rem; background: var(--line); }
+  .pchips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .pchip {
+    font: inherit; font-size: 0.8rem; font-weight: 600; line-height: 1;
+    padding: 0.5rem 0.95rem; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: transparent; color: var(--ink-soft);
+    transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .pchip:hover { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .pchip.is-active {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+  @media (max-width: 560px) { .pfilters__sep { display: none; } }
+
+  .pcount {
+    margin: 1.4rem 0 0; font-size: 0.72rem; letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 600; color: var(--ink-faint);
+  }
+  .pcount span { color: var(--ink); }
+
+  .pgrid {
+    display: grid; gap: 1.3rem; margin-top: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+  }
+  .pempty { color: var(--ink-soft); margin-top: 2rem; }
+</style>

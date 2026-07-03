@@ -1,160 +1,19 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
-import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
-import Reveal from "../../components/immersive/Reveal.astro";
-import Prose from "../../components/immersive/Prose.astro";
-import { withBase } from "../../data/site-nav.ts";
 ---
 
 <BaseLayout
-  title="IUB Observatory — CASSA Facilities"
-  description="A 0.5 m optical telescope in an autotracking dome at the Kaliakair campus — CASSA's dedicated mid-research-grade optical facility."
+  title="CIAO — CASSA IUB Astronomical Observatory"
+  description="CIAO (CASSA IUB Astronomical Observatory) — a research-grade observatory at a remote site, proposed by Dr. S.A. Uddin. Currently under planning."
   current="/research/observatory"
 >
-  <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
+  <!-- Minimal placeholder — the observatory is at the planning stage; no details yet. -->
   <AnimatedHero
     theme="lensing"
     eyebrow="Research · Facilities"
-    title="IUB Observatory"
-    lede="A 0.5 m optical telescope in an autotracking dome at the Kaliakair campus — CASSA's dedicated mid-research-grade optical facility."
+    title="CIAO"
+    lede="CASSA IUB Astronomical Observatory — a research-grade observatory at a remote site, proposed by Dr. S.A. Uddin. Currently under planning."
+    cue={false}
   />
-
-  <!-- ── Facility sub-nav strip ────────────────────────────────────────── -->
-  <nav style="background:var(--bg-elev);border-bottom:1px solid var(--line)">
-    <div class="wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;padding-block:.85rem">
-      <a href={withBase('/research')} style="color:var(--ink-faint);font-size:.85rem;padding:.3rem .7rem;border-radius:999px">← Research</a>
-      {[
-        { href: "/research/observatory", label: "IUB Observatory" },
-        { href: "/research/core",        label: "IUB CORE" },
-        { href: "/research/hpc",         label: "Timaeus HPC" },
-        { href: "/research/tart",       label: "TART" },
-      ].map(s => (
-        <a href={withBase(s.href)} style={`font-size:.85rem;padding:.3rem .75rem;border-radius:999px;${s.href === '/research/observatory' ? 'background:var(--accent);color:#1a1206;font-weight:600' : 'color:var(--ink-soft);border:1px solid var(--line)'}`}>{s.label}</a>
-      ))}
-    </div>
-  </nav>
-
-  <!-- ── Section 1: Overview ───────────────────────────────────────────── -->
-  <section class="section section--elev">
-    <div class="wrap">
-      <Reveal><p class="eyebrow">Optical Research Observatory</p></Reveal>
-      <Reveal delay={70}><h2 class="section-h2">About the IUB Observatory</h2></Reveal>
-      <Reveal delay={120}>
-        <Prose>
-          <p>
-            The IUB Observatory at the Kaliakair campus is CASSA's primary research-grade optical
-            facility, under the executive control of CASSA and its Directors. The observatory is
-            equipped with a 0.5 m optical telescope mounted
-            in an autotracking dome, designed for sustained observational campaigns on transient
-            phenomena and supernova follow-up.
-          </p>
-        </Prose>
-      </Reveal>
-
-      <div class="pg">
-        <Reveal class="card" delay={0}>
-          <p class="eyebrow" style="font-size:.68rem">Location</p>
-          <h3 style="font-size:1.15rem;margin-top:.45rem">Location</h3>
-          <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">Kaliakair campus, Gazipur, Bangladesh</p>
-        </Reveal>
-        <Reveal class="card" delay={100}>
-          <p class="eyebrow" style="font-size:.68rem">Primary Instrument</p>
-          <h3 style="font-size:1.15rem;margin-top:.45rem">Primary Instrument</h3>
-          <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">0.5 m optical telescope in an autotracking dome</p>
-        </Reveal>
-        <Reveal class="card" delay={200}>
-          <p class="eyebrow" style="font-size:.68rem">Oversight</p>
-          <h3 style="font-size:1.15rem;margin-top:.45rem">Oversight</h3>
-          <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">CASSA — executive control</p>
-        </Reveal>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Animated band ─────────────────────────────────────────────────── -->
-  <AnimatedBand theme="cosmic">
-    <Reveal>
-      <p class="eyebrow" style="color:#fff;opacity:.85">Operations</p>
-      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:22ch">Access &amp; Policy</h2>
-    </Reveal>
-  </AnimatedBand>
-
-  <!-- ── Section 2: Access & Data Policy ──────────────────────────────── -->
-  <section class="section section--elev-2">
-    <div class="wrap">
-      <Reveal><p class="eyebrow">Observatory Operations</p></Reveal>
-      <Reveal delay={60}><h2 class="section-h2">Access and data policy</h2></Reveal>
-
-      <Reveal delay={110}>
-        <Prose>
-          <p>
-            Access to the IUB Observatory is restricted to certified CASSA members and their
-            supervised students. Observer certification is governed by the CASSA Observatory
-            Manual (Constitution Appendix G).
-          </p>
-        </Prose>
-      </Reveal>
-
-      <Reveal delay={160}>
-        <Prose>
-          <p>
-            All observational data collected at the IUB Observatory carries a <strong>12-month
-            proprietary period</strong> from the date of observation. After this period, data is
-            eligible for archival and broader sharing per the CASSA data policy.
-          </p>
-        </Prose>
-      </Reveal>
-
-      <Reveal delay={210}>
-        <Prose>
-          <p>
-            Environmental closure thresholds (wind, humidity, cloud cover) are defined in the
-            Observatory Manual and must be observed at all times.
-          </p>
-        </Prose>
-      </Reveal>
-
-      <Reveal delay={260}>
-        <div class="card" style="margin-top:2rem;border-left:3px solid var(--accent);padding-left:1.25rem">
-          <p style="color:var(--ink-soft);font-size:.97rem;line-height:1.65">
-            For observatory access requests, contact Director Syed Ashraf Uddin
-            (<a href="mailto:uddinsa@iub.edu.bd" style="color:var(--accent)">uddinsa@iub.edu.bd</a>).
-          </p>
-        </div>
-      </Reveal>
-    </div>
-  </section>
-
-  <!-- ── Section 3: Science capabilities ──────────────────────────────── -->
-  <section class="section section--elev">
-    <div class="wrap">
-      <Reveal><p class="eyebrow">Science</p></Reveal>
-      <Reveal delay={60}><h2 class="section-h2">Science capabilities</h2></Reveal>
-      <div class="pg">
-        <Reveal class="card" delay={0}>
-          <p class="eyebrow" style="font-size:.68rem">Capability</p>
-          <h3 style="font-size:1.15rem;margin-top:.45rem">Transient Astronomy</h3>
-          <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">Follow-up of time-domain events, supernovae, variable stars</p>
-        </Reveal>
-        <Reveal class="card" delay={100}>
-          <p class="eyebrow" style="font-size:.68rem">Capability</p>
-          <h3 style="font-size:1.15rem;margin-top:.45rem">Photometric Surveys</h3>
-          <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">Multi-band photometry and imaging campaigns</p>
-        </Reveal>
-        <Reveal class="card" delay={200}>
-          <p class="eyebrow" style="font-size:.68rem">Capability</p>
-          <h3 style="font-size:1.15rem;margin-top:.45rem">Educational Use</h3>
-          <p style="color:var(--ink-soft);margin-top:.7rem;font-size:.97rem;line-height:1.65">Supervised student observing sessions under CASSA members</p>
-        </Reveal>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
-
-<style>
-.pg { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2rem; }
-@media (max-width:860px) { .pg { grid-template-columns:repeat(2,1fr); } }
-@media (max-width:540px) { .pg { grid-template-columns:1fr; } }
-.section-h2 { font-size:clamp(1.6rem,3.4vw,2.3rem); letter-spacing:-.015em; margin:.3rem 0 0; color:var(--ink); }
-</style>

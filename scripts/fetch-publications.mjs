@@ -25,7 +25,7 @@
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { ADS_LIBRARY_BIBCODES, ADS_LIBRARY_URL, ADS_AFF_OVERRIDES } from "../src/data/ads-library.ts";
+import { ADS_LIBRARY_BIBCODES, ADS_LIBRARY_URL, ADS_AFF_OVERRIDES, MANUAL_PAPERS } from "../src/data/ads-library.ts";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT  = resolve(ROOT, "src/data/publications-snapshot.json");
@@ -66,10 +66,15 @@ try {
   const seen = new Set(affPapers.map((p) => p.bibcode));
   const newFromLib = libPapers.filter((p) => !seen.has(p.bibcode));
 
+  // Hand-entered papers not (yet) in ADS — only those whose bibcode ADS hasn't
+  // surfaced (once indexed, the live ADS copy wins and the manual one drops out).
+  const seenLive = new Set([...affPapers, ...newFromLib].map((p) => p.bibcode));
+  const manualNew = MANUAL_PAPERS.filter((p) => !seenLive.has(p.bibcode));
+
   // Keep only journal + conference papers (drop software deposits, errata, etc.).
   const PAPER_DOCTYPES = new Set(["article", "inproceedings", "proceedings"]);
   const isPaper = (p) => PAPER_DOCTYPES.has(p.doctype ?? "");
-  const papers = [...affPapers, ...newFromLib]
+  const papers = [...affPapers, ...newFromLib, ...manualNew]
     .filter(isPaper)
     .sort((a, b) =>
       (b.pubdate ?? "").localeCompare(a.pubdate ?? "")
