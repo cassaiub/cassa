@@ -608,6 +608,17 @@ html[data-cal-ready] .ev-fallback { display: none; }
   .prose-cassa .article-figure { --fig-bleed: 0rem; width: 100%; margin-inline: 0; }
 }
 
+/* Size modifiers — set from markdown via the image title (![alt](src "md")).
+   For portrait/tall images that would dominate the column at full width:
+   no breakout, capped width, centered. */
+.prose-cassa .article-figure--md,
+.prose-cassa .article-figure--sm {
+  --fig-bleed: 0rem;
+  margin-inline: auto;
+}
+.prose-cassa .article-figure--md { width: min(100%, 30rem); }
+.prose-cassa .article-figure--sm { width: min(100%, 22rem); }
+
 /* The image plate: rounded frame floating on a layered, accent-tinted shadow. */
 .prose-cassa .article-figure > img {
   width: 100%; height: auto; display: block; margin: 0;

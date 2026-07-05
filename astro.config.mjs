@@ -36,20 +36,33 @@ function rehypeArticleFigure() {
       : null;
   };
 
-  const makeFigure = (img, em /* may be null */) => ({
-    type: 'element',
-    tagName: 'figure',
-    properties: { className: ['article-figure'], 'data-figure': '' },
-    children: [
-      img,
-      {
-        type: 'element',
-        tagName: 'figcaption',
-        properties: { className: ['article-figure__cap'] },
-        children: em ? em.children : [],
+  // Optional size hint via the markdown image title — ![alt](src "md") —
+  // becomes an article-figure--{sm|md} modifier (styled in global.css) and the
+  // title attribute is dropped (it was never meant as a tooltip). Use for
+  // portrait/tall images that would dominate the column at full width.
+  const SIZES = new Set(['sm', 'md']);
+
+  const makeFigure = (img, em /* may be null */) => {
+    const size = img.properties && SIZES.has(img.properties.title) ? img.properties.title : null;
+    if (size) delete img.properties.title;
+    return {
+      type: 'element',
+      tagName: 'figure',
+      properties: {
+        className: ['article-figure', ...(size ? [`article-figure--${size}`] : [])],
+        'data-figure': '',
       },
-    ],
-  });
+      children: [
+        img,
+        {
+          type: 'element',
+          tagName: 'figcaption',
+          properties: { className: ['article-figure__cap'] },
+          children: em ? em.children : [],
+        },
+      ],
+    };
+  };
 
   const walk = (parent) => {
     if (!parent || !Array.isArray(parent.children)) return;
@@ -79,23 +92,28 @@ function rehypeArticleFigure() {
     parent.children = out;
   };
 
-  // Second pass: group a run of 2+ consecutive figures into one .article-gallery
-  // (a responsive grid). Single figures are left standalone.
+  // Second pass: group a run of 2+ consecutive CAPTION-LESS figures into one
+  // .article-gallery (a responsive grid; the grid hides captions, so a figure
+  // that carries its own caption always stands alone — consecutive captioned
+  // figures stack one after another). Single figures are left standalone.
   const isFig = (n) =>
     n && n.type === 'element' && n.tagName === 'figure' &&
     Array.isArray(n.properties && n.properties.className) && n.properties.className.includes('article-figure');
+  const hasCaption = (n) =>
+    (n.children || []).some((c) => isEl(c, 'figcaption') && meaningful(c).length > 0);
+  const isBareFig = (n) => isFig(n) && !hasCaption(n);
   const group = (parent) => {
     if (!parent || !Array.isArray(parent.children)) return;
     const out = [];
     let i = 0;
     while (i < parent.children.length) {
       const node = parent.children[i];
-      if (isFig(node)) {
+      if (isBareFig(node)) {
         const run = [node];
         let j = i + 1;
         while (j < parent.children.length) {
           if (isBlank(parent.children[j])) { j++; continue; }
-          if (isFig(parent.children[j])) { run.push(parent.children[j]); j++; continue; }
+          if (isBareFig(parent.children[j])) { run.push(parent.children[j]); j++; continue; }
           break;
         }
         if (run.length >= 2) {
