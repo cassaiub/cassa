@@ -40,7 +40,7 @@ Deadline: January 11, 2026 (11:59:59 PM)
 | Farhana Ferdous | BracU | Dhaka |
 | Fariba Nehreen Binti | CU | Chattogram |
 | Md. Hasan Mahmud Sajib | CU | Chattogram |
-| Rownok Shahariar | Edward College | Pabna |
+| Rownok Shahriar | Edward College | Pabna |
 | Afrin Rahman Purba | IUB | Dhaka |
 | Ashratul Zannati Purnota | IUB | Dhaka |
 | Asmaul Husna Juhana | IUB | Dhaka |

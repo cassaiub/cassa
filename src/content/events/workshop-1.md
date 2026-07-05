@@ -90,7 +90,7 @@ The following is the tentative schedule, which may be subject to minor changes u
 | Deba Priyo Guha | Rajshahi University of Engineering and Technology | 5 |
 | M.O.B. JIHAD | American International University-Bangladesh | 6 |
 | Hameeda Ahmadi | Asian University for Women | 6 |
-| Rownok Shahariar | Govt. Edward College, Pabna | 6 |
+| Rownok Shahriar | Govt. Edward College, Pabna | 6 |
 | Md. Abu Azad Tamim | University of Chittagong | 6 |
 | Masuk Ridwan Saumo | Bangladesh University of Engineering and Technology | 7 |
 | MD. SHAYED HASAN SAHKIB | Daffodil International University | 7 |

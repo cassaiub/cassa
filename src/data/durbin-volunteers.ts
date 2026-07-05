@@ -15,7 +15,7 @@ export const current: Volunteer[] = [
   { name: "Mozammal Hossain Masum", region: "Dhaka", institution: "IUB" },
   { name: "MST. MARIA KHATUN", region: "Pabna", institution: "Edward" },
   { name: "Nafia Papry", region: "Dhaka", institution: "BRACU" },
-  { name: "Rownok Shahariar", region: "Pabna", institution: "Edward" },
+  { name: "Rownok Shahriar", region: "Pabna", institution: "Edward" },
   { name: "Shaibal Saha", region: "Dhaka", institution: "ULAB" },
   { name: "Shanjida Nahar", region: "Gopalganj", institution: "GSTU" },
   { name: "Sowmi Sarker", region: "Dhaka", institution: "AIUB" },

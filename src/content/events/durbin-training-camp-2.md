@@ -71,7 +71,7 @@ Independent University, Bangladesh
 | Fariba Nehreen Binti | Chattogram | University of Chittagong |
 | Farzana Yasmin | Dhaka | Daffodil International University |
 | Hredeta Nag | Dhaka | Independent University, Bangladesh |
-| Iman Sheikh | Dhaka | Independent University, Bangladesh |
+| Aiman Sheikh | Dhaka | Independent University, Bangladesh |
 | Kashfia Rahman | Dhaka | Independent University Bangladesh |
 | Kazi Nusrat Tasneem | Sylhet | Shahjalal University of Science and Technology |
 | Laboni Akter Setu | Barishal | Barishal University |
@@ -90,7 +90,7 @@ Independent University, Bangladesh
 | Nafia Papry | Dhaka | BRAC University |
 | Nafisa Tabbassum | Dhaka | United international University |
 | Raiyan Kawsar | Dhaka | University of Dhaka |
-| Rownok Shahariar | Pabna | Govt. Edward College |
+| Rownok Shahriar | Pabna | Govt. Edward College |
 | SADIA AFRIN | Jashore | Jashore University of Science and Technology |
 | Shanjida Nahar | Gopalganj | Gopalganj Science and Technology University |
 | Sujana Tanjin | Dhaka | Daffodil International University |
