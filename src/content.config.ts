@@ -182,23 +182,11 @@ const events = defineCollection({
       lang: z.enum(["en", "bn"]).default("en"),
       status: z.enum(["published", "draft"]).default("published"),
       // Interim RSVP affordance: renders a disabled "RSVP — coming soon" button
-      // in the detail-page sidebar. Distinct from `rsvp` (the live RsvpForm) —
-      // used while the replacement RSVP system is being built. Remove once live.
+      // in the detail-page sidebar, for events whose Inside form isn't open yet.
+      // RSVPs/registrations are collected on Inside (inside.cassa.bd/forms/…) —
+      // link the form via `register` once it opens. The old on-site RSVP system
+      // (RsvpForm + public/api/rsvp.php) was removed 2026-07-09.
       rsvpComingSoon: z.boolean().default(false),
-      // Site-wide RSVP opt-in. `true` → default fields; an object selects which
-      // fields to collect (name is always included) plus an optional deadline/intro.
-      // Absent → no RSVP form. One backend serves every event; see src/data/rsvp.ts.
-      rsvp: z
-        .union([
-          z.boolean(),
-          z.object({
-            fields: z.array(z.enum(["email", "phone", "affiliation", "studentId", "guests", "notes"])).optional(),
-            deadline: z.coerce.date().optional(),
-            intro: z.string().optional(),
-            capacity: z.number().int().positive().optional(),
-          }),
-        ])
-        .optional(),
     }),
 });
 

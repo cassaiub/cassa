@@ -9,7 +9,7 @@ category: "Colloquium"
 summary: "Speaker (online): Dr Tim Molteno, University of Otago, New Zealand — lead of the TART open-source radio telescope project — on VLBI between TART sites, the Software Defined Radio Telescope (SDTART), and current TART research projects."
 featured: true
 theme: "cosmic"
-rsvpComingSoon: true
+register: "https://inside.cassa.bd/forms/colloquium/2026-07-09-a"
 hero: "../../assets/events/colloquium-14/molteno.webp"
 heroAlt: "Dr. Tim Molteno, lead of the TART radio telescope project, at the CASSA radio-telescope installation workshop."
 ---
@@ -20,7 +20,9 @@ The talk will be delivered online at **3:00 pm Bangladesh time (9:00 pm in New Z
 
 ## Abstract
 
-The Transient Array Radio Telescope (TART) project has developed rapidly since the [installation workshop held at CASSA in November 2025](/news/cassa-workshop-2-innauguration). I will outline some exciting recent developments including VLBI between TART sites, new hardware designs for real-time streaming of raw data (the Software Defined Radio Telescope, or SDTART), and give an overview of some current TART research projects.
+TART — the Transient Array Radio Telescope, an open-source 24-antenna aperture-synthesis array developed at the University of Otago — [was installed at IUB in November 2025](/news/tart-installation), when CASSA hosted a five-day hands-on workshop with students from IUB and ten other universities. The array structure was designed and fabricated at Fab Lab IUB, and under Dr Molteno's on-site supervision the telescope achieved first light on 18 November 2025, becoming Bangladesh's first radio telescope and joining sister arrays across New Zealand, Africa and the Indian Ocean — details, and a map of the global TART network, are on our [TART facility page](/research/tart). In this colloquium, Dr Molteno tells us what has happened since. In his own words:
+
+The Transient Array Radio Telescope (TART) project has developed rapidly since the [installation workshop held at CASSA in November 2025](/news/cassa-workshop-2-innauguration). I will outline some exciting recent developments including VLBI — very long baseline interferometry, where signals recorded by radio telescopes hundreds or thousands of kilometres apart are combined so that they act as a single instrument with extraordinarily sharp angular resolution — between TART sites, new hardware designs for real-time streaming of raw data (the Software Defined Radio Telescope, or SDTART), and give an overview of some current TART research projects.
 
 ![The TART radio telescope array on the rooftop of IUB's academic building, with the Dhaka skyline behind it](../../assets/events/colloquium-14/tart-rooftop.webp)
 

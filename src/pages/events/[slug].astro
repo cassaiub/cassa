@@ -2,12 +2,10 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
 import Prose from "../../components/immersive/Prose.astro";
-import RsvpForm from "../../components/RsvpForm.tsx";
 import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 import { eventSchema, absoluteUrl } from "../../data/seo.ts";
-import { resolveRsvp, RSVP_ENDPOINT, RSVP_COUNT_ENDPOINT } from "../../data/rsvp.ts";
 
 export async function getStaticPaths() {
   const events = await getCollection("events", ({ data }) => data.status !== "draft");
@@ -56,9 +54,6 @@ const seriesLabel = d.category ?? d.series;
 const registerExternal = !!d.register && /^https?:\/\//.test(d.register);
 const registerHref = d.register ? (registerExternal ? d.register : withBase(d.register)) : null;
 
-// RSVP: one site-wide form, opted into per-event via frontmatter.
-const rsvp = resolveRsvp(d.rsvp as any);
-const rsvpDeadline = rsvp?.deadline instanceof Date ? rsvp.deadline.toISOString() : rsvp?.deadline;
 
 // SEO: Event structured data + canonical.
 const canonical = absoluteUrl(withBase(`/events/${entry.id}`));
@@ -131,19 +126,6 @@ const eventLd = eventSchema({
             RSVP — coming soon
           </button>
         )}
-        {rsvp && (
-          <RsvpForm
-            client:visible
-            eventSlug={entry.id}
-            eventTitle={d.title}
-            fields={rsvp.fields}
-            endpoint={withBase(RSVP_ENDPOINT)}
-            countEndpoint={withBase(RSVP_COUNT_ENDPOINT)}
-            deadline={rsvpDeadline}
-            intro={rsvp.intro}
-            capacity={rsvp.capacity}
-          />
-        )}
       </aside>
 
       <div class="ev-content" data-reveal style="--reveal-delay:80ms">
@@ -182,7 +164,6 @@ const eventLd = eventSchema({
 
   /* Left column: meta card + the RSVP form, stacked. */
   .ev-side { display:flex; flex-direction:column; gap:1.4rem; }
-  .ev-side :global(.rsvp) { margin-top:0; } /* spacing comes from the column gap */
 
   .ev-meta {
     display:flex; flex-direction:column; gap:1.3rem;
