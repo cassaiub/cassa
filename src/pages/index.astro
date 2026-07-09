@@ -78,7 +78,19 @@ const featuredOpps: FeaturedSlide[] = (
   excerpt: o.data.summary ?? "",
   href: withBase(`/opportunities/${o.id}`),
 }));
-const featuredSlides: Slide[] = [...featuredNews, ...featuredOpps]
+// A flagged event (e.g. a marquee colloquium) can also headline the hero. Keyed
+// on the event's start date so an upcoming event sorts to the front.
+const featuredEventSlides: FeaturedSlide[] = (
+  await getCollection("events", ({ data }) => data.status !== "draft" && data.featured === true)
+).map((e) => ({
+  date: e.data.start,
+  theme: e.data.theme ?? "cosmic",
+  eyebrow: `${e.data.category ?? "Event"} · ${monthYear(e.data.start)}`,
+  title: e.data.title,
+  excerpt: e.data.summary ?? "",
+  href: withBase(`/events/${e.id}`),
+}));
+const featuredSlides: Slide[] = [...featuredNews, ...featuredOpps, ...featuredEventSlides]
   .sort((a, b) => +b.date - +a.date)
   .slice(0, 3)
   .map(({ theme, eyebrow, title, excerpt, href }) => ({ theme, eyebrow, title, excerpt, href }));

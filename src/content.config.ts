@@ -173,8 +173,18 @@ const events = defineCollection({
       hero: image().optional(),
       heroAlt: z.string().optional(),
       paperTitle: z.string().optional(),
+      // Eligible for the home hero carousel (mirrors news.featured). A flagged
+      // event is merged with featured news/opportunities, newest-first, capped
+      // at 3 slides. The slide backdrop is a code-generated SkyCanvas keyed by
+      // `theme` (NOT the hero image), so featuring works even without a hero.
+      featured: z.boolean().default(false),
+      theme: z.enum(["cosmic", "lensing", "galaxy"]).optional(), // SkyCanvas backdrop when featured
       lang: z.enum(["en", "bn"]).default("en"),
       status: z.enum(["published", "draft"]).default("published"),
+      // Interim RSVP affordance: renders a disabled "RSVP — coming soon" button
+      // in the detail-page sidebar. Distinct from `rsvp` (the live RsvpForm) —
+      // used while the replacement RSVP system is being built. Remove once live.
+      rsvpComingSoon: z.boolean().default(false),
       // Site-wide RSVP opt-in. `true` → default fields; an object selects which
       // fields to collect (name is always included) plus an optional deadline/intro.
       // Absent → no RSVP form. One backend serves every event; see src/data/rsvp.ts.

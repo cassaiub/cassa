@@ -126,6 +126,11 @@ const eventLd = eventSchema({
             Register{registerExternal ? " ↗" : ""}
           </a>
         )}
+        {d.rsvpComingSoon && (
+          <button class="btn btn--solid ev-register ev-rsvp-soon" type="button" disabled aria-disabled="true">
+            RSVP — coming soon
+          </button>
+        )}
         {rsvp && (
           <RsvpForm
             client:visible
@@ -198,6 +203,9 @@ const eventLd = eventSchema({
 
   /* Registration button under the meta card (left column). */
   .ev-register { width:100%; justify-content:center; text-align:center; }
+
+  /* Interim RSVP affordance — disabled until the new RSVP system ships. */
+  .ev-rsvp-soon { opacity:.55; cursor:not-allowed; pointer-events:none; }
 
   .ev-cta { margin-top:1.8rem; }
   .ev-back { margin-top:1.8rem; }

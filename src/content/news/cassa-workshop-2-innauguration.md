@@ -36,4 +36,6 @@ As tokens of appreciation for their support, CASSA presented each of the disting
 
 The ceremony concluded with a vote of thanks delivered by Dr. Asad, who did his PhD in Radio Astronomy at the University of Groningen, Netherlands. Guests and participants visited the CASSA Office where they were introduced with the TART. The five-day workshop, from November 17–21, includes lectures, hands-on sessions, data collection, imaging exercises, and SKA-related simulations led by Dr. Molteno, Dr. Asad, and Dr. Benjamin Hugo of the South African Radio Astronomy Observatory.
 
-[embed](https://www.canva.com/design/DAG59e9y8j8/lJtwgTfk-dbv7OWOIPQZ3g/view?embed)
+<iframe src="https://www.canva.com/design/DAG59e9y8j8/lJtwgTfk-dbv7OWOIPQZ3g/view?embed" title="Photo slideshow from the opening of the CASSA radio-telescope installation workshop" style="width: 100%; aspect-ratio: 16 / 9; height: auto;" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+
+*Photo slideshow from the opening ceremony ([view on Canva](https://www.canva.com/design/DAG59e9y8j8/lJtwgTfk-dbv7OWOIPQZ3g/view)).*
