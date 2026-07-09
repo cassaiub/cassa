@@ -15,6 +15,7 @@
     "update:publications": "node scripts/fetch-publications.mjs"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.9",
     "@astrojs/react": "5.0.5",
     "@astrojs/sitemap": "3.7.3",
     "@tailwindcss/vite": "4.3.0",
@@ -23,7 +24,8 @@
     "react-dom": "^19.2.6",
     "rehype-mathjax": "^7.1.0",
     "remark-math": "^6.0.0",
-    "tailwindcss": "4.3.0"
+    "tailwindcss": "4.3.0",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",

@@ -6,6 +6,8 @@ import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 import { eventSchema, absoluteUrl } from "../../data/seo.ts";
+import { capacityForVenue, seatCountUrl } from "../../data/venues.ts";
+import SeatCounter from "../../components/SeatCounter.tsx";
 
 export async function getStaticPaths() {
   const events = await getCollection("events", ({ data }) => data.status !== "draft");
@@ -54,6 +56,11 @@ const seriesLabel = d.category ?? d.series;
 const registerExternal = !!d.register && /^https?:\/\//.test(d.register);
 const registerHref = d.register ? (registerExternal ? d.register : withBase(d.register)) : null;
 
+// Seat tally: when the register link is an Inside form, show a live
+// "N / capacity seats reserved" counter under the button. Capacity comes from
+// the venue (or a `seats:` override); the Inside count API's capacity wins.
+const countUrl = seatCountUrl(d.register);
+const seatCapacity = d.seats ?? capacityForVenue(d.venue);
 
 // SEO: Event structured data + canonical.
 const canonical = absoluteUrl(withBase(`/events/${entry.id}`));
@@ -121,6 +128,7 @@ const eventLd = eventSchema({
             Register{registerExternal ? " ↗" : ""}
           </a>
         )}
+        {countUrl && <SeatCounter client:load countUrl={countUrl} capacity={seatCapacity} />}
         {d.rsvpComingSoon && (
           <button class="btn btn--solid ev-register ev-rsvp-soon" type="button" disabled aria-disabled="true">
             RSVP — coming soon
@@ -138,18 +146,6 @@ const eventLd = eventSchema({
         {d.link && (
           <p class="ev-cta">
             <a class="btn btn--solid" href={d.link} target="_blank" rel="noopener">Event link ↗</a>
-          </p>
-        )}
-        {registerHref && (
-          <p class="ev-cta">
-            <a
-              class="btn btn--solid"
-              href={registerHref}
-              target={registerExternal ? "_blank" : undefined}
-              rel={registerExternal ? "noopener" : undefined}
-            >
-              Register{registerExternal ? " ↗" : ""}
-            </a>
           </p>
         )}
         <p class="ev-back"><a href={withBase("/events")}>← All events</a></p>
@@ -184,6 +180,22 @@ const eventLd = eventSchema({
 
   /* Registration button under the meta card (left column). */
   .ev-register { width:100%; justify-content:center; text-align:center; }
+
+  /* Live seat tally under the Register button (SeatCounter island). */
+  .ev-side :global(.seat-counter) {
+    margin:.65rem 0 0; font-size:.85rem; color:var(--ink-soft);
+    font-variant-numeric:tabular-nums; text-align:center;
+  }
+  .ev-side :global(.seat-counter strong) { color:var(--ink); }
+  .ev-side :global(.seat-counter__bar) {
+    display:block; height:4px; border-radius:2px; background:var(--line);
+    overflow:hidden; margin-bottom:.45rem;
+  }
+  .ev-side :global(.seat-counter__fill) {
+    display:block; height:100%; border-radius:2px; background:var(--accent);
+    transition:width .6s ease;
+  }
+  .ev-side :global(.seat-counter--full .seat-counter__fill) { background:var(--ink-faint); }
 
   /* Interim RSVP affordance — disabled until the new RSVP system ships. */
   .ev-rsvp-soon { opacity:.55; cursor:not-allowed; pointer-events:none; }

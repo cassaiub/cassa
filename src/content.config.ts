@@ -161,10 +161,16 @@ const events = defineCollection({
       // A bare category:"BDOAA" event is included there anyway.
       bdoaa: z.boolean().default(false),
       link: z.string().optional(),
-      // Registration URL — external (e.g. a Google Form) or an internal path.
-      // Rendered as a "Register" button in the sidebar (under the meta card) and
-      // at the foot of the detail page; do NOT also put it inline in the body.
+      // Registration URL — external (e.g. an Inside form) or an internal path.
+      // Rendered as a "Register" button in the sidebar (under the meta card)
+      // ONLY — never a second time at the foot of the page or inline in the body.
       register: z.string().optional(),
+      // Seat capacity override. Normally capacity comes from the venue
+      // (src/data/venues.ts: CASSA office = 50) and never needs setting; use
+      // this only for an event whose venue rule is wrong for the occasion.
+      // Shown as a live "N / seats reserved" tally when `register` points at
+      // an Inside form (whose responseLimit enforces the cap).
+      seats: z.number().int().positive().optional(),
       summary: z.string().optional(),
       // Featured image (downloaded from cassa.bd): hero on the detail page,
       // thumbnail in the listing + calendar. Resolved to ImageMetadata via image().
