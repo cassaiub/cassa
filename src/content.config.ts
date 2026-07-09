@@ -154,6 +154,9 @@ const events = defineCollection({
       organizer: z.string().optional(),
       series: z.enum(["colloquium", "journal-talk", "workshop", "outreach", "other"]).default("other"),
       category: z.string().optional(),
+      // Suppress the "Type" row in the detail-page meta card (the category/series
+      // still drives placement, the hero eyebrow, and listing tags).
+      hideType: z.boolean().default(false),
       // Cross-list a non-"Durbin"-category event into the Durbin Updates feed
       // (mirrors news.durbin). A bare category:"Durbin" event is included anyway.
       durbin: z.boolean().default(false),

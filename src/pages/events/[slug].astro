@@ -113,10 +113,12 @@ const eventLd = eventSchema({
             <p class="ev-meta__val">{d.organizer}</p>
           </div>
         )}
-        <div class="ev-meta__item">
-          <p class="ev-meta__lbl">Type</p>
-          <p class="ev-meta__val">{seriesLabel}</p>
-        </div>
+        {!d.hideType && (
+          <div class="ev-meta__item">
+            <p class="ev-meta__lbl">Type</p>
+            <p class="ev-meta__val">{seriesLabel}</p>
+          </div>
+        )}
         </div>
         {registerHref && (
           <a
