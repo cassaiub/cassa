@@ -17,6 +17,7 @@
 
 import type { Pub } from "../asad/publications.ts";
 import { asad } from "./asad.ts";
+import { uddin } from "./uddin.ts";
 
 /** A clickable single-column table row (research programs · teaching & outreach). */
 export type LinkRow = { title: string; desc: string; href: string };
@@ -77,6 +78,7 @@ export type ProfileData = {
 
 export const PROFILES: Record<string, ProfileData> = {
   asad,
+  uddin,
 };
 
 export const hasProfile = (slug: string): boolean => slug in PROFILES;

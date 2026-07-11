@@ -286,21 +286,23 @@ const personLd = personSchema({
                   </thead>
                   <tbody id="pub-tbody">
                     {pubs.map((p) => (
-                      <tr data-ads={p.adsCites} data-scholar={p.scholarCites ?? -1} data-share={p.asadShare} data-year={p.year}>
+                      <tr data-ads={p.adsCites} data-scholar={p.scholarCites ?? -1} data-share={p.share} data-year={p.year}>
                         <td class="pub-yr">{p.year}</td>
                         <td class="pub-paper">
                           <a href={journalLink(p)} target="_blank" rel="noopener noreferrer" class="pub-title">{p.title}</a>
                           <span class="pub-byline">{p.byline}{p.pub ? <> · <em>{p.pub}</em></> : null}</span>
                         </td>
                         <td class="pub-num pub-ads">
-                          <a href={adsLink(p.bibcode)} target="_blank" rel="noopener noreferrer" title="View on NASA ADS">{p.adsCites}</a>
+                          {p.bibcode
+                            ? <a href={adsLink(p.bibcode)} target="_blank" rel="noopener noreferrer" title="View on NASA ADS">{p.adsCites}</a>
+                            : "—"}
                         </td>
                         <td class="pub-num pub-scholar">
                           {p.scholarCites === null
                             ? "—"
                             : <a href={scholarLink(p.title)} target="_blank" rel="noopener noreferrer" title="View on Google Scholar">{p.scholarCites}</a>}
                         </td>
-                        <td class="pub-num pub-share" title={p.alpha ? `Author ${p.pos} of ${p.nauthors} — alphabetical list, equal share` : `Author ${p.pos} of ${p.nauthors} — contribution-ordered`}>{pct(p.asadShare)}</td>
+                        <td class="pub-num pub-share" title={p.alpha ? `Author ${p.pos} of ${p.nauthors} — alphabetical list, equal share` : `Author ${p.pos} of ${p.nauthors} — contribution-ordered`}>{pct(p.share)}</td>
                       </tr>
                     ))}
                   </tbody>
