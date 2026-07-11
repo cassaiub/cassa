@@ -7,6 +7,9 @@ role: "Postbac Research Assistant ×2 (women only)"
 compensation: "30,000 BDT/month × 12 months"
 applyUrl: "https://inside.cassa.bd/forms/opportunities/2026-07-12-a"
 summary: "Dr Khan Muhammad Bin Asad opens the inaugural Beatrice Tinsley Postbac Research Assistantship (TRA) — two paid, year-long research positions for women who have completed their bachelor's degree: one in the CHronOS 21-cm cosmology program and one in the GATE galaxy-cluster program, each leading to a principal-author paper and graduate-school applications."
+theme: "evolution"
+ogImage: "/og/tinsley-tra.png"
+ogImageAlt: "Beatrice Tinsley Postbac Research Assistantship — two year-long research positions for women at CASSA, IUB"
 status: "published"
 ---
 
@@ -16,7 +19,7 @@ The postbac year is the bridge between a bachelor's degree and a funded graduate
 
 ## Who was Beatrice Tinsley?
 
-**Beatrice Muriel Hill Tinsley** (1941–1981) was a New Zealand–raised astrophysicist and cosmologist who founded the modern study of galaxy evolution. In her 1966 University of Texas PhD thesis she showed that galaxies change measurably as their stellar populations age — overturning the then-standard assumption that galaxies could be treated as fixed standard candles for measuring the fate of the Universe, and turning galaxy evolution itself into a quantitative science. Her models of how a galaxy's stars form, evolve and die — the foundation of today's stellar-population synthesis — remain at the heart of how galaxy observations are interpreted, and in a career of barely fourteen years, ended by melanoma at 40, she tied galaxy evolution to chemical enrichment and observational cosmology in nearly a hundred papers. She was a professor of astronomy at Yale University, and the American Astronomical Society's Beatrice M. Tinsley Prize, honouring exceptionally creative and innovative research, is named for her.
+**Beatrice Muriel Hill Tinsley** (1941–1981) was a New Zealand–raised astrophysicist and cosmologist who pioneered the modern study of galaxy evolution. In her University of Texas PhD thesis she showed that galaxies change measurably as their stellar populations age — overturning the then-standard assumption that galaxies could be treated as fixed standard candles for measuring the fate of the Universe, and turning galaxy evolution itself into a quantitative science. Her models of how a galaxy's stars form, evolve and die — the foundation of today's stellar-population synthesis — remain at the heart of how galaxy observations are interpreted, and in a career of barely fourteen years, ended by melanoma at 40, she tied galaxy evolution to chemical enrichment and observational cosmology in nearly a hundred papers. She was a professor of astronomy at Yale University, and the American Astronomical Society's Beatrice M. Tinsley Prize, awarded for research of an exceptionally creative or innovative character, is named for her.
 
 ## The two positions
 

@@ -1,12 +1,14 @@
 import { useEffect, useRef } from "react";
 
-export type SkyTheme = "cosmic" | "lensing" | "galaxy";
+export type SkyTheme = "cosmic" | "lensing" | "galaxy" | "evolution";
 
 /** Original, code-generated immersive backgrounds — one motif per topic, never
  *  a photograph:
- *   - cosmic  : an expanding field of galaxies linked into a distance network
- *   - lensing : a star field warped by a drifting gravitational lens
- *   - galaxy  : a slowly rotating spiral disk with star-forming knots
+ *   - cosmic    : an expanding field of galaxies linked into a distance network
+ *   - lensing   : a star field warped by a drifting gravitational lens
+ *   - galaxy    : a slowly rotating spiral disk with star-forming knots
+ *   - evolution : galaxies aging — born blue, brightening to gold, reddening
+ *                 and fading as their stellar populations evolve (Tinsley)
  *  Theme-aware: each motif has a night palette (dark, the default) and a "day"
  *  palette (pale sky, ink-dark marks) picked from <html data-theme>; a
  *  MutationObserver repaints live when the ThemeToggle flips it.
@@ -46,6 +48,13 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
         const n = Math.round(Math.min(280, (w * h) / 5500));
         for (let i = 0; i < n; i++)
           parts.push({ x: rnd(0, w), y: rnd(0, h), size: rnd(0.5, 1.8), tw: rnd(0, Math.PI * 2), tws: rnd(0.4, 1.4) });
+      } else if (theme === "evolution") {
+        const nG = Math.round(Math.min(64, (w * h) / 26000));
+        for (let i = 0; i < nG; i++)
+          parts.push({ gal: true, x: rnd(0, w), y: rnd(0, h), drift: rnd(2, 7), size: rnd(5, 13), age: rnd(0, 1), rate: rnd(0.008, 0.02), tilt: rnd(0, Math.PI) });
+        const nS = Math.round(Math.min(160, (w * h) / 9500));
+        for (let i = 0; i < nS; i++)
+          parts.push({ gal: false, x: rnd(0, w), y: rnd(0, h), size: rnd(0.4, 1.3), tw: rnd(0, Math.PI * 2), tws: rnd(0.4, 1.2) });
       } else {
         const n = Math.round(Math.min(460, (w * h) / 3200));
         const R = Math.min(w, h) * 0.46;
@@ -116,6 +125,39 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
         const halo = L ? "18,118,132" : "94,200,214";
         rg.addColorStop(0, `rgba(${halo},0)`); rg.addColorStop(0.72, `rgba(${halo},${L ? 0.16 : 0.12})`); rg.addColorStop(1, `rgba(${halo},0)`);
         ctx.fillStyle = rg; ctx.fillRect(0, 0, w, h);
+      } else if (theme === "evolution") {
+        // Cosmic time runs left→right: deep blue (early) shading to warm dark
+        // red (late); each galaxy lives a life — blue youth, golden middle age,
+        // red fade — then is reborn elsewhere in the field.
+        const g = ctx.createLinearGradient(0, 0, w, 0);
+        if (L) { g.addColorStop(0, "#dfe9f8"); g.addColorStop(1, "#f0e2de"); }
+        else { g.addColorStop(0, "#070b1c"); g.addColorStop(1, "#180b0e"); }
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+
+        for (const p of parts) {
+          if (!p.gal) {
+            const tw = 0.55 + 0.45 * Math.sin(time * p.tws + p.tw);
+            ctx.fillStyle = L ? `rgba(52,72,110,${0.35 * tw})` : `rgba(205,215,235,${0.4 * tw})`;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, 7); ctx.fill();
+            continue;
+          }
+          if (animating) { p.x += p.drift * 0.016; if (p.x > w + 34) p.x = -34; }
+          const age = (p.age + time * p.rate) % 1;
+          const env = Math.sin(age * Math.PI); // fade in → live → fade out
+          let r: number, gc: number, b: number;
+          if (age < 0.5) { const t = age / 0.5; r = 150 + t * 105; gc = 190 + t * 25; b = 255 - t * 105; }
+          else { const t = (age - 0.5) / 0.5; r = 255; gc = 215 - t * 95; b = 150 - t * 40; }
+          if (L) { r *= 0.55; gc *= 0.5; b *= 0.6; }
+          const s = p.size * (0.55 + age * 0.9);
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.tilt); ctx.scale(1, 0.55);
+          const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 2.6);
+          halo.addColorStop(0, `rgba(${r | 0},${gc | 0},${b | 0},${(L ? 0.55 : 0.6) * env})`);
+          halo.addColorStop(0.45, `rgba(${r | 0},${gc | 0},${b | 0},${(L ? 0.22 : 0.24) * env})`);
+          halo.addColorStop(1, `rgba(${r | 0},${gc | 0},${b | 0},0)`);
+          ctx.fillStyle = halo;
+          ctx.beginPath(); ctx.arc(0, 0, s * 2.6, 0, 7); ctx.fill();
+          ctx.restore();
+        }
       } else {
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(w, h) * 0.62);
         if (L) { g.addColorStop(0, "#e9e2f5"); g.addColorStop(1, "#c6d3ec"); }

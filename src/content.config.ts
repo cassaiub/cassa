@@ -218,7 +218,12 @@ const opportunities = defineCollection({
     // Eligible for the home hero carousel (mirrors news.featured). A flagged
     // vacancy is merged with featured news, newest-first, capped at 3 slides.
     featured: z.boolean().default(false),
-    theme: z.enum(["cosmic", "lensing", "galaxy"]).optional(), // SkyCanvas backdrop when featured
+    // SkyCanvas backdrop for the detail-page hero AND the slider when featured.
+    theme: z.enum(["cosmic", "lensing", "galaxy", "evolution"]).optional(),
+    // OG/Twitter share card for the detail page (site-root path, 1200×630).
+    // Omitted ⇒ the site-wide brand card (public/og/cassa-default.png).
+    ogImage: z.string().optional(),
+    ogImageAlt: z.string().optional(),
     lang: z.enum(["en", "bn"]).default("en"),
     status: z.enum(["published", "draft"]).default("published"),
   }),

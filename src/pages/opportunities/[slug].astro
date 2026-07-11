@@ -36,9 +36,13 @@ const categoryPath = pathForKind(d.kind);
   title={`${d.title} — CASSA Opportunities`}
   description={d.summary ?? d.title}
   current={categoryPath}
+  ogImage={d.ogImage}
+  ogImageAlt={d.ogImageAlt ?? d.title}
+  ogType="article"
+  publishedTime={d.date}
 >
   <AnimatedHero
-    theme="cosmic"
+    theme={d.theme ?? "cosmic"}
     eyebrow={`Opportunity · ${KIND_LABEL[d.kind]}`}
     title={d.title}
     lede={d.summary ?? undefined}
