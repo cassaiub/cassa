@@ -116,13 +116,18 @@ a { color: inherit; text-decoration: none; }
 .hero__media :where(img) { width: 100%; height: 100%; object-fit: cover; }
 .hero__scrim { position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(180deg, var(--scrim-top) 0%, transparent 32%, var(--scrim-bot) 100%); }
-.hero__inner { padding-block: clamp(4rem, 13vh, 9rem); color: #fff; }
+/* Hero type must scale with BOTH viewport axes: vw-only sizing overflows on
+   wide-but-short screens (low-res desktops, IFPs), where the bottom-anchored
+   stack rises into the absolutely-pinned .hero-ident. The min(vw, vh) middle
+   term shrinks type on short viewports, and the top padding reserves the
+   ident's zone outright — the hero grows (min-height) instead of overlapping. */
+.hero__inner { padding-block: calc(clamp(5.25rem, 12vh, 6.75rem) + 3.2rem) clamp(4rem, 13vh, 9rem); color: #fff; }
 .hero__title {
   font-family: var(--font-display); font-weight: 700; margin: .3em 0 0;
-  font-size: clamp(2.3rem, 6.4vw, 4.9rem); line-height: 1.02; letter-spacing: -.022em; max-width: 19ch;
+  font-size: clamp(2rem, min(6.4vw, 9vh), 4.9rem); line-height: 1.02; letter-spacing: -.022em; max-width: 19ch;
 }
 .hero__lede { margin-top: 1.2rem; max-width: 58ch; color: rgba(255, 255, 255, .88);
-  font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.62; }
+  font-size: clamp(.95rem, min(1.5vw, 2.4vh), 1.3rem); line-height: 1.62; }
 .hero__meta { margin-top: 1.4rem; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem;
   font-size: .82rem; letter-spacing: .04em; color: rgba(255, 255, 255, .82); }
 .hero__meta a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
@@ -305,12 +310,13 @@ a { color: inherit; text-decoration: none; }
 @keyframes fkb { from { transform: scale(1.05); } to { transform: scale(1.14); } }
 .fslide__scrim { position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(180deg, rgba(4,6,12,.28) 0%, transparent 26%, rgba(4,6,12,.5) 62%, rgba(4,6,12,.88) 100%); }
-.fslide__content { position: relative; z-index: 2; color: #fff; padding-block: clamp(4.5rem, 14vh, 9.5rem); max-width: 64ch; }
+.fslide__content { position: relative; z-index: 2; color: #fff; padding-block: calc(clamp(5.25rem, 12vh, 6.75rem) + 3.2rem) clamp(4.5rem, 14vh, 9.5rem); max-width: 64ch; }
 .fslider:not(.is-reduce) .fslide.is-active .fslide__content { animation: frise .9s .15s ease both; }
 @keyframes frise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
 .fslide__title { font-family: var(--font-display); font-weight: 700; margin: .35em 0 0;
-  font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.05; letter-spacing: -.02em; max-width: 20ch; }
-.fslide__excerpt { margin-top: 1rem; max-width: 56ch; color: rgba(255,255,255,.88); font-size: clamp(1rem, 1.4vw, 1.2rem); line-height: 1.62; }
+  /* min(vw, vh) so slides also fit wide-but-short screens (see .hero__title) */
+  font-size: clamp(1.8rem, min(5vw, 7.5vh), 3.7rem); line-height: 1.05; letter-spacing: -.02em; max-width: 20ch; }
+.fslide__excerpt { margin-top: 1rem; max-width: 56ch; color: rgba(255,255,255,.88); font-size: clamp(.95rem, min(1.4vw, 2.2vh), 1.2rem); line-height: 1.62; }
 .fslide__content .btn { margin-top: 1.5rem; }
 .farrow { position: absolute; z-index: 3; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 46px; height: 46px;
   border-radius: 999px; border: 1px solid rgba(255,255,255,.35); background: rgba(4,6,12,.25); color: #fff; cursor: pointer; backdrop-filter: blur(4px); transition: background-color .2s, border-color .2s; }

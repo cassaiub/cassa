@@ -382,6 +382,18 @@ without explicit instruction. Deployment is deferred.
     surfaces in one day (home news column, profile grid, profile link tables)
     — user demanded dynamic fit on low-res phones on 2026-07-03.
 
+22. **Hero display text must scale with BOTH viewport axes.** Any vw-sized
+    type inside a 100svh hero (`.hero__title`/`.hero__lede`/`.fslide__*`) needs
+    a vh term in its clamp middle — `clamp(min, min(Xvw, Yvh), max)` — and the
+    hero content's top padding must reserve the pinned `.hero-ident` zone
+    (`calc(clamp(5.25rem, 12vh, 6.75rem) + 3.2rem)`), so the bottom-anchored
+    stack can never rise into the ident; the hero grows (`min-height`) instead.
+    Verify new heroes headlessly at wide-but-short viewports (1366×600,
+    1920×540) as well as 360px phones. Reason: vw-only sizing overlapped hero
+    titles with the ident line on low-res desktops and the user's IFP browser
+    (fixed site-wide 2026-07-11); phone media queries alone don't catch
+    wide-but-short screens.
+
 20. **The Bangla webfont (`Noto Serif Bengali`, via Google Fonts) goes LAST in
     `--font-sans` — never first — so it never touches the English/Latin text.**
     Google ships `latin`/`latin-ext` faces for it too, so listing it first makes
