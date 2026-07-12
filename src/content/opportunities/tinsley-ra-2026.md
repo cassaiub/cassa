@@ -10,7 +10,7 @@ summary: "Dr Khan Muhammad Bin Asad opens the inaugural Beatrice Tinsley Postbac
 theme: "evolution"
 ogImage: "/og/tinsley-tra.png"
 ogImageAlt: "Beatrice Tinsley Postbac Research Assistantship — two year-long research positions for women at CASSA, IUB"
-status: "published"
+status: "draft"
 ---
 
 [**Dr Khan Muhammad Bin Asad**](https://cassa.bd/people/asad) announces the inaugural **Beatrice Tinsley Postbac Research Assistantship (TRA)** — a paid, full-time, year-long research position for **women** who have completed their bachelor's degree and intend to pursue graduate study in astronomy, astrophysics or a related field. Two Tinsley RAs will be appointed for **1 September 2026 – 31 August 2027**: one in Dr Asad's **CHronOS** program and one in his **GATE** program, based at the Center for Astronomy, Space Science and Astrophysics (CASSA) at Independent University, Bangladesh (IUB). The TRA is funded by Dr Asad's Sponsored Research Grant (SRG) at IUB and is planned as an annual program, subject to the grant's annual renewal.
