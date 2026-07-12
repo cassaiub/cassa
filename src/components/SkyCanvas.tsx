@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export type SkyTheme = "cosmic" | "lensing" | "galaxy" | "evolution";
+export type SkyTheme = "cosmic" | "lensing" | "galaxy" | "evolution" | "merger";
 
 /** Original, code-generated immersive backgrounds — one motif per topic, never
  *  a photograph:
@@ -9,6 +9,9 @@ export type SkyTheme = "cosmic" | "lensing" | "galaxy" | "evolution";
  *   - galaxy    : a slowly rotating spiral disk with star-forming knots
  *   - evolution : galaxies aging — born blue, brightening to gold, reddening
  *                 and fading as their stellar populations evolve (Tinsley)
+ *   - merger    : a compact-binary inspiral chirping toward coalescence —
+ *                 expanding GW ripples, photon/neutrino streaks, merger flash
+ *                 (time-domain & multi-messenger astronomy)
  *  Theme-aware: each motif has a night palette (dark, the default) and a "day"
  *  palette (pale sky, ink-dark marks) picked from <html data-theme>; a
  *  MutationObserver repaints live when the ThemeToggle flips it.
@@ -48,6 +51,13 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
         const n = Math.round(Math.min(280, (w * h) / 5500));
         for (let i = 0; i < n; i++)
           parts.push({ x: rnd(0, w), y: rnd(0, h), size: rnd(0.5, 1.8), tw: rnd(0, Math.PI * 2), tws: rnd(0.4, 1.4) });
+      } else if (theme === "merger") {
+        const nS = Math.round(Math.min(240, (w * h) / 6500));
+        for (let i = 0; i < nS; i++)
+          parts.push({ kind: 0, x: rnd(0, w), y: rnd(0, h), size: rnd(0.5, 1.6), tw: rnd(0, Math.PI * 2), tws: rnd(0.4, 1.3) });
+        const nM = Math.round(Math.min(26, (w * h) / 56000));
+        for (let i = 0; i < nM; i++)
+          parts.push({ kind: 1 + (i % 2), ang: rnd(0, Math.PI * 2), dist: rnd(30, Math.hypot(w, h) / 2), speed: rnd(38, 88), size: rnd(1, 2) });
       } else if (theme === "evolution") {
         const nG = Math.round(Math.min(64, (w * h) / 26000));
         for (let i = 0; i < nG; i++)
@@ -125,6 +135,76 @@ export default function SkyCanvas({ theme, active = true }: { theme: SkyTheme; a
         const halo = L ? "18,118,132" : "94,200,214";
         rg.addColorStop(0, `rgba(${halo},0)`); rg.addColorStop(0.72, `rgba(${halo},${L ? 0.16 : 0.12})`); rg.addColorStop(1, `rgba(${halo},0)`);
         ctx.fillStyle = rg; ctx.fillRect(0, 0, w, h);
+      } else if (theme === "merger") {
+        // A compact binary tightens and chirps over a ~24 s cycle, radiating
+        // expanding GW ripples while gold (photon) and cyan (neutrino)
+        // messengers streak outward; a merger flash masks the cycle reset and
+        // the binary is reborn. A static frame shows a mid-inspiral binary.
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.hypot(w, h) / 1.5);
+        if (L) { g.addColorStop(0, "#e3ebf9"); g.addColorStop(1, "#c2d3ec"); }
+        else { g.addColorStop(0, "#0a1024"); g.addColorStop(1, "#04060d"); }
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+
+        const cycle = 24, tC = time % cycle, ph = tC / cycle; // inspiral phase 0→1
+        const maxR = Math.hypot(w, h) / 2;
+
+        for (const p of parts) {
+          if (p.kind === 0) {
+            const tw = 0.55 + 0.45 * Math.sin(time * p.tws + p.tw);
+            ctx.fillStyle = L ? `rgba(50,70,108,${0.35 * tw})` : `rgba(205,215,235,${0.38 * tw})`;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, 7); ctx.fill();
+            continue;
+          }
+          if (animating) { p.dist += p.speed * 0.016 * (0.7 + ph); if (p.dist > maxR) { p.dist = rnd(10, 40); p.ang = rnd(0, Math.PI * 2); } }
+          const fade = Math.min(1, (maxR - p.dist) / (maxR * 0.3)) * Math.min(1, p.dist / 60);
+          if (fade <= 0.02) continue;
+          const len = 10 + p.speed * 0.18;
+          const x1 = cx + Math.cos(p.ang) * p.dist, y1 = cy + Math.sin(p.ang) * p.dist * 0.72;
+          const x0 = cx + Math.cos(p.ang) * (p.dist - len), y0 = cy + Math.sin(p.ang) * (p.dist - len) * 0.72;
+          const col = p.kind === 1 ? (L ? "179,116,26" : "236,180,90") : (L ? "21,128,142" : "94,200,214");
+          ctx.strokeStyle = `rgba(${col},${0.55 * fade})`;
+          ctx.lineWidth = p.size;
+          ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+        }
+
+        // GW ripples — denser and faster as the chirp builds
+        const ringCol = L ? "36,84,156" : "120,175,230";
+        const nR = 7, gap = maxR / nR, rSpeed = 26 * (0.7 + ph * 1.5);
+        for (let i = 0; i < nR; i++) {
+          const rr = (tC * rSpeed + i * gap) % maxR;
+          const a = (1 - rr / maxR) * (L ? 0.3 : 0.24) * (0.45 + ph * 0.8);
+          if (a <= 0.01 || rr < 6) continue;
+          ctx.strokeStyle = `rgba(${ringCol},${a})`;
+          ctx.lineWidth = 1.1;
+          ctx.beginPath(); ctx.ellipse(cx, cy, rr, rr * 0.72, 0, 0, Math.PI * 2); ctx.stroke();
+        }
+
+        // the binary — separation shrinks, orbit spins up (the chirp)
+        const S0 = Math.min(w, h) * 0.085;
+        const sep = Math.max(2.5, S0 * (1 - Math.pow(ph, 1.7) * 0.96));
+        const ang = tC * (1.2 + Math.pow(ph, 2.4) * 9);
+        const bx = Math.cos(ang) * sep, by = Math.sin(ang) * sep * 0.72;
+        const cr = Math.min(w, h) * 0.02 + (1 - sep / S0) * 6;
+        const core = (dx: number, dy: number, r: number, warm: boolean) => {
+          const cg = ctx.createRadialGradient(cx + dx, cy + dy, 0, cx + dx, cy + dy, r);
+          const cc = warm ? (L ? "179,116,26" : "255,225,170") : (L ? "40,90,150" : "190,215,255");
+          cg.addColorStop(0, `rgba(${cc},${L ? 0.85 : 0.95})`);
+          cg.addColorStop(0.35, `rgba(${cc},${L ? 0.35 : 0.4})`);
+          cg.addColorStop(1, `rgba(${cc},0)`);
+          ctx.fillStyle = cg;
+          ctx.beginPath(); ctx.arc(cx + dx, cy + dy, r, 0, 7); ctx.fill();
+        };
+        core(bx, by, cr * 2.6, true);
+        core(-bx, -by, cr * 2.4, false);
+
+        if (ph > 0.96) {
+          const f = (ph - 0.96) / 0.04;
+          const fl = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.5 * f + 40);
+          const fc = L ? "179,116,26" : "255,235,200";
+          fl.addColorStop(0, `rgba(${fc},${0.5 * Math.sin(f * Math.PI)})`);
+          fl.addColorStop(1, `rgba(${fc},0)`);
+          ctx.fillStyle = fl; ctx.fillRect(0, 0, w, h);
+        }
       } else if (theme === "evolution") {
         // Cosmic time runs left→right: deep blue (early) shading to warm dark
         // red (late); each galaxy lives a life — blue youth, golden middle age,

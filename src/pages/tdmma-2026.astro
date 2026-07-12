@@ -1,0 +1,1028 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import Prose from "../components/immersive/Prose.astro";
+import { withBase } from "../data/site-nav.ts";
+
+const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3rem 0 0;color:var(--ink)";
+
+/* ── Programme data ───────────────────────────────────────────────────────
+   Verbatim from the circulated preliminary schedule (TDMMA_Workshop_
+   Schedule_2026.pdf). Session speakers are not yet assigned — every
+   lecture/tutorial/discussion renders a TBD line until they are. */
+type SType = "lec" | "tut" | "disc" | "cer" | "brk";
+/* t: short display title (the cell); d: the topics covered (the drawer);
+   link: optional related page shown at the foot of the drawer */
+interface Session { s: string; e: string; t: string; k: SType; who?: string; d?: string[]; link?: { href: string; label: string } }
+interface Day { wd: string; date: string; short: string; theme: string; topics: string; sessions: Session[] }
+
+const DAYS: Day[] = [
+  {
+    wd: "Mon", date: "Sep 7", short: "Foundations",
+    theme: "Introduction & Foundations of Time-Domain Astronomy",
+    topics: "Survey astronomy · alert brokers · stellar endpoints · compact-object physics",
+    sessions: [
+      /* Restructured to four 90-min blocks a day (user, 2026-07-12): shorter
+         coffees (15 min), 90-min lunch, the PDF's paired 45-min topics merged
+         into single blocks. */
+      { s: "10:00", e: "11:30", t: "Opening & Overview", k: "cer", who: "Syed Ashraf Uddin", d: [
+        "Opening ceremony and welcome address",
+        "What is time-domain and multi-messenger astronomy",
+        "The messengers: light, gravitational waves, neutrinos, cosmic rays",
+        "Roadmap of the week",
+      ] },
+      { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
+      { s: "11:45", e: "13:15", t: "The Transient Sky & Survey Astronomy", k: "lec", who: "Syed Ashraf Uddin", d: [
+        "The electromagnetic transient sky — variables, novae and explosions",
+        "Modern survey astronomy: ZTF and Rubin/LSST",
+        "Alert brokers and the follow-up ecosystem",
+      ] },
+      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
+      { s: "14:45", e: "16:15", t: "Stellar Endpoints & Compact Objects", k: "lec", who: "Andrew L. Miller", d: [
+        "Stellar evolution endpoints and their observational signatures",
+        "Compact object physics — neutron stars and black holes",
+        "Compact objects as engines of the transient sky",
+      ] },
+      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
+      { s: "16:30", e: "18:00", t: "Hands-on: Alert Brokers", k: "tut", who: "Syed Ashraf Uddin", d: [
+        "Navigating alert streams in practice",
+        "Hands-on with the ALeRCE and Fink brokers",
+        "Building and filtering a follow-up target list",
+      ] },
+    ],
+  },
+  {
+    wd: "Tue", date: "Sep 8", short: "Gravitational Waves",
+    theme: "Gravitational Waves & Multi-Messenger Events",
+    topics: "GW detection & sources · data analysis · GW170817 · kilonovae · light-curve hands-on",
+    sessions: [
+      { s: "10:00", e: "11:30", t: "GW Detection & Sources", k: "lec", who: "Andrew L. Miller", d: [
+        "How interferometers hear spacetime: LIGO / Virgo / KAGRA",
+        "Binary neutron-star and black-hole mergers as GW sources",
+        "Detected populations and what they tell us",
+      ] },
+      { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
+      { s: "11:45", e: "13:15", t: "GW Data Analysis & GW170817", k: "lec", who: "Andrew L. Miller", d: [
+        "The GW data-analysis pipeline and parameter estimation",
+        "GW170817 — anatomy of the first binary neutron-star multi-messenger event",
+        "Lessons from O3 and the outlook for O4 / O5",
+      ] },
+      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
+      { s: "14:45", e: "16:15", t: "Kilonovae & Short GRBs", k: "lec", who: "Syed Ashraf Uddin", d: [
+        "Kilonovae — observations and theoretical models",
+        "r-process nucleosynthesis and heavy-element production in mergers",
+        "Short gamma-ray bursts as compact binary merger counterparts",
+      ] },
+      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
+      /* Hands-on rotation (user, 2026-07-12): light-curve analysis closes the
+         GW/multi-messenger day — GW170817's kilonova is the worked example. */
+      { s: "16:30", e: "18:00", t: "Hands-on: Light Curves", k: "tut", who: "Syed Ashraf Uddin", d: [
+        "Reading the light curves of multi-messenger events — GW170817's kilonova as the worked example",
+        "Multi-wavelength light-curve analysis for high-energy transients",
+        "From raw photometry to physical interpretation",
+      ] },
+    ],
+  },
+  {
+    wd: "Wed", date: "Sep 9", short: "High-Energy & Neutrinos",
+    theme: "High-Energy Transients & Neutrino Astronomy",
+    topics: "Long GRBs · tidal disruption events · IceCube · cosmic rays · ML classification hands-on",
+    sessions: [
+      { s: "10:00", e: "11:30", t: "Long GRBs & Tidal Disruptions", k: "lec", who: "Syed Ashraf Uddin", d: [
+        "Long gamma-ray bursts — progenitors, jets and afterglows",
+        "Tidal disruption events — theory and multiwavelength observations",
+      ] },
+      { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
+      { s: "11:45", e: "13:15", t: "Neutrino Astronomy with IceCube", k: "lec", who: "Andrew L. Miller", d: [
+        "Detecting high-energy neutrinos at the South Pole",
+        "Neutrino source searches and multi-messenger connections",
+      ] },
+      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
+      { s: "14:45", e: "16:15", t: "Neutrino Sources & Cosmic Rays", k: "lec", who: "Andrew L. Miller", d: [
+        "Candidate sources — AGN, blazars and starburst galaxies",
+        "TXS 0506+056 — a neutrino–blazar multi-messenger case study",
+        "AGN variability and changing-look AGN",
+        "Ultra-high-energy cosmic rays and their multi-messenger connections",
+      ] },
+      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
+      /* Hands-on rotation (user, 2026-07-12): ML classification closes the
+         high-energy day — classifying the transients covered in its lectures. */
+      { s: "16:30", e: "18:00", t: "Hands-on: ML Classification", k: "tut", who: "Andrew L. Miller", d: [
+        "Light-curve classification with ParSNIP and RAPID",
+        "Training, validating and interpreting a transient classifier",
+        "Applying the classifiers to the day's transients — GRBs, TDEs and their impostors",
+      ] },
+    ],
+  },
+  {
+    wd: "Thu", date: "Sep 10", short: "Transients & Data Science",
+    theme: "Stellar Transients & Data Science Methods",
+    topics: "Core-collapse & thermonuclear SNe · pulsars & FRBs · ML for transients · TART ionosphere hands-on",
+    sessions: [
+      { s: "10:00", e: "11:30", t: "Supernovae", k: "lec", who: "Syed Ashraf Uddin", d: [
+        "Core-collapse supernovae — explosion mechanisms and multi-messenger signatures",
+        "Type Ia supernovae as cosmological standard candles",
+      ] },
+      { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
+      /* Asad's sessions 1 + 2 combined (Jul 4 abstracts) — pulsars and FRBs
+         in one block per user, 2026-07-12. */
+      { s: "11:45", e: "13:15", t: "Pulsars & Fast Radio Bursts", k: "lec", who: "Khan Muhammad Bin Asad", d: [
+        "Pulsars as clock-like radio sources: discovery and timing — beamforming, dedispersion, folding, arrival-time modelling",
+        "MeerKAT precision timing and searches (MeerTime, the MeerKAT PTA, TRAPUM) and LOFAR's metre-wavelength view of scattering and the interstellar medium",
+        "Pulsar timing arrays as a nanohertz GW detector (the 2023 background); neutron-star masses and the equation of state feeding merger science",
+        "Fast radio bursts — millisecond flashes from cosmological distances; dispersion measure as a cosmic ruler; repeaters versus one-offs",
+        "MeerKAT's real-time MeerTRAP localizations pinning bursts to host galaxies; LOFAR's 110 MHz detection of repeater FRB 20180916B",
+        "The obstacles head-on: dispersion, scattering, scintillation, interference; localizing single bursts and identifying hosts",
+        "Ahead to SKA-Mid, DSA-2000, CHORD and BURSTT; the Macquart relation and the magnetar connection to the GW sky",
+      ] },
+      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
+      { s: "14:45", e: "16:15", t: "Machine Learning for Transients", k: "lec", who: "Andrew L. Miller", d: [
+        "ML methods for transient classification",
+        "Real-time pipelines and photometric classification in the LSST era",
+        "Challenges and opportunities in big-data astronomy",
+      ] },
+      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
+      /* Asad's session 3 (Jul 4 abstract) — TART lands on the data-methods day,
+         straight after his morning Pulsars & FRBs lecture, whose dispersion
+         measures this hands-on corrects (rotation, 2026-07-12). */
+      { s: "16:30", e: "18:00", t: "Hands-on: Ionosphere with TART", k: "tut", who: "Khan Muhammad Bin Asad",
+        link: { href: "/research/tart", label: "CASSA's TART array" }, d: [
+        "The ionosphere as the foreground of low-frequency timing and burst work — dispersion-like delays, phase corruption, and scintillation that mimics or masks a source's own variability",
+        "CASSA's TART — a 24-antenna rooftop aperture-synthesis array on the IUB campus, observing in the GPS L1 band",
+        "Measuring total electron content (TEC) with GNSS signals; capturing scintillation directly with all-sky imaging",
+        "Dhaka under the crest of the Equatorial Ionization Anomaly, where TEC gradients and scintillation peak",
+        "Mitigation: co-located TEC corrects the morning lecture's pulsar-timing and FRB dispersion measures · Discrimination: separating cosmic from local scintillation",
+        "The array behind CASSA's planned radio-astronomy school",
+      ] },
+    ],
+  },
+  {
+    wd: "Fri", date: "Sep 11", short: "Future Facilities",
+    theme: "Future Facilities & Synthesis",
+    topics: "Einstein Telescope · Rubin LSST · CTA · GW follow-up · participant talks · closing panel",
+    sessions: [
+      { s: "10:00", e: "11:30", t: "Next-Generation Facilities", k: "lec", who: "Andrew L. Miller", d: [
+        "Next-generation GW detectors — Einstein Telescope, Cosmic Explorer, LISA",
+        "Future radio facilities — SKA and ngVLA for transient science",
+        "Rubin LSST — science drivers, data products, community access",
+        "High-energy multi-messenger astronomy with CTA and Fermi",
+      ] },
+      { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
+      { s: "11:45", e: "13:15", t: "GW Follow-up Strategies", k: "lec", who: "Andrew L. Miller", d: [
+        "GW sky localization and low-latency alerts",
+        "Electromagnetic follow-up strategies for LIGO / Virgo / KAGRA events",
+        "Coordinating multi-messenger observing campaigns",
+      ] },
+      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
+      { s: "14:45", e: "16:15", t: "Space Observatories & Synergies", k: "lec", who: "Syed Ashraf Uddin", d: [
+        "Space-based observatories — SVOM, THESEUS and beyond",
+        "Synergies across messengers — integrated science cases for the 2030s",
+      ] },
+      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
+      { s: "16:30", e: "18:00", t: "Short Talks · Panel · Closing", k: "cer", who: "Syed Ashraf Uddin", d: [
+        "Participant short talks",
+        "Panel discussion: the future of TDMMA — open questions and opportunities",
+        "Closing remarks and certificate distribution",
+      ] },
+    ],
+  },
+];
+
+/* Calendar geometry: 10:00–18:00 in 15-min grid rows (row 1 = day headers). */
+const mins = (hm: string) => { const [h, m] = hm.split(":").map(Number); return h * 60 + m; };
+const row = (hm: string) => (mins(hm) - 600) / 15 + 2;
+
+/* Breaks shared by all five days render once, spanning the full week. */
+const isCommonBreak = (x: Session) =>
+  x.k === "brk" && DAYS.every((d) => d.sessions.some((y) => y.k === "brk" && y.s === x.s && y.e === x.e));
+const commonBreaks = DAYS[0].sessions.filter(isCommonBreak);
+
+const all = DAYS.flatMap((d) => d.sessions);
+const nSes = all.filter((x) => x.k !== "brk").length;
+const nLec = all.filter((x) => x.k === "lec").length;
+const nTut = all.filter((x) => x.k === "tut").length;
+
+/* The time rail carries one label per slot boundary (every distinct session
+   start plus the closing 18:00), each spanning down to the next boundary. */
+const BOUNDS = [...new Set([...all.map((x) => x.s), "18:00"])].sort((a, b) => mins(a) - mins(b));
+const boundSpan = (i: number) => (i === BOUNDS.length - 1 ? 1 : (mins(BOUNDS[i + 1]) - mins(BOUNDS[i])) / 15);
+
+/* Lunch is indicative, not proportional: its 15-min grid rows get a compressed
+   height so the 90-min band renders as a slim strip. */
+const LUNCH = DAYS[0].sessions.find((x) => x.k === "brk" && mins(x.e) - mins(x.s) > 30)!;
+const rowsTemplate = Array.from({ length: 32 }, (_, i) => {
+  const m = 600 + i * 15;
+  return m >= mins(LUNCH.s) && m < mins(LUNCH.e) ? "var(--unit-lunch)" : "var(--unit)";
+}).join(" ");
+
+const tbdRole: Record<string, string> = { lec: "Speaker", tut: "Moderator", disc: "Moderator", cer: "Speaker" };
+/* Cells carry initials-style short names; the drawer shows the full name. */
+const SHORT: Record<string, string> = {
+  "Khan Muhammad Bin Asad": "KMB Asad",
+  "Syed Ashraf Uddin": "SA Uddin",
+  "Andrew L. Miller": "AL Miller",
+};
+const shortWho = (w?: string) => (w ? (SHORT[w] ?? w) : undefined);
+
+/* Registration milestones — opening date set by the SOC (user, 2026-07-12);
+   the intermediate dates are reasonable placeholders pending confirmation. */
+const DEADLINES = [
+  ["Application opens", "14 July 2026"],
+  ["Application closes", "14 August 2026"],
+  ["Participant list announced", "21 August 2026"],
+  ["Registration & payment", "by 31 August 2026"],
+  ["Workshop begins", "7 September 2026"],
+];
+const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / hands-on", disc: "Discussion · panel", cer: "Ceremony · talks" };
+
+/* ── Committees ── */
+const SOC = [
+  { name: "Andrew L. Miller", aff: "ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn" },
+  { name: "Syed Ashraf Uddin", aff: "Core Member, CASSA · Independent University, Bangladesh", email: "uddinsa@iub.edu.bd" },
+  { name: "Khan Muhammad Bin Asad", aff: "Core Member, CASSA · Independent University, Bangladesh", email: "kasad@iub.edu.bd" },
+];
+const LOC = [
+  { name: "Muhammad Jobair Hasan", aff: "Science Manager, CASSA", email: "jobair@iub.edu.bd" },
+  { name: "Md Shahadat Hossain Shahal", aff: "Research Assistant, CASSA", email: "shahadatw6@gmail.com" },
+];
+---
+
+<BaseLayout
+  title="TDMMA Workshop 2026 — CASSA"
+  description="CASSA's workshop on Time-Domain and Multi-Messenger Astronomy (TDMMA), 7–11 September 2026 at Independent University, Bangladesh — five days of lectures, hands-on tutorials and panels, from GW170817 to the Rubin-LSST era."
+  current="/tdmma-2026"
+>
+  <AnimatedHero
+    theme="merger"
+    eyebrow="CASSA Workshop · 7–11 September 2026"
+    title="Time-Domain & Multi-Messenger Astronomy"
+    lede="Five days on the astronomy of a changing sky — gravitational waves, neutrinos, and light from the most violent events in the universe — at Independent University, Bangladesh."
+  >
+    <Fragment slot="meta">
+      <span>Sept 7–11, 2026</span><span aria-hidden="true">·</span>
+      <span>10:00 AM – 6:00 PM</span><span aria-hidden="true">·</span>
+      <span>IUB, Dhaka</span><span aria-hidden="true">·</span>
+      <span>Lectures · Tutorials · Panels</span>
+    </Fragment>
+  </AnimatedHero>
+
+  <!-- Right-rail TOC: bare lines; labels reveal on hover/focus; active section
+       tracked on scroll. Desktop only. -->
+  <nav class="toc" aria-label="On this page">
+    {[
+      ["about", "About"],
+      ["days", "The five days"],
+      ["programme", "Programme"],
+      ["venue", "Venue"],
+      ["committees", "Committees"],
+      ["apply", "Apply"],
+    ].map(([id, label]) => (
+      <a href={`#${id}`} data-toc={id}>
+        <span class="toc__label">{label}</span>
+        <span class="toc__line" aria-hidden="true"></span>
+      </a>
+    ))}
+  </nav>
+
+  <!-- ── Overview ─────────────────────────────────────────────────────── -->
+  <section class="section section--elev" id="about">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">About the workshop</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>One sky, many messengers</h2>
+          <p>
+            Astronomy no longer watches a still sky. Surveys like ZTF and the
+            upcoming Rubin&nbsp;LSST catch the universe changing night by night,
+            while gravitational-wave detectors and neutrino observatories listen
+            to it through entirely different messengers. <strong>Time-Domain and
+            Multi-Messenger Astronomy (TDMMA)</strong> is where those signals
+            meet — and this workshop is CASSA's five-day introduction to doing
+            science there, from the physics of compact-object mergers to the
+            machine-learning pipelines that sort a million alerts a night.
+          </p>
+          <p>
+            The programme is anchored by <strong>Dr.&nbsp;Andrew&nbsp;L.
+            Miller</strong> — assistant professor at the International Centre for
+            Theoretical Physics Asia-Pacific (ICTP-AP, UCAS Beijing) and a member
+            of the LIGO/Virgo collaboration — visiting CASSA as invited lecturer
+            for the gravitational-wave portion of the week, alongside CASSA
+            faculty and resource people from IUB. Individual session speakers
+            will be announced with the final programme.
+          </p>
+          <p>
+            The goal is capacity building: participants leave able to follow a
+            gravitational-wave alert, read a kilonova light curve, and start
+            research in gravitational-wave astrophysics and time-domain
+            astronomy in general.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="facts">
+        {[
+          ["Dates", "September 7–11, 2026 (Mon–Fri)"],
+          ["Hours", "10:00 AM – 6:00 PM · lunch 1:15–2:45 PM"],
+          ["Venue", "Independent University, Bangladesh — Bashundhara, Dhaka"],
+          ["Format", "Four 90-minute sessions a day — lectures · hands-on tutorials · panels"],
+          ["Certificates", "Awarded at the closing ceremony"],
+        ].map(([k, v], i) => (
+          <Reveal delay={100 + i * 60}>
+            <div class="fact"><span class="fact__k">{k}</span><span class="fact__v">{v}</span></div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The five days ────────────────────────────────────────────────── -->
+  <section class="section" id="days">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The arc of the week</p></Reveal>
+      <Reveal delay={60}><h2 style={h2}>Five days, five themes</h2></Reveal>
+      <div class="days">
+        {DAYS.map((d, i) => (
+          <Reveal delay={90 + i * 70}>
+            <article class="day">
+              <span class="day__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <p class="day__date">{d.wd} · {d.date}</p>
+              <h3 class="day__theme">{d.theme}</h3>
+              <p class="day__topics">{d.topics}</p>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+      <div class="stats">
+        {[
+          ["5", "days"],
+          [String(nSes), "sessions of 90 minutes"],
+          [String(nLec), "lectures"],
+          [String(nTut), "hands-on tutorials"],
+        ].map(([n, l], i) => (
+          <Reveal delay={120 + i * 60}>
+            <div class="stat"><span class="stat__n">{n}</span><span class="stat__l">{l}</span></div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Programme calendar ───────────────────────────────────────────── -->
+  <section class="section section--elev" id="programme">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Preliminary programme</p></Reveal>
+      <Reveal delay={60}><h2 style={h2}>The week, hour by hour</h2></Reveal>
+      <Reveal delay={100}>
+        <div class="legend" aria-hidden="true">
+          {(["lec", "tut", "disc", "cer"] as const)
+            .filter((k) => all.some((x) => x.k === k))
+            .map((k) => <span class={`lg s--${k}`}>{typeLabel[k]}</span>)}
+          <span class="lg s--brk">Break</span>
+        </div>
+      </Reveal>
+    </div>
+
+    <Reveal delay={140}>
+      <div class="cal-scroll wrap" role="region" aria-label="Workshop programme calendar" tabindex="0">
+        <div class="cal" style={`grid-template-rows:auto ${rowsTemplate}`}>
+          {/* day headers */}
+          <div class="cal__corner" aria-hidden="true"></div>
+          {DAYS.map((d) => (
+            <div class="cal__day">
+              <span class="cal__wd">{d.wd}</span>
+              <span class="cal__date">{d.date}</span>
+              <span class="cal__short">{d.short}</span>
+            </div>
+          ))}
+
+          {/* slot rules + per-slot time labels on the rail */}
+          {BOUNDS.map((b, i) => (
+            <Fragment>
+              <div class="cal__rule" style={`grid-row:${row(b)}`} aria-hidden="true"></div>
+              <div class="cal__time" style={`grid-row:${row(b)} / span ${boundSpan(i)}`}>{b}</div>
+            </Fragment>
+          ))}
+
+          {/* week-wide breaks (identical across all five days) */}
+          {commonBreaks.map((b) => (
+            <div class="s s--brk s--span" style={`grid-row:${row(b.s)} / ${row(b.e)}`}>
+              <span class="s__title">{b.t}</span>
+            </div>
+          ))}
+
+          {/* sessions, one column per day — click opens the detail drawer */}
+          {DAYS.map((d, di) =>
+            d.sessions.filter((x) => !isCommonBreak(x)).map((x, si) => (
+              <button
+                type="button"
+                class:list={["s", `s--${x.k}`]}
+                style={`grid-column:${di + 2};grid-row:${row(x.s)} / ${row(x.e)};--d:${di * 70 + si * 45}ms`}
+                data-session
+                data-title={x.t}
+                data-day={`${d.wd} · ${d.date} — ${d.theme}`}
+                data-time={`${x.s}–${x.e}`}
+                data-type={typeLabel[x.k]}
+                data-role={tbdRole[x.k] ?? ""}
+                data-who={x.who ?? ""}
+                data-topics={(x.d ?? []).join("¦")}
+                data-link={x.link ? withBase(x.link.href) : ""}
+                data-link-label={x.link?.label ?? ""}
+                aria-haspopup="dialog"
+              >
+                <span class="s__title">{x.t}</span>
+                {tbdRole[x.k] && <span class="s__who">{tbdRole[x.k]} · <b>{shortWho(x.who) ?? "TBD"}</b></span>}
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+    </Reveal>
+
+    <div class="wrap">
+      <Reveal delay={160}>
+        <p class="cal-note">
+          Preliminary schedule — session order, times and speakers may change
+          until the final programme is published. Click a session for details;
+          on phones, swipe the calendar sideways.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- Session-detail drawer (opened by any [data-session] cell) -->
+  <div id="session-drawer" class="sdrawer" hidden>
+    <div class="sdrawer__scrim" data-sdrawer-close></div>
+    <aside class="sdrawer__panel" role="dialog" aria-modal="true" aria-label="Session details" tabindex="-1">
+      <button type="button" class="sdrawer__close" data-sdrawer-close aria-label="Close session details">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <p class="sdrawer__type" data-sd="type"></p>
+      <h3 class="sdrawer__title" data-sd="title"></h3>
+      <dl class="sdrawer__meta">
+        <div><dt>Day</dt><dd data-sd="day"></dd></div>
+        <div><dt>Time</dt><dd data-sd="time"></dd></div>
+        <div data-sd-role-row><dt data-sd="role">Speaker</dt><dd data-sd="who">To be announced</dd></div>
+      </dl>
+      <div class="sdrawer__topics">
+        <p class="sdrawer__topics-h">In this session</p>
+        <ul data-sd-topics></ul>
+      </div>
+      <a class="sdrawer__link" data-sd-link hidden>→ <span data-sd="linkLabel"></span></a>
+      <button type="button" class="sdrawer__pdf" disabled>
+        Session materials (PDF) — available after the workshop
+      </button>
+    </aside>
+  </div>
+
+  <!-- ── Venue ────────────────────────────────────────────────────────── -->
+  <section class="section" id="venue">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Venue & logistics</p></Reveal>
+      <Reveal delay={70}>
+        <Prose>
+          <h2>Where the week happens</h2>
+          <p>
+            The workshop runs at <strong>Independent University, Bangladesh</strong>
+            — Plot 16, Block B, Aftabuddin Ahmed Road, Bashundhara Residential
+            Area, Dhaka 1245 — home of CASSA. Sessions run 10:00 AM to 6:00 PM
+            with a 90-minute lunch break; the exact room will be announced with
+            the final programme. The week falls in the semester break, and
+            participants completing the workshop receive certificates at the
+            closing ceremony.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── Committees ───────────────────────────────────────────────────── -->
+  <section class="section section--elev" id="committees">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Organisation</p></Reveal>
+      <Reveal delay={60}><h2 style={h2}>Committees</h2></Reveal>
+      <div class="coms">
+        <Reveal delay={100}>
+          <div class="com">
+            <h3 class="com__title">Scientific Organizing Committee</h3>
+            <ul class="com__list">
+              {SOC.map((p) => (
+                <li>
+                  <span class="com__name">{p.name}</span>
+                  <span class="com__aff">{p.aff}</span>
+                  <a class="com__mail" href={`mailto:${p.email}`}>{p.email}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+        <Reveal delay={160}>
+          <div class="com">
+            <h3 class="com__title">Local Organizing Committee</h3>
+            <ul class="com__list">
+              {LOC.map((p) => (
+                <li>
+                  <span class="com__name">{p.name}</span>
+                  <span class="com__aff">{p.aff}</span>
+                  <a class="com__mail" href={`mailto:${p.email}`}>{p.email}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Registration ─────────────────────────────────────────────────── -->
+  <section class="section" id="apply">
+    <div class="wrap cta">
+      <Reveal><p class="eyebrow">Take part</p></Reveal>
+      <Reveal delay={60}><h2 style={h2}>Applications & registration</h2></Reveal>
+      <Reveal delay={100}>
+        <p class="cta__p">
+          Applications open on 14 July 2026 — the workshop is designed for
+          <strong> university students from Bangladesh and beyond</strong>, and a
+          few seats may go to exceptional high-school applicants, subject to
+          availability. Selected participants confirm their seat by paying a
+          registration fee of <strong>BDT&nbsp;5,000 online</strong>; waivers of
+          <strong>20% or 50%</strong> are available on the basis of merit and need.
+        </p>
+      </Reveal>
+      <Reveal delay={130}>
+        <div class="dl">
+          {DEADLINES.map(([k, v]) => (
+            <div class="dl__item">
+              <span class="dl__k">{k}</span>
+              <span class="dl__v">{v}</span>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+      <Reveal delay={160}>
+        <p class="cta__p cta__p--note">
+          A second sponsor and host of the event will be announced soon.
+        </p>
+      </Reveal>
+      <Reveal delay={190}>
+        <p class="cta__row">
+          <a class="btn" href="https://inside.cassa.bd/forms/event/2026-07-12-b">Apply now</a>
+          <a class="cta__mail" href="mailto:cassa@iub.edu.bd?subject=TDMMA%20Workshop%202026">Questions? cassa@iub.edu.bd</a>
+        </p>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  /* Right-rail TOC — highlights the section currently in view. */
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll(".toc a[data-toc]"));
+    if (!links.length) return;
+    var sections = links
+      .map(function (a) { return document.getElementById(a.getAttribute("data-toc")); })
+      .filter(Boolean);
+    function update() {
+      var mark = window.innerHeight * 0.4;
+      var active = null;
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i].getBoundingClientRect().top <= mark) active = sections[i].id;
+      }
+      links.forEach(function (a) {
+        a.classList.toggle("is-active", a.getAttribute("data-toc") === active);
+      });
+    }
+    var ticking = false;
+    window.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { ticking = false; update(); });
+    }, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  })();
+
+  /* Session drawer — mirrors the PersonDrawer interaction contract:
+     click-to-open, scrim/×/Esc to close, focus restored to the trigger,
+     reduced-motion skips the slide transition. */
+  (function () {
+    var drawer = document.getElementById("session-drawer");
+    if (!drawer) return;
+    var panel = drawer.querySelector(".sdrawer__panel");
+    var closeBtn = drawer.querySelector(".sdrawer__close");
+    var roleRow = drawer.querySelector("[data-sd-role-row]");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var lastFocus = null;
+    function fill(name, value) {
+      var el = drawer.querySelector('[data-sd="' + name + '"]');
+      if (el) el.textContent = value;
+    }
+    function open(btn) {
+      fill("type", btn.getAttribute("data-type") || "");
+      fill("title", btn.getAttribute("data-title") || "");
+      fill("day", btn.getAttribute("data-day") || "");
+      fill("time", btn.getAttribute("data-time") || "");
+      var role = btn.getAttribute("data-role") || "";
+      if (roleRow) roleRow.hidden = !role;
+      if (role) fill("role", role);
+      fill("who", btn.getAttribute("data-who") || "To be announced");
+      var list = drawer.querySelector("[data-sd-topics]");
+      if (list) {
+        list.textContent = "";
+        (btn.getAttribute("data-topics") || "")
+          .split("¦")
+          .filter(Boolean)
+          .forEach(function (topic) {
+            var li = document.createElement("li");
+            li.textContent = topic;
+            list.appendChild(li);
+          });
+      }
+      var linkEl = drawer.querySelector("[data-sd-link]");
+      if (linkEl) {
+        var href = btn.getAttribute("data-link") || "";
+        linkEl.hidden = !href;
+        if (href) {
+          linkEl.setAttribute("href", href);
+          fill("linkLabel", btn.getAttribute("data-link-label") || "Learn more");
+        }
+      }
+      lastFocus = btn;
+      drawer.hidden = false;
+      requestAnimationFrame(function () { drawer.classList.add("is-open"); });
+      document.body.style.overflow = "hidden";
+      if (closeBtn) closeBtn.focus();
+    }
+    function close() {
+      if (drawer.hidden) return;
+      drawer.classList.remove("is-open");
+      document.body.style.overflow = "";
+      var done = false;
+      var finish = function () { if (done) return; done = true; drawer.hidden = true; };
+      if (reduce.matches) finish();
+      else { if (panel) panel.addEventListener("transitionend", finish, { once: true }); setTimeout(finish, 420); }
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+      lastFocus = null;
+    }
+    document.addEventListener("click", function (e) {
+      var opener = e.target.closest && e.target.closest("[data-session]");
+      if (opener) { e.preventDefault(); open(opener); return; }
+      if (e.target.closest && e.target.closest("[data-sdrawer-close]")) { e.preventDefault(); close(); }
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  })();
+</script>
+
+<style>
+  /* ── Right-rail TOC — bare lines; labels appear on hover/focus ── */
+  .toc {
+    position: fixed; right: clamp(0.7rem, 1.8vw, 1.6rem); top: 50%;
+    transform: translateY(-50%); z-index: 60;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;
+  }
+  .toc a {
+    display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem;
+    padding: 0.22rem 0;
+  }
+  .toc__line {
+    width: 1.3rem; height: 2px; border-radius: 2px; flex-shrink: 0;
+    background: color-mix(in srgb, var(--ink) 28%, transparent);
+    transition: width 0.25s ease, background 0.25s ease;
+  }
+  .toc a:hover .toc__line, .toc a:focus-visible .toc__line { background: var(--accent); }
+  .toc a.is-active .toc__line { width: 2.1rem; background: var(--accent); }
+  .toc__label {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft); white-space: nowrap;
+    background: color-mix(in srgb, var(--bg-elev) 86%, transparent);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.24rem 0.7rem;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    opacity: 0; transform: translateX(8px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    pointer-events: none;
+  }
+  .toc:hover .toc__label, .toc:focus-within .toc__label { opacity: 1; transform: none; }
+  .toc a.is-active .toc__label { color: var(--accent); }
+  /* Sections stop under the fixed nav when jumped to */
+  #about, #days, #programme, #venue, #committees, #apply { scroll-margin-top: 72px; }
+  @media (max-width: 900px) { .toc { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .toc__line, .toc__label { transition: none; }
+  }
+
+  /* ── Fact cards ── */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    gap: 0.9rem;
+    max-width: 68ch;
+    margin: 2.6rem auto 0;
+  }
+  .fact {
+    height: 100%;
+    display: flex; flex-direction: column; gap: 0.35rem;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 0.95rem 1.05rem;
+  }
+  .fact__k {
+    font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 600; color: var(--accent);
+  }
+  .fact__v { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5; }
+
+  /* ── Day-theme cards ── */
+  .days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 215px), 1fr));
+    gap: 1rem;
+    margin-top: 2.4rem;
+  }
+  .day {
+    position: relative; overflow: clip; height: 100%;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.15rem 1.2rem 1.25rem;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .day:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); transform: translateY(-2px); }
+  .day__num {
+    position: absolute; top: -0.9rem; right: 0.15rem;
+    font-family: var(--font-display); font-weight: 800; font-size: 4.6rem; line-height: 1;
+    letter-spacing: -0.04em; color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 12%, transparent);
+    pointer-events: none; user-select: none;
+  }
+  .day__date {
+    margin: 0; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 600; color: var(--accent);
+  }
+  .day__theme { margin: 0.5rem 0 0; font-size: 1.02rem; line-height: 1.35; letter-spacing: -0.01em; color: var(--ink); }
+  .day__topics { margin: 0.6rem 0 0; font-size: 0.8rem; line-height: 1.55; color: var(--ink-faint); }
+
+  /* ── Stat tiles ── */
+  .stats { display: flex; flex-wrap: wrap; gap: 2.2rem 3.4rem; margin-top: 2.8rem; }
+  .stat { display: flex; flex-direction: column; gap: 0.15rem; }
+  .stat__n {
+    font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em;
+    font-size: clamp(2.1rem, 4.5vw, 3rem); line-height: 1; color: var(--accent);
+  }
+  .stat__l { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-faint); }
+
+  /* ── Session-type palette (dark defaults; ink-dark equivalents for day) ── */
+  .s--lec  { --sc: #7fb2ff; }
+  .s--tut  { --sc: #7fd8a6; }
+  .s--disc { --sc: #c39bf0; }
+  .s--cer  { --sc: var(--accent); }
+  .s--brk  { --sc: color-mix(in srgb, var(--ink) 42%, transparent); }
+  :global([data-theme="light"]) .s--lec  { --sc: #2f6bd8; }
+  :global([data-theme="light"]) .s--tut  { --sc: #1d7f4e; }
+  :global([data-theme="light"]) .s--disc { --sc: #7444b8; }
+
+  /* ── Legend ── */
+  .legend { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.6rem; }
+  .lg {
+    font-size: 0.74rem; color: var(--ink-soft);
+    padding: 0.32rem 0.75rem 0.32rem 0.6rem;
+    border: 1px solid var(--line); border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 0.45rem;
+  }
+  .lg::before {
+    content: ""; width: 0.62rem; height: 0.62rem; border-radius: 3px;
+    background: var(--sc); flex-shrink: 0;
+  }
+
+  /* ── The calendar grid ──
+     Days on columns, 10:00–18:00 on rows in 15-min units (32 rows + header).
+     Sessions are grid-placed by time, so the irregular slots (Day 1's 10:30
+     start, Day 4's 17:15 split, Day 5's closing trio) land exactly. */
+  .cal-scroll { overflow-x: auto; margin-top: 2rem; -webkit-overflow-scrolling: touch; }
+  .cal {
+    --unit: 0.95rem;
+    --unit-lunch: 0.38rem; /* lunch rows compressed — the band is indicative */
+    display: grid;
+    grid-template-columns: 3.6rem repeat(5, minmax(158px, 1fr));
+    grid-template-rows: auto repeat(32, var(--unit)); /* overridden inline with lunch-aware rows */
+    gap: 0.2rem 0.4rem;
+    min-width: 940px;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+
+  .cal__corner { grid-column: 1; grid-row: 1; position: sticky; left: 0; z-index: 3; background: var(--bg-elev); }
+  .cal__day {
+    grid-row: 1;
+    display: flex; flex-direction: column; gap: 0.1rem;
+    padding: 0.55rem 0.75rem 0.7rem;
+    border-bottom: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .cal__wd { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; color: var(--accent); }
+  .cal__date { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--ink); }
+  .cal__short { font-size: 0.72rem; color: var(--ink-faint); }
+
+  .cal__rule { grid-column: 1 / -1; border-top: 1px dashed color-mix(in srgb, var(--ink) 8%, transparent); z-index: 0; pointer-events: none; }
+  .cal__time {
+    grid-column: 1;
+    position: sticky; left: 0; z-index: 2;
+    background: var(--bg-elev);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.64rem; line-height: 1; color: var(--ink-faint);
+    padding: 0.12rem 0.5rem 0 0;
+    text-align: right;
+  }
+
+  /* Session cell — a real button; times live on the rail, details in the drawer */
+  .s {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; gap: 0.2rem;
+    font: inherit; text-align: left; color: inherit; cursor: pointer;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--sc) 19%, var(--bg-elev)),
+      color-mix(in srgb, var(--sc) 7%, var(--bg-elev))
+    );
+    border: 1px solid color-mix(in srgb, var(--sc) 26%, transparent);
+    border-left: 3px solid var(--sc);
+    border-radius: 10px;
+    padding: 0.45rem 0.65rem;
+    min-width: 0; overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  }
+  .s:hover, .s:focus-visible {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--sc) 72%, transparent);
+    box-shadow: 0 14px 32px color-mix(in srgb, var(--sc) 20%, transparent);
+    z-index: 2;
+  }
+  .s__title { font-size: 0.9rem; font-weight: 600; line-height: 1.26; letter-spacing: -0.012em; color: var(--ink); }
+  .s__who { margin-top: auto; font-size: 0.68rem; color: var(--ink-faint); }
+  .s__who b { font-weight: 700; color: var(--sc); letter-spacing: 0.04em; }
+
+  /* Staggered entrance — cells cascade in when the calendar's Reveal fires */
+  .s { opacity: 0; }
+  :global([data-reveal].is-in) .s { animation: cell-in 0.5s ease both; animation-delay: var(--d, 0ms); }
+  @keyframes cell-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.985); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Breaks — hairline pills, quiet, not clickable */
+  .s--brk {
+    justify-content: center; cursor: default;
+    background: transparent;
+    border: 1px dashed color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 999px;
+  }
+  .s--brk .s__title {
+    font-size: 0.6rem; font-weight: 600; color: var(--ink-faint);
+    text-transform: uppercase; letter-spacing: 0.16em;
+  }
+  .s--brk:hover { transform: none; box-shadow: none; border-color: color-mix(in srgb, var(--ink) 20%, transparent); }
+  .s--span { grid-column: 2 / -1; flex-direction: row; align-items: center; justify-content: center; text-align: center; }
+
+  /* ── Session drawer ── */
+  .sdrawer { position: fixed; inset: 0; z-index: 1000; }
+  .sdrawer[hidden] { display: none; }
+  .sdrawer__scrim { position: absolute; inset: 0; background: rgba(3, 6, 14, 0.58); opacity: 0; transition: opacity 0.3s ease; }
+  .sdrawer.is-open .sdrawer__scrim { opacity: 1; }
+  .sdrawer__panel {
+    position: absolute; top: 0; right: 0; height: 100%;
+    width: min(420px, 92vw); overflow-y: auto;
+    background: var(--bg-elev); border-left: 1px solid var(--line);
+    box-shadow: -20px 0 50px rgba(3, 6, 14, 0.4);
+    padding: 3.4rem 1.6rem 1.8rem;
+    transform: translateX(100%); transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sdrawer.is-open .sdrawer__panel { transform: translateX(0); }
+  .sdrawer__close {
+    position: absolute; top: 0.8rem; right: 0.8rem; z-index: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.1rem; height: 2.1rem; border-radius: 999px;
+    background: var(--bg-elev-2); border: 1px solid var(--line);
+    color: var(--ink-soft); cursor: pointer; transition: color 0.2s, border-color 0.2s;
+  }
+  .sdrawer__close:hover { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+  .sdrawer__type {
+    margin: 0; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 600; color: var(--accent);
+  }
+  .sdrawer__title { margin: 0.5rem 0 0; font-size: 1.25rem; line-height: 1.35; letter-spacing: -0.015em; color: var(--ink); }
+  .sdrawer__meta { margin: 1.5rem 0 0; display: flex; flex-direction: column; gap: 0.7rem; }
+  .sdrawer__meta div { display: grid; grid-template-columns: 5.8rem minmax(0, 1fr); gap: 0.8rem; }
+  .sdrawer__meta dt { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 600; color: var(--ink-faint); padding-top: 0.15rem; }
+  .sdrawer__meta dd { margin: 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.5; }
+  .sdrawer__topics { margin-top: 1.8rem; }
+  .sdrawer__topics-h {
+    margin: 0; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.14em;
+    font-weight: 600; color: var(--ink-faint);
+  }
+  .sdrawer__topics ul { list-style: none; margin: 0.7rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+  .sdrawer__topics li {
+    position: relative; padding-left: 1.05rem;
+    font-size: 0.88rem; line-height: 1.55; color: var(--ink-soft);
+  }
+  .sdrawer__topics li::before {
+    content: ""; position: absolute; left: 0; top: 0.58em;
+    width: 0.42rem; height: 0.42rem; border-radius: 2px;
+    background: color-mix(in srgb, var(--accent) 75%, transparent);
+  }
+  .sdrawer__link {
+    display: inline-block; margin-top: 1.4rem;
+    font-size: 0.88rem; font-weight: 600; color: var(--accent-2);
+  }
+  .sdrawer__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  /* Materials button — disabled placeholder; becomes the PDF download after
+     the workshop. */
+  .sdrawer__pdf {
+    display: block; width: 100%; margin-top: 1.8rem;
+    font: inherit; font-size: 0.84rem; font-weight: 600;
+    color: var(--ink-faint);
+    background: var(--bg-elev-2);
+    border: 1px dashed var(--line-strong); border-radius: 12px;
+    padding: 0.8rem 1rem;
+    cursor: not-allowed;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sdrawer__scrim, .sdrawer__panel { transition: none; }
+  }
+
+  .cal-note { margin-top: 1.4rem; font-size: 0.82rem; color: var(--ink-faint); max-width: 68ch; }
+
+  /* ── Committees ── */
+  .coms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1rem;
+    margin-top: 2.4rem;
+    max-width: 60rem;
+  }
+  .com {
+    height: 100%;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.3rem 1.4rem 1.4rem;
+  }
+  .com__title {
+    margin: 0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 600; color: var(--accent);
+  }
+  .com__list { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.85rem; }
+  .com__list li { display: flex; flex-direction: column; gap: 0.15rem; }
+  .com__name { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+  .com__aff { font-size: 0.8rem; color: var(--ink-faint); line-height: 1.45; }
+  .com__mail { font-size: 0.8rem; color: var(--accent-2); width: fit-content; }
+  .com__mail:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ── CTA ── */
+  .cta__p { color: var(--ink-soft); max-width: 58ch; margin: 1.1rem 0 0; font-size: 1.05rem; line-height: 1.7; }
+  .cta__p--note { font-size: 0.92rem; color: var(--ink-faint); }
+
+  /* Key dates */
+  .dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 0.9rem;
+    max-width: 56rem;
+    margin-top: 1.9rem;
+  }
+  .dl__item {
+    height: 100%;
+    display: flex; flex-direction: column; gap: 0.35rem;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 0.95rem 1.05rem;
+  }
+  .dl__k {
+    font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 600; color: var(--accent);
+  }
+  .dl__v { font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+  .cta__row { margin: 1.6rem 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem; }
+  .cta__mail { font-size: 0.9rem; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; }
+  .cta__mail:hover { color: var(--accent); }
+  .btn {
+    display: inline-block;
+    background: var(--accent); color: var(--accent-ink);
+    font-weight: 600; font-size: 0.95rem;
+    padding: 0.75rem 1.4rem; border-radius: 999px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 30%, transparent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s, .day, .btn { transition: none; }
+    .s:hover, .day:hover, .btn:hover { transform: none; }
+    .s { opacity: 1; animation: none !important; }
+  }
+
+  /* Phones: the calendar keeps its shape and scrolls sideways (rule 21). */
+  @media (max-width: 640px) {
+    .cal { min-width: 880px; }
+    .stats { gap: 1.6rem 2.4rem; }
+  }
+</style>
