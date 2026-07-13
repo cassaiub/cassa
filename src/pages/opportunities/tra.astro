@@ -1,0 +1,342 @@
+---
+/* The evergreen program page of the Beatrice Tinsley Postbac Research
+   Assistantship (TRA) — CASSA's annual women-only postbac program. Durable
+   content lives here (mission, Tinsley bio, structure); every cycle-specific
+   fact — stipend, dates, the research programs of that year's two positions —
+   stays in that year's circular at /opportunities/tra/<year>. Circulars are
+   collected by `program: "tra"` frontmatter; the open one is featured at the
+   top and the rest form the year-by-year archive, so the page flips between
+   states with zero maintenance.
+   Public short URL: cassa.bd/tra (redirect in astro.config.mjs). */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AnimatedHero from "../../components/immersive/AnimatedHero.astro";
+import AnimatedBand from "../../components/immersive/AnimatedBand.astro";
+import Reveal from "../../components/immersive/Reveal.astro";
+import Prose from "../../components/immersive/Prose.astro";
+import Countdown from "../../components/Countdown.tsx";
+import { getCollection } from "astro:content";
+import { withBase } from "../../data/site-nav.ts";
+
+const circulars = (
+  await getCollection("opportunities", ({ data }) => data.status !== "draft" && data.program === "tra")
+).sort((a, b) => +b.data.date - +a.data.date);
+
+const now = new Date();
+type Circ = (typeof circulars)[number];
+const isOpen = (o: Circ) => !o.data.outcome && (!o.data.deadline || o.data.deadline >= now);
+const current = circulars.find(isOpen);
+
+/* Cycle year from the entry id ("tra/2026" → "2026"). */
+const yearOf = (o: Circ) => o.id.split("/").pop();
+const statusOf = (o: Circ): "open" | "closed" | "filled" =>
+  o.data.outcome === "filled" ? "filled" : isOpen(o) ? "open" : "closed";
+const STATUS_LABEL = { open: "Open", closed: "Closed", filled: "Filled" } as const;
+
+const TZ = "Asia/Dhaka";
+const fmtDate = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: TZ, day: "numeric", month: "long", year: "numeric" }).format(d);
+
+const glance = [
+  { lbl: "Cadence", val: "Annual — one cohort every year" },
+  { lbl: "Positions", val: "Two per cohort — on the same or different research programs" },
+  { lbl: "Duration", val: "Twelve months, full time, in person at CASSA" },
+  { lbl: "Eligibility", val: "Women with a completed bachelor's degree" },
+  { lbl: "Outcome", val: "At least one principal-author paper, then graduate applications" },
+  { lbl: "Funding", val: "A Sponsored Research Grant (SRG) at IUB" },
+];
+---
+
+<BaseLayout
+  title="The Tinsley Research Assistantship — CASSA"
+  description="The Beatrice Tinsley Postbac Research Assistantship (TRA) — CASSA's annual program of paid, year-long research positions for women who have completed their bachelor's degree, each leading to a principal-author paper and graduate-school applications."
+  current="/opportunities/tra"
+  ogImage="/og/tinsley-tra.png"
+  ogImageAlt="The Beatrice Tinsley Postbac Research Assistantship — CASSA's annual postbac research program for women, at IUB"
+>
+  <AnimatedHero
+    theme="evolution"
+    eyebrow="Opportunities · Program"
+    title="The Tinsley Research Assistantship"
+    lede="CASSA's annual postbac program for women in astronomy — a paid year of publishable research that bridges the bachelor's degree and graduate school."
+  />
+
+  <!-- Why it exists (elevated — sits after the dark canvas hero, rule 19).
+       When a call is open, its feature card leads the section. -->
+  <section class="section section--elev">
+    <div class="wrap">
+      {current && (
+        <Reveal>
+          <a class="call" href={withBase(`/opportunities/${current.id}`)}>
+            <div class="call__main">
+              <p class="call__eyebrow">
+                <span class="call__pill">Now open</span>
+                The {yearOf(current)} call
+              </p>
+              <p class="call__title">{current.data.title}</p>
+              <p class="call__facts">
+                {[
+                  current.data.role,
+                  current.data.compensation,
+                  current.data.deadline && `Apply by ${fmtDate(current.data.deadline)}`,
+                ].filter(Boolean).join(" · ")}
+              </p>
+            </div>
+            <div class="call__side">
+              {current.data.deadline && <Countdown client:idle closesAt={current.data.deadline.toISOString()} />}
+              <span class="call__cta">Read the circular &amp; apply →</span>
+            </div>
+          </a>
+        </Reveal>
+      )}
+
+      <Reveal delay={current ? 80 : 0}><p class="eyebrow">Why it exists</p></Reveal>
+      <Reveal delay={current ? 140 : 60}>
+        <Prose>
+          <h2>The bridge to graduate school</h2>
+          <p>
+            Between a bachelor's degree and a funded graduate position abroad lies a demanding year:
+            research experience to gain, a first publication to work toward, recommenders to earn,
+            and tests and applications to complete. Few paid positions in Bangladesh let a fresh
+            graduate do all of this. The
+            <strong>Beatrice Tinsley Postbac Research Assistantship (TRA)</strong>, founded in 2026
+            and funded by the Sponsored Research Grant (SRG) of
+            <a href={withBase('/people/asad')}>Dr Khan Muhammad Bin Asad</a>, creates two such
+            positions at the Center for Astronomy, Space Science and Astrophysics (CASSA) at
+            Independent University, Bangladesh every year, reserved for women — to widen the
+            participation of women in astronomy and space science in Bangladesh.
+          </p>
+          <p>
+            A Tinsley RA spends twelve months on publishable research, working toward at least one
+            submitted paper as a principal author, and applies to graduate programs with that year
+            of work — and the recommenders who supervised it — behind her.
+          </p>
+        </Prose>
+      </Reveal>
+
+      <div class="glance">
+        {glance.map((g, i) => (
+          <Reveal class="glance__wrap" delay={100 + i * 50}>
+            <div class="glance__item">
+              <p class="glance__lbl">{g.lbl}</p>
+              <p class="glance__val">{g.val}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- The name (base tone between the two elevated sections) -->
+  <section class="section">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The name</p></Reveal>
+      <Reveal delay={60}>
+        <Prose>
+          <h2>Who was Beatrice Tinsley?</h2>
+          <p>
+            <strong>Beatrice Muriel Hill Tinsley</strong> (1941–1981) was a New Zealand–raised
+            astrophysicist and cosmologist who pioneered the modern study of galaxy evolution. In her
+            University of Texas PhD thesis she showed that galaxies change measurably as their stellar
+            populations age — overturning the then-standard assumption that galaxies could be treated
+            as fixed standard candles for measuring the fate of the Universe, and turning galaxy
+            evolution itself into a quantitative science. Her models of how a galaxy's stars form,
+            evolve and die — the foundation of today's stellar-population synthesis — remain at the
+            heart of how galaxy observations are interpreted, and in a career of barely fourteen
+            years, ended by melanoma at 40, she tied galaxy evolution to chemical enrichment and
+            observational cosmology in nearly a hundred papers. She was a professor of astronomy at
+            Yale University, and the American Astronomical Society's Beatrice M. Tinsley Prize,
+            awarded for research of an exceptionally creative or innovative character, is named
+            for her.
+          </p>
+          <p>
+            The assistantship carries her name as a reminder of what a researcher can build in the
+            years just after a first degree. The animated backdrop of this page is her science —
+            galaxies born blue, brightening to gold and reddening as their stellar populations age
+            across cosmic time.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- How the program works (elevated) -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">The program</p></Reveal>
+      <Reveal delay={60}>
+        <Prose>
+          <h2>How a Tinsley year runs</h2>
+          <p>
+            The TRA is an annual program, funded by a Sponsored Research Grant (SRG) at IUB and
+            subject to the grant's annual renewal. Each cycle is announced as a circular — on
+            this page, on the <a href={withBase('/opportunities/vacancies')}>Vacancies</a> board and
+            in the <a href={withBase('/news')}>news feed</a> — and stays open for about a month.
+            Applications are reviewed by the principal investigator together with an external expert;
+            shortlisted candidates are interviewed, and the new cohort begins in September. The
+            inaugural cohort begins in September 2026.
+          </p>
+          <p>
+            Each cohort holds two positions. The two Tinsley RAs work within CASSA's active
+            <a href={withBase('/research')}> research programs</a> — on the same program or on
+            different ones — and each year's circular sets out the programs, topics and skills for
+            that cycle. Whatever the year's topics, the shape of the work is the same: original
+            research toward a principal-author paper, Python-based analysis on CASSA's
+            <a href={withBase('/research/hpc')}> Timaeus HPC</a>, and full participation in the
+            Center's colloquia, journal talks and weekly research meetings.
+          </p>
+        </Prose>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- Program band (canvas ≈ --bg, between two elevated sections — rule 19) -->
+  <AnimatedBand theme="galaxy">
+    <Reveal>
+      <p class="eyebrow" style="color:#fff;opacity:.85">The Tinsley idea</p>
+      <h2 style="color:#fff;font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-.02em;margin:.4rem 0 0;max-width:24ch">Twelve months of research, one principal-author paper</h2>
+    </Reveal>
+  </AnimatedBand>
+
+  <!-- The cycles, year by year (elevated) -->
+  <section class="section section--elev" id="cycles">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Cycles</p></Reveal>
+      <Reveal delay={60}><h2 class="cy-h2">The calls, year by year</h2></Reveal>
+
+      {circulars.length > 0 ? (
+        <ol class="cylist" aria-label="TRA calls by year">
+          {circulars.map((o, i) => {
+            const s = statusOf(o);
+            return (
+              <li>
+                <a class:list={["cyrow", `cyrow--${s}`]} href={withBase(`/opportunities/${o.id}`)} data-reveal style={`--reveal-delay:${Math.min(i, 6) * 50}ms`}>
+                  <span class="cyrow__year">{yearOf(o)}</span>
+                  <span class="cyrow__body">
+                    <span class="cyrow__title">{o.data.title}</span>
+                    {o.data.deadline && (
+                      <span class="cyrow__foot">
+                        {s === "open" ? `Apply by ${fmtDate(o.data.deadline)}` :
+                         s === "filled" ? "Positions filled" :
+                         `Applications closed ${fmtDate(o.data.deadline)}`}
+                      </span>
+                    )}
+                  </span>
+                  <span class:list={["cystat", `cystat--${s}`]}>{STATUS_LABEL[s]}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+      ) : (
+        <Reveal delay={100}>
+          <p class="cy-empty">
+            Applications for the first cycle are not open right now. The call is made once a year and
+            announced here and in the <a href={withBase('/news')}>news feed</a> — check back, or write
+            to <a href="mailto:kasad@iub.edu.bd">kasad@iub.edu.bd</a> to register your interest.
+          </p>
+        </Reveal>
+      )}
+      {circulars.length > 0 && !current && (
+        <Reveal delay={120}>
+          <p class="cy-empty">
+            The next call is announced here and in the <a href={withBase('/news')}>news feed</a> once
+            a year — or write to <a href="mailto:kasad@iub.edu.bd">kasad@iub.edu.bd</a> to register
+            your interest.
+          </p>
+        </Reveal>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Featured current call — leads the page when a cycle is open. */
+  .call {
+    display: flex; gap: 1.6rem; align-items: center; justify-content: space-between;
+    background: var(--bg-elev-2); border: 1px solid var(--accent); border-left: 4px solid var(--accent);
+    border-radius: 16px; padding: 1.5rem 1.7rem; margin-bottom: 3rem;
+    transition: transform .2s, border-color .2s;
+  }
+  .call:hover { transform: translateY(-3px); }
+  [data-theme="light"] .call { box-shadow: 0 1px 2px rgba(12,18,34,.06), 0 10px 24px rgba(12,18,34,.06); }
+  @media (max-width: 820px) { .call { flex-direction: column; align-items: flex-start; gap: 1rem; } }
+
+  .call__main { min-width: 0; }
+  .call__eyebrow {
+    display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
+    font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700;
+    color: var(--ink-faint); margin: 0 0 .55rem;
+  }
+  .call__pill {
+    color: var(--accent); border: 1px solid var(--accent); border-radius: 999px;
+    padding: .3em .75em; background: color-mix(in srgb, var(--accent) 14%, transparent);
+    letter-spacing: .14em;
+  }
+  .call__title { font-size: clamp(1.15rem, 2.4vw, 1.45rem); font-weight: 700; color: var(--ink); line-height: 1.3; margin: 0 0 .5rem; letter-spacing: -.01em; }
+  .call:hover .call__title { color: var(--accent); }
+  .call__facts { font-size: .88rem; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+
+  .call__side { display: flex; flex-direction: column; align-items: flex-end; gap: .7rem; flex-shrink: 0; }
+  @media (max-width: 820px) { .call__side { align-items: flex-start; } }
+  .call__cta {
+    display: inline-block; font-weight: 600; white-space: nowrap;
+    background: var(--accent); color: var(--accent-ink); border-radius: 10px; padding: .7rem 1.1rem;
+  }
+  .call:hover .call__cta { opacity: .85; }
+
+  /* Program at a glance — minmax(0,1fr) so min-content can never widen phones (rule 21). */
+  .glance {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem;
+    margin: 2.4rem 0 0;
+  }
+  @media (max-width: 980px) { .glance { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) { .glance { grid-template-columns: minmax(0, 1fr); } }
+
+  .glance__item {
+    height: 100%; background: var(--bg-elev-2); border: 1px solid var(--line);
+    border-radius: 14px; padding: 1.1rem 1.25rem;
+  }
+  [data-theme="light"] .glance__item { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .glance__lbl {
+    font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700;
+    color: var(--ink-faint); margin: 0 0 .4rem;
+  }
+  .glance__val { color: var(--ink); margin: 0; line-height: 1.55; font-weight: 500; font-size: .95rem; }
+
+  /* The year-by-year archive of calls. */
+  .cy-h2 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); letter-spacing: -.015em; margin: .3rem 0 0; color: var(--ink); }
+
+  .cylist { list-style: none; margin: 1.8rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .7rem; }
+  .cyrow {
+    display: flex; align-items: center; gap: 1.1rem;
+    background: var(--bg-elev-2); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.05rem 1.25rem; transition: border-color .2s, transform .2s;
+  }
+  .cyrow:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); transform: translateY(-2px); }
+  [data-theme="light"] .cyrow { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 8px 18px rgba(12,18,34,.04); }
+  .cyrow--closed, .cyrow--filled { opacity: .85; }
+  .cyrow--closed:hover, .cyrow--filled:hover { opacity: 1; }
+
+  .cyrow__year {
+    font-size: 1.35rem; font-weight: 700; color: var(--accent); letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums; flex-shrink: 0;
+  }
+  .cyrow__body { display: flex; flex-direction: column; gap: .25rem; min-width: 0; flex-grow: 1; }
+  .cyrow__title { font-size: 1rem; color: var(--ink); line-height: 1.35; font-weight: 600; }
+  .cyrow:hover .cyrow__title { color: var(--accent); }
+  .cyrow__foot { font-size: .8rem; color: var(--ink-faint); line-height: 1.5; }
+
+  .cystat {
+    font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+    padding: .28em .7em; border-radius: 999px; white-space: nowrap; border: 1px solid var(--line);
+    color: var(--ink-faint); flex-shrink: 0;
+  }
+  .cystat--open {
+    color: var(--accent); border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .cy-empty { color: var(--ink-soft); margin-top: 1.4rem; line-height: 1.7; max-width: 62ch; }
+  .cy-empty a { color: var(--accent); }
+  .cy-empty a:hover { opacity: .75; }
+</style>

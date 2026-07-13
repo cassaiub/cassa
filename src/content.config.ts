@@ -209,6 +209,10 @@ const opportunities = defineCollection({
     date: z.coerce.date(), // posted
     deadline: z.coerce.date().optional(), // application deadline; omit ⇒ rolling/open
     kind: z.enum(["job", "internship", "volunteer"]).default("job"),
+    // Named annual program this circular belongs to (e.g. "tra" — the Tinsley
+    // RAship). The program's evergreen page collects its circulars across
+    // years by this key; more robust than matching slug prefixes.
+    program: z.string().optional(),
     role: z.string().optional(),
     compensation: z.string().optional(),
     applyUrl: z.string().optional(),

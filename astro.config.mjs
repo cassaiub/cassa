@@ -148,6 +148,11 @@ export default defineConfig({
   // The radio telescope was renamed STAR → TART; keep the old facility URL alive.
   redirects: {
     '/research/star': '/research/tart',
+    // The single public short URL for the Tinsley RAship program page.
+    '/tra': '/opportunities/tra',
+    // The 2026 TRA circular was briefly live at this slug (12 Jul 2026)
+    // before circulars moved under /opportunities/tra/<year>.
+    '/opportunities/tinsley-ra-2026': '/opportunities/tra/2026',
   },
   build: {
     inlineStylesheets: 'auto',

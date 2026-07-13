@@ -123,6 +123,7 @@ export const NAV: NavItem[] = [
       { href: "/opportunities/vacancies", label: "Vacancies" },
       { href: "/opportunities/internships", label: "Internships" },
       { href: "/opportunities/volunteerships", label: "Volunteerships" },
+      { href: "/opportunities/tra", label: "Tinsley RAship" },
     ],
   },
 ];

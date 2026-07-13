@@ -85,6 +85,10 @@ const categoryPath = pathForKind(d.kind);
         {isOpen && d.applyUrl && (
           <a class="od__apply" href={d.applyUrl} target="_blank" rel="noopener">Apply now →</a>
         )}
+        <nav class="od__back" aria-label="Related pages">
+          {d.program && <a href={withBase(`/opportunities/${d.program}`)}>← The program page</a>}
+          <a href={withBase(categoryPath)}>← All {category.label.toLowerCase()}</a>
+        </nav>
       </div>
 
       <div class="od__content" data-reveal style="--reveal-delay:80ms">
@@ -96,7 +100,6 @@ const categoryPath = pathForKind(d.kind);
           </p>
         )}
         <Prose><Content /></Prose>
-        <p class="od__back"><a href={withBase(categoryPath)}>← All {category.label.toLowerCase()}</a></p>
       </div>
     </div>
   </section>
@@ -136,7 +139,19 @@ const categoryPath = pathForKind(d.kind);
   }
   .od__notice a { color: var(--accent); }
 
-  .od__back { margin-top: 2rem; }
-  .od__back a { color: var(--accent); }
-  .od__back a:hover { opacity: .75; }
+  .od__back {
+    display: flex; flex-direction: column; gap: .6rem;
+    border-top: 1px solid var(--line); padding-top: 1.2rem; margin-top: .2rem;
+  }
+  .od__back a {
+    display: block; text-align: center; font-size: .88rem; font-weight: 600; line-height: 1.4;
+    color: var(--ink-soft); background: transparent;
+    border: 1px solid var(--line-strong); border-radius: 10px; padding: .62rem 1rem;
+    transition: color .18s, border-color .18s, background-color .18s, transform .18s;
+  }
+  .od__back a:hover {
+    color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    transform: translateY(-1px);
+  }
 </style>
