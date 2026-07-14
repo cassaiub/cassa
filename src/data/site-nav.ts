@@ -17,7 +17,16 @@ export type NavItem = { href: string; label: string; live: boolean; children?: N
 
 export const NAV: NavItem[] = [
   { href: "/", label: "Home", live: true },
-  { href: "/about", label: "About", live: true },
+  {
+    href: "/about",
+    label: "About",
+    live: true,
+    children: [
+      { href: "/constitution", label: "Constitution" },
+      { href: "/coc", label: "Code of Conduct" },
+      { href: "/sgp", label: "Safeguarding Policy" },
+    ],
+  },
   {
     href: "/people",
     label: "People",
@@ -74,6 +83,7 @@ export const NAV: NavItem[] = [
       {
         label: "Workshops",
         children: [
+          { href: "/tdmma-2026", label: "TDMMA 2026" },
           { href: "/teaching/workshops/cw1-en", label: "Workshop 1" },
           { href: "/teaching/workshops/cw2-en", label: "Workshop 2" },
         ],

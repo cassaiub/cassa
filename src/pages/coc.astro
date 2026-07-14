@@ -1,0 +1,299 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import { withBase } from "../data/site-nav.ts";
+
+// The CASSA Code of Conduct (draft, under consultation). Core clauses are ported
+// from Appendix D of the Constitution (v2.1.0 line); the teamwork, premises,
+// safety, and reporting sections consolidate the workplace standards announced
+// to personnel on 11 July 2026. Where this page and the Constitution differ,
+// the Constitution prevails (stated in the Authority block below).
+type Section = { title: string; clauses: string[] };
+
+const sections: Section[] = [
+  {
+    title: "Equity, Diversity, and Inclusion",
+    clauses: [
+      `CASSA is committed to equity, diversity, and inclusion in accordance with the norms of the <a href="https://aas.org/about/strategic-plan" target="_blank" rel="noopener">American Astronomical Society</a>.`,
+      `Discrimination on any basis — including gender, religion, ethnicity, nationality, disability, age, or socioeconomic background — is prohibited.`,
+      `All personnel shall use inclusive language and take reasonable steps to ensure accessible participation in CASSA activities.`,
+    ],
+  },
+  {
+    title: "Respect and Professional Conduct",
+    clauses: [
+      `All personnel shall treat colleagues, students, and outreach participants with dignity and fairness.`,
+      `All personnel are colleagues of equal standing; authority derives from an assigned role, never from seniority, gender, or personal association.`,
+      `Harassment, bullying, intimidation, and language intended to shame or humiliate are prohibited in all CASSA settings, including online and outreach contexts.`,
+    ],
+  },
+  {
+    title: "Research Integrity",
+    clauses: [
+      `Fabrication, falsification, and plagiarism are prohibited; all research output must reflect honest attribution of contributions.`,
+      `Authorship and acknowledgement shall follow the norms of the relevant discipline.`,
+      `Data, code, and materials shall be managed and retained in accordance with applicable funder and journal policies.`,
+    ],
+  },
+  {
+    title: "Professional Boundaries",
+    clauses: [
+      `Romantic or sexual relationships where a power differential exists — including faculty/student, supervisor/RA, and CASSA staff/outreach participant — are prohibited.`,
+      `Displays of romantic affection are not permitted on CASSA premises or at any CASSA activity.`,
+      `No academic opportunity, HPC access, co-authorship, or CASSA position may be exchanged for personal favours.`,
+    ],
+  },
+  {
+    title: "Teamwork",
+    clauses: [
+      `Decisions of a team shall be taken in meetings of which every member has notice, and communicated in writing to members not present.`,
+      `Work shall be allocated by agreed role; receiving a salary does not make one member accountable for the duties of others.`,
+      `When a plan is changed or abandoned, everyone whose work or contacts it engaged shall be informed promptly.`,
+    ],
+  },
+  {
+    title: "Communication",
+    clauses: [
+      `Work-related communications shall use official CASSA or IUB channels; unmonitored personal channels shall not be used for CASSA business.`,
+    ],
+  },
+  {
+    title: "Conflicts of Interest",
+    clauses: [
+      `All conflicts of interest shall be declared in accordance with clause 9 of the Constitution.`,
+      `A close personal relationship — familial, domestic, friendship, or romantic — with anyone else working at CASSA shall be declared to the Office of the Director in advance.`,
+      `A person so related to a party in a dispute or formal proceeding may be heard as a witness, but shall not act as decision-maker, investigator, or formal representative in the matter.`,
+    ],
+  },
+  {
+    title: "Premises and Facilities",
+    clauses: [
+      `The office is opened at 10 am and closed by 6 pm by the Manager (Science), unless a faculty member is present.`,
+      `Presence after 6 pm requires the company of a faculty member, or that member's written permission; an email suffices.`,
+      `Keys are held by faculty members and the Manager (Science) alone; a key may be issued temporarily only with a faculty member's written permission, for at most two consecutive days.`,
+      `The office is used only by personnel enrolled on the IFP in a specific CASSA role; everyone shall sign in and out on the IFP when using the premises.`,
+      `Guests require an appointment and a specific reason; only a faculty member may bring a guest without these, and shall notify the Office of the Director in advance of doing so.`,
+      `A minor child for whom an employee has no alternative care that day may accompany the employee, with advance notice to the Manager (Science); the child shall remain under the parent's continuous supervision and away from all equipment, and may stay only so long as the working environment is undisturbed.`,
+      `A recurring need for such an arrangement shall be discussed with the Office of the Director — or, where the employee currently holds that office, with the other Core Members — after which the employee may set a schedule and notify the CASSA office of it; the <a href="${withBase('/sgp')}">Safeguarding Policy</a> applies whenever a minor is on the premises.`,
+      `A desk allocated to a faculty member shall not be used in that member's absence without written permission.`,
+      `The sofa serves meetings and discussions; it shall not be used for sleeping or resting, except where a faculty member has authorized such use for a medical reason.`,
+    ],
+  },
+  {
+    title: "Equipment and Computing",
+    clauses: [
+      `CASSA equipment — laptops, desktops, telescopes, and all other apparatus — shall be used only with a booking via <a href="https://inside.cassa.bd" target="_blank" rel="noopener">inside.cassa.bd</a> or written permission; use without a booking draws warnings and, on repetition, suspension of access.`,
+      `The custodian of the CASSA HPC and Claude accounts may suspend or revoke any account — permanently or for a period proportionate to the offence — where its use hampers the work of others on the shared systems.`,
+      `On expiry of a contract, the holder has one month to empty their HPC account, after which the account is deleted.`,
+      `Where a project requires HPC use beyond the contract, the supervisor may request an extension in writing, for a specific period only.`,
+    ],
+  },
+  {
+    title: "Shared Amenities",
+    clauses: [
+      `Coffee from CASSA-provided beans is brewed once daily at 10 am and may be taken by anyone in the office, irrespective of rank; none is served after 1 pm.`,
+      `Anyone may brew coffee from personal beans at any time.`,
+      `The CASSA washroom is unisex and kept locked at all times; it is used only by key holders.`,
+      `Washroom keys are held by faculty members, managers, and postbaccalaureate and graduate research assistants; all other personnel shall use the 8th-floor washrooms.`,
+      `Misuse of the washroom — spilling water anywhere outside the commode and sink, dirtying the floor, leaving the commode lid up, or urinating while standing — results in revocation of the key.`,
+    ],
+  },
+  {
+    title: "Physical Conduct and Environment",
+    clauses: [
+      `Dress and conduct shall be professional and appropriate to the setting.`,
+      `The office is an open workspace: voices shall be kept to a minimum, and group discussions shall take place outside the office unless a group meeting has been booked.`,
+      `Mobile phones shall be kept in silent mode inside the office, and phone conversations shall take place outside it.`,
+      `Alcohol and illegal drugs are prohibited on CASSA premises and at all CASSA events.`,
+    ],
+  },
+  {
+    title: "Safety",
+    clauses: [
+      `In a power failure or other emergency, those present shall ascertain the safety of every person on the premises before dispersing.`,
+      `Schedules shall have regard to every member's safe travel, particularly after dark; no one shall be included in travel or overnight arrangements without their prior, informed consent.`,
+      `Every appointment is preceded by a background check, including references from previous workplaces.`,
+    ],
+  },
+  {
+    title: "Reporting Concerns",
+    clauses: [
+      `Any concern, including a concern about CASSA management, may be raised — anonymously if preferred — via <a href="https://inside.cassa.bd" target="_blank" rel="noopener">inside.cassa.bd</a>; every concern is reviewed, and no one shall face retaliation for a concern raised in good faith.`,
+      `A concern about the Manager (Science) goes to a core faculty member; about a Core Member, to another faculty member who is a core or associate member; about the Office of the Director, to the Core Members outside that office.`,
+      `Grave matters, or any case where the internal routes are themselves conflicted, may be taken directly to the independent IUB committees named in the <a href="${withBase('/sgp')}">Safeguarding Policy</a>.`,
+      `Concerns involving children or vulnerable adults shall be escalated immediately under the <a href="${withBase('/sgp')}">Safeguarding Policy</a>.`,
+    ],
+  },
+  {
+    title: "Accountability",
+    clauses: [
+      `Violations of this Code trigger the two-step removal process set out in clause 20 of the Constitution.`,
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Code of Conduct — CASSA"
+  description="The professional and ethical standards binding all CASSA Members, staff, student researchers, and volunteers — draft Code of Conduct, under consultation."
+  current="/about"
+>
+  <AnimatedHero
+    theme="cosmic"
+    eyebrow="About"
+    title="Code of Conduct"
+    lede="The professional and ethical standards binding everyone who works at CASSA."
+  />
+
+  <!-- ── The Code ─────────────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="coc">
+        <Reveal>
+          <p class="coc__draft">
+            Draft — under consultation. CASSA personnel will be invited to submit feedback via
+            <a href="https://inside.cassa.bd" target="_blank" rel="noopener">inside.cassa.bd</a>
+            before the Code is adopted.
+          </p>
+        </Reveal>
+        <Reveal delay={40}>
+          <p class="coc__preamble">
+            All CASSA Members, staff, student researchers, and volunteers are bound by the
+            professional and ethical standards set out in this Code; compliance is a condition of
+            membership and of participation in any CASSA activity. The Code applies in every CASSA
+            setting — the premises, online channels, outreach, events, and travel.
+          </p>
+        </Reveal>
+
+        {sections.map((s, i) => (
+          <Reveal delay={Math.min(i, 4) * 40}>
+            <div class="coc__section">
+              <h2 class="coc__h">
+                <span class="coc__n">{i + 1}</span>
+                {s.title}
+              </h2>
+              <ol class="coc__clauses">
+                {s.clauses.map((c, j) => (
+                  <li class="coc__clause">
+                    <span class="coc__cn">{i + 1}.{j + 1}</span>
+                    <span class="coc__ct" set:html={c} />
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Authority ────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <div class="coc coc--meta">
+        <Reveal>
+          <div class="coc__section coc__section--meta">
+            <h2 class="coc__h coc__h--meta">Authority</h2>
+            <p class="coc__meta-p">
+              This Code extends Appendix D of the CASSA Constitution with the workplace standards
+              announced to CASSA personnel on 11 July 2026. Where the wording on this page and the
+              Constitution differ, the Constitution prevails.
+            </p>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .coc { max-width: 72ch; margin-inline: auto; }
+
+  .coc__draft {
+    display: inline-block;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 10px;
+    padding: .6rem .95rem;
+    color: var(--ink-soft);
+    font-size: .88rem;
+    line-height: 1.6;
+    margin: 0 0 1.8rem;
+  }
+  .coc__draft a { color: var(--accent); }
+
+  .coc__preamble {
+    color: var(--ink);
+    font-size: 1.08rem;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  .coc__section {
+    border-top: 1px solid var(--line);
+    margin-top: 2.6rem;
+    padding-top: 2.1rem;
+  }
+
+  .coc__h {
+    display: flex;
+    align-items: baseline;
+    gap: .85rem;
+    color: var(--ink);
+    font-size: 1.22rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+  .coc__n {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-size: .95rem;
+    font-weight: 700;
+  }
+
+  .coc__clauses {
+    list-style: none;
+    margin: 1.15rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+  }
+  .coc__clause {
+    display: grid;
+    grid-template-columns: 3.6ch minmax(0, 1fr);
+    gap: .85rem;
+  }
+  .coc__cn {
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    font-size: .88rem;
+    font-weight: 600;
+    line-height: 1.75;
+  }
+  .coc__ct {
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+  .coc__ct :global(a) { color: var(--accent); }
+  .coc__ct :global(a:hover) { opacity: .75; }
+
+  /* Meta section — same document column, lighter headings */
+  .coc--meta .coc__section--meta:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+  .coc__section--meta { margin-top: 2.1rem; padding-top: 1.8rem; }
+  .coc__h--meta {
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-faint);
+  }
+  .coc__meta-p {
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin: .7rem 0 0;
+  }
+  .coc__meta-p a { color: var(--accent); }
+  .coc__meta-p a:hover { opacity: .75; }
+</style>

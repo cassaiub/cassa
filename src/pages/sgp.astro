@@ -1,0 +1,243 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import { withBase } from "../data/site-nav.ts";
+
+// The CASSA Safeguarding Policy. Core clauses are ported from Appendix E of the
+// Constitution and the standalone CASSA Safeguarding Policy document; the
+// supervision, digital-safeguarding, consent, and emergency clauses incorporate
+// the British Council safeguarding review of the Durbin/BDOAA event policies
+// (Waseka Wahid, July 2026 — Zine Workshop and BDOAA Women's Camp threads).
+// Where this page and the Constitution differ, the Constitution prevails.
+type Section = { title: string; clauses: string[] };
+
+const sections: Section[] = [
+  {
+    title: "Definitions",
+    clauses: [
+      `<em>Child:</em> any person under 18 (UNCRC; Bangladesh Children Act 2013).`,
+      `<em>Adult at risk:</em> an adult unable to protect themselves against harm or exploitation due to power dynamics, dependency, or vulnerability.`,
+      `<em>Abuse:</em> physical or emotional ill-treatment, sexual abuse, neglect, or exploitation within a relationship of responsibility, trust, or power.`,
+      `<em>SEAH:</em> Sexual Exploitation, Abuse, and Harassment — any actual or attempted abuse of vulnerability, differential power, or trust for sexual purposes.`,
+    ],
+  },
+  {
+    title: "Legal Alignment",
+    clauses: [
+      `This Policy aligns with IUB institutional policy, High Court of Bangladesh directives on sexual harassment in educational institutions, the Children Act 2013, and the Prevention of Women and Children Repression Act 2000.`,
+    ],
+  },
+  {
+    title: "Safeguarding Roles",
+    clauses: [
+      `A <strong>Central Safeguarding Focal Point (CSFP)</strong> — a designated Core Member or Affiliate — oversees implementation across all CASSA operations, conducts annual safeguarding risk assessments, ensures training, and liaises with IUB's Gender &amp; Sexual Harassment Committee and Proctorial Committee.`,
+      `A <strong>Project Safeguarding Focal Point (PSFP)</strong> is designated for each programme — Durbin, BDOAA, and every funded project — as the first point of contact for concerns within it, reporting directly to the CSFP.`,
+      `The names and contact details of the focal points shall be stated in every event's safeguarding document and announced at the event.`,
+    ],
+  },
+  {
+    title: "Prevention",
+    clauses: [
+      `At least two CASSA representatives shall be present at every night event and rooftop observational activity.`,
+      `A minor shall remain at all times under the supervision of authorized staff, a designated chaperone, or an accompanying parent or guardian.`,
+      `Activities involving minors take place in open, observable settings; one-to-one interaction is avoided unless operationally necessary, and then only in a visible and accountable setting.`,
+      `In addition to the background check required by the <a href="${withBase('/coc')}">Code of Conduct</a>, everyone working directly with children undergoes academic reference checks and a boundary-awareness interview.`,
+      `Volunteers and instructors receive a safeguarding and <a href="${withBase('/coc')}">Code of Conduct</a> briefing before each event, and are included in every safeguarding refresher.`,
+    ],
+  },
+  {
+    title: "Digital Safeguarding",
+    clauses: [
+      `Private messaging with minors and the exchange of personal contact information are prohibited; all communication with participants uses the official channels required by the Code of Conduct.`,
+      `No participant photograph or personal data shall be shared without authorization.`,
+      `No one shall be exposed to explicit or offensive material through CASSA digital systems, including the HPC.`,
+    ],
+  },
+  {
+    title: "Photography and Consent",
+    clauses: [
+      `Photography or video of a minor requires prior written consent from a parent or guardian and from the child.`,
+      `Photography of adult participants — in particular for promotional use — requires their informed consent.`,
+    ],
+  },
+  {
+    title: "Emergency Preparedness",
+    clauses: [
+      `Every event's safeguarding document states its emergency arrangements — first aid, emergency contact numbers, evacuation procedure, and the designated first aider or emergency focal point — and these are announced at the start of the event.`,
+    ],
+  },
+  {
+    title: "Reporting",
+    clauses: [
+      `Concerns are reported immediately to the PSFP or CSFP; where a complaint involves CASSA leadership, or the survivor prefers an independent body, it goes directly to the IUB Gender &amp; Sexual Harassment Committee (<a href="mailto:safeplace@iub.edu.bd">safeplace@iub.edu.bd</a>) or the IUB Proctorial Committee (<a href="mailto:proctor@iub.edu.bd">proctor@iub.edu.bd</a>).`,
+      `A survivor-centred approach applies: the survivor's safety and wishes are the primary consideration, and information is shared strictly on a need-to-know basis.`,
+      `Where the survivor is a child, the parents or guardians are contacted, unless doing so would increase the risk of harm.`,
+      `The CSFP notifies IUB within 24 hours in severe cases; CASSA is not an investigative authority and defers to IUB's disciplinary bodies and Bangladeshi law.`,
+      `CASSA assists the survivor in accessing psychosocial, medical, or legal support available through IUB or external services.`,
+    ],
+  },
+  {
+    title: "Consequences",
+    clauses: [
+      `An allegation brings immediate suspension from all CASSA activities pending investigation.`,
+      `A substantiated violation constitutes gross misconduct: termination of CASSA membership or association and revocation of all CASSA privileges, with full cooperation extended to IUB authorities and, where applicable, law enforcement.`,
+      `Cases involving minors are prosecuted under the Children Act 2013 and the Prevention of Women and Children Repression Act 2000.`,
+    ],
+  },
+  {
+    title: "Review",
+    clauses: [
+      `This Policy is reviewed annually by the Core Members.`,
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Safeguarding Policy — CASSA"
+  description="CASSA's zero-tolerance-to-inaction policy against abuse and sexual exploitation, abuse, and harassment (SEAH) — binding in all CASSA activities, and especially those involving minors."
+  current="/about"
+>
+  <AnimatedHero
+    theme="lensing"
+    eyebrow="About"
+    title="Safeguarding Policy"
+    lede="A zero-tolerance-to-inaction commitment against abuse and SEAH, in everything CASSA does."
+  />
+
+  <!-- ── The Policy ───────────────────────────────────────────────────────── -->
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="sgp">
+        <Reveal>
+          <p class="sgp__preamble">
+            CASSA maintains a <strong>zero-tolerance to inaction</strong> approach to abuse and to
+            Sexual Exploitation, Abuse, and Harassment (SEAH). This Policy binds everyone working
+            with, for, or representing CASSA, in every setting physical or digital, and is
+            especially operative in activities involving minors — BDOAA, Durbin, school visits,
+            and rooftop astronomy nights.
+          </p>
+        </Reveal>
+
+        {sections.map((s, i) => (
+          <Reveal delay={Math.min(i, 4) * 40}>
+            <div class="sgp__section">
+              <h2 class="sgp__h">
+                <span class="sgp__n">{i + 1}</span>
+                {s.title}
+              </h2>
+              <ol class="sgp__clauses">
+                {s.clauses.map((c, j) => (
+                  <li class="sgp__clause">
+                    <span class="sgp__cn">{i + 1}.{j + 1}</span>
+                    <span class="sgp__ct" set:html={c} />
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Authority ────────────────────────────────────────────────────────── -->
+  <section class="section">
+    <div class="wrap">
+      <div class="sgp sgp--meta">
+        <Reveal>
+          <div class="sgp__section sgp__section--meta">
+            <h2 class="sgp__h sgp__h--meta">Authority</h2>
+            <p class="sgp__meta-p">
+              This Policy renders Appendix E of the CASSA Constitution
+              and the CASSA Safeguarding Policy document, strengthened with guidance received
+              through the British Council safeguarding review of July 2026. Where the wording on
+              this page and the Constitution differ, the Constitution prevails.
+            </p>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sgp { max-width: 72ch; margin-inline: auto; }
+
+  .sgp__preamble {
+    color: var(--ink);
+    font-size: 1.08rem;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  .sgp__section {
+    border-top: 1px solid var(--line);
+    margin-top: 2.6rem;
+    padding-top: 2.1rem;
+  }
+
+  .sgp__h {
+    display: flex;
+    align-items: baseline;
+    gap: .85rem;
+    color: var(--ink);
+    font-size: 1.22rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+  .sgp__n {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-size: .95rem;
+    font-weight: 700;
+  }
+
+  .sgp__clauses {
+    list-style: none;
+    margin: 1.15rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+  }
+  .sgp__clause {
+    display: grid;
+    grid-template-columns: 3.6ch minmax(0, 1fr);
+    gap: .85rem;
+  }
+  .sgp__cn {
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    font-size: .88rem;
+    font-weight: 600;
+    line-height: 1.75;
+  }
+  .sgp__ct {
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+  .sgp__ct :global(a) { color: var(--accent); }
+  .sgp__ct :global(a:hover) { opacity: .75; }
+  .sgp__ct :global(em) { font-style: normal; font-weight: 600; color: var(--ink); }
+
+  /* Meta section — same document column, lighter headings */
+  .sgp--meta .sgp__section--meta:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+  .sgp__section--meta { margin-top: 2.1rem; padding-top: 1.8rem; }
+  .sgp__h--meta {
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-faint);
+  }
+  .sgp__meta-p {
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin: .7rem 0 0;
+  }
+  .sgp__meta-p a { color: var(--accent); }
+  .sgp__meta-p a:hover { opacity: .75; }
+</style>

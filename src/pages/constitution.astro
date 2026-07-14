@@ -1,0 +1,593 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnimatedHero from "../components/immersive/AnimatedHero.astro";
+import Reveal from "../components/immersive/Reveal.astro";
+import { withBase } from "../data/site-nav.ts";
+
+// The clauses of the CASSA Constitution, Version 2.1 (in effect 7 July 2026),
+// transcribed from the LaTeX source (CASSA_Constitution_v2.1.0.tex). Only the
+// Preamble, Definitions, and clauses 1–33 are reproduced; the appendices are
+// operational documents (two of them are rendered at /coc and /sgp), and the
+// organogram figure is not reproduced.
+---
+
+<BaseLayout
+  title="Constitution — CASSA"
+  description="The CASSA Constitution, Version 2.1 — Preamble, Definitions, and the 33 clauses governing the Center's operations, organization, assets, and missions."
+  current="/about"
+>
+  <AnimatedHero
+    theme="galaxy"
+    eyebrow="About"
+    title="The CASSA Constitution"
+    lede="Version 2.1 — the instrument of incorporation and governance of the Center, in effect since 7 July 2026."
+  />
+
+  <section class="section section--elev">
+    <div class="wrap">
+      <div class="con">
+        <!-- ── Preamble ─────────────────────────────────────────────────── -->
+        <Reveal>
+          <h2 class="con__part con__part--lead">Preamble</h2>
+          <p>
+            Independent University, Bangladesh (IUB), established in 1993 under the Private
+            Universities Act, 1992 (now replaced and governed by the Private Universities Act,
+            2010), has established the Center for Astronomy, Space Science and Astrophysics
+            (CASSA) as one of its research centers, dedicated to the study of astronomy,
+            astrophysics, and space science and engineering.
+          </p>
+          <p>
+            CASSA's establishment was approved by the three governing bodies of IUB. The Center
+            was first presented to the 95th meeting of the Board of Trustees (BOT) on 1 December
+            2024; upon hearing the presentation, the Board directed that a detailed proposal with
+            financial projections be placed before the Academic Council and the Syndicate. The
+            106th Academic Council on 9 July 2025 endorsed the establishment and approved an
+            annual budget, and the 104th Syndicate on 17 July 2025 concurred. The minutes of the
+            95th BOT meeting were subsequently accepted as sufficient for approval at the Board
+            level, and the Vice Chancellor's (VC's) office issued an Office Order on 14 August
+            2025 confirming approval by all three bodies.
+          </p>
+          <p>
+            The CASSA Constitution Version 1.2 was adopted on 14 August 2025 as the foundational
+            instrument for the incorporation and governance of the Center. Version 2.0 was
+            subsequently developed and vetted by the Director together with all Core and Associate
+            Members of CASSA; upon its review, the Office of the VC retained the single rotating
+            Directorship of the foundational constitution rather than the multi-Director model
+            proposed therein. The present Version 2.1 accordingly restores the
+            <strong>single rotating Directorship</strong> — a Director drawn from the Core Members
+            for a two-year term, supported by the <strong>Office of the Director</strong> — while
+            preserving the other reforms of Version 2.0, taking effect on 7 July 2026.
+          </p>
+        </Reveal>
+
+        <!-- ── Definitions ──────────────────────────────────────────────── -->
+        <Reveal>
+          <h2 class="con__part">Definitions</h2>
+          <ul class="con__defs">
+            <li><strong>Astronomy</strong> is an interdisciplinary natural science that studies extraterrestrial (celestial) objects, systems, and processes, and the Universe as a whole, using mathematical, statistical, computational, and natural sciences, and engineering technologies.</li>
+            <li><strong>Space and planetary science and engineering (SPSE)</strong> is an interdisciplinary field integrating natural and engineering sciences to study extraterrestrial objects, systems, and processes, the solar system and its space environment, and Earth from space, for scientific exploration, technological development, and practical utilisation.</li>
+            <li><strong>Astrophysics</strong> is a branch of physics and astronomy that uses physics to study extraterrestrial objects, systems, and processes.</li>
+            <li><strong>Cosmology</strong> is a branch of <strong>astronomy and astrophysics (A&amp;A)</strong> that studies the Universe and its evolution globally as a single object, and uses local studies of individual objects, systems, and processes only to understand the Universe as a whole.</li>
+            <li><strong>Members</strong> refers collectively to all Core Members (CMs), Associate Members (AMs), and Graduate Members (GMs) of CASSA.</li>
+            <li>The <strong>Office of the Director</strong> refers collectively to the Director of CASSA and the Manager (Science), as constituted in clause 12.</li>
+          </ul>
+        </Reveal>
+
+        <!-- ── A. Operational Policies ──────────────────────────────────── -->
+        <Reveal>
+          <h2 class="con__part">The Clauses</h2>
+          <h3 class="con__sec">A. Operational Policies</h3>
+        </Reveal>
+
+        <ol class="con__clauses">
+          <li class="con__clause" data-reveal>
+            <span class="con__n">1</span>
+            <div class="con__body"><p>CASSA shall be an autonomous multidisciplinary <strong>research center</strong> of IUB dedicated to the <em>intermingled</em> fields of A&amp;A and SPSE.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">2</span>
+            <div class="con__body"><p>The <strong>autonomy</strong> of CASSA entails that it is <strong>administratively independent</strong>, working directly under the Office of the VC, while an academic department of IUB may have <strong>academic affiliation</strong> with CASSA for its educational activities related to A&amp;A and SPSE.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">3</span>
+            <div class="con__body">
+              <p><strong>Administrative Independence</strong> of CASSA shall entail the following.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">3.1</span><p>The premises of CASSA built with the budget given in the letter <em>Establishing a Center for Astronomy, Space Science and Astrophysics (CASSA) at IUB</em> (dated 16 October 2024) and the fixed assets of CASSA described in Appendix C shall belong to CASSA, and their maintenance and use shall be determined by the CMs of CASSA, facilitated by the Office of the Director.</p></li>
+                <li><span class="con__sn">3.2</span><p>Members of CASSA employed by IUB shall receive their salary from the academic department in which they were hired and are employed. In return, they shall teach the relevant courses offered by their department. Their research activities related to A&amp;A and SPSE shall be part of CASSA.</p></li>
+                <li><span class="con__sn">3.3</span><p>Members of CASSA may issue internal memoranda (memos) within IUB through the Office of the Director, without routing them through any other academic or administrative unit.</p></li>
+                <li><span class="con__sn">3.4</span><p>CASSA and its Members may apply for national and international research, education, development, and outreach grants independently.</p></li>
+                <li><span class="con__sn">3.5</span><p>IUB Management shall contact CASSA directly regarding all activities of CASSA.</p></li>
+                <li><span class="con__sn">3.6</span><p>The Director of CASSA shall have the authority to enter into letters or memoranda of agreement or understanding between CASSA and external or international researchers or organisations, on behalf of the CMs.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">4</span>
+            <div class="con__body">
+              <p><strong>Academic Affiliation</strong> of a department with CASSA shall entail the following.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">4.1</span><p>Faculty members of a department who are CMs or AMs of CASSA may initiate an application, through the Head of the department, for the department to establish academic affiliation with CASSA.</p></li>
+                <li><span class="con__sn">4.2</span><p>Upon affiliation, the Head of the department shall be kept informed of CASSA's activities; CASSA shall contribute to the research aspects of the department's relevant courses; and research papers (co)authored by CASSA Members who are also faculty members of the department shall carry both the CASSA and the department affiliation.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">5</span>
+            <div class="con__body"><p>The Astronomy Research Group, IUB (ARGI), founded in mid-2020, and its successor, the Computational and Observational Astronomy Lab (COALab), established in late 2023, are regarded as the predecessors of CASSA. All personnel, assets, funding, and policies from COALab shall be incorporated into CASSA.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">6</span>
+            <div class="con__body"><p>Any actions taken by ARGI and COALab <strong>prior to the enactment</strong> of the CASSA Constitution (CC) that contradict the CC shall be overruled by it. However, if any provision of an existing IUB manual (such as the Faculty Manual, Staff Manual, or Purchase Manual) conflicts with the CC, the IUB manual provision shall take precedence.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">7</span>
+            <div class="con__body"><p><strong>Amendments.</strong> Amendments to the CC may be made through a referendum, conducted by the Director in an inclusive meeting (or by email) that includes all Members. The Appendices are operational documents and may be updated by the CMs on an ongoing basis without amending the clauses of the Constitution.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">8</span>
+            <div class="con__body">
+              <p><strong>Dispute resolution.</strong></p>
+              <ol class="con__subs">
+                <li><span class="con__sn">8.1</span><p>Disputes involving CMs or AMs shall first be referred to the Director for mediation within 14 days; where the Director is a party to the dispute, mediation shall be led by a CM designated by the remaining CMs. If unresolved, the matter shall be referred to a panel of three CMs or AMs who are not party to the dispute. If still unresolved, it shall be escalated to the Office of the VC, whose decision shall be final. Any CM or AM subject to a removal decision may appeal to the Office of the VC within 30 days of the decision.</p></li>
+                <li><span class="con__sn">8.2</span><p>Disputes involving GMs, affiliates, staff, or any other CASSA personnel shall first be referred to the relevant supervisor or the Director for resolution. If unresolved, the matter shall be escalated to the CMs collectively, whose decision shall be final.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">9</span>
+            <div class="con__body"><p><strong>Conflict of interest.</strong> All Members of CASSA shall declare any financial or personal interest in any entity that CASSA proposes to partner with, receive funds from, hire from, or procure from. A declared conflict of interest requires the relevant Member to <strong>recuse</strong> themselves from the associated decision. The Office of the Director shall maintain a <strong>conflicts register</strong>, updated at least annually. In any matter in which the Director has a declared conflict of interest, a CM, designated by the remaining CMs, shall chair the relevant meeting or decision process.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">10</span>
+            <div class="con__body">
+              <p><strong>Communications.</strong> CASSA shall maintain a public website and associated media presence to communicate its activities, research, and outreach to the global community. All communications and web resources of CASSA, both internal and external, are the responsibility of the Office of the Director.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">10.1</span><p>All material published publicly — including website content, social media posts, press releases, and official communications — must be reviewed and approved by the Director before publication.</p></li>
+                <li><span class="con__sn">10.2</span><p>The Manager (Science) (SM) shall prepare drafts of all content intended for public release, seek approval from the Director, and post approved material on the relevant platform.</p></li>
+                <li><span class="con__sn">10.3</span><p>All CASSA communications shall give equal prominence to all research and outreach programs and all personnel. The guiding philosophy of CASSA's communications is to engage and inspire successive generations through the story of astronomy and space science.</p></li>
+              </ol>
+            </div>
+          </li>
+        </ol>
+
+        <!-- ── B. Organizational Structure ──────────────────────────────── -->
+        <Reveal><h3 class="con__sec">B. Organizational Structure</h3></Reveal>
+
+        <ol class="con__clauses">
+          <li class="con__clause" data-reveal>
+            <span class="con__n">11</span>
+            <div class="con__body"><p>CASSA operates under the organogram of the Constitution (not reproduced here). Eligibility criteria, duties, and ethical standards for each role are detailed in the subsequent clauses. The activities are organised into <strong>programs</strong>, each designed and led by a CM; a CM may lead multiple programs — each A&amp;A CM in particular leads several research programs — and each program may span multiple projects.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">12</span>
+            <div class="con__body">
+              <p><strong>The Office of the Director.</strong> The Office of the Director comprises the <strong>Director</strong> and the <strong>Manager (Science) (SM)</strong>. The Office does not lead CASSA's research: the programs are designed and led by the CMs (clause 11). Its mandate is <strong>facilitation</strong> — coordinating shared resources, spaces, equipment, and scheduling; supporting the students of CASSA in their general logistics; and keeping the administrative machinery of the Centre running so that the scientists can concentrate on research, teaching, and outreach.</p>
+              <div class="con__roles">
+                <div class="con__role">
+                  <p class="con__role-h">Director <span class="con__role-d">2 years, rotating</span></p>
+                  <p><strong>Eligibility.</strong> A CM with a PhD and postdoctoral research and/or faculty experience in A&amp;A or SPSE, and an established research and leadership record demonstrated by publications and citations. The Directorship rotates biennially among the eligible CMs; consecutive terms are prohibited unless an insufficient number of qualified candidates is available among the CMs.</p>
+                  <p><strong>Responsibilities.</strong> Facilitates the programs of the CMs and the general logistics of CASSA's students; represents CASSA as a whole, inside and outside IUB, when the representation concerns the Centre as a whole and not the program of a particular CM; presides over all centre-wide meetings; acts as CASSA's signatory for official memoranda; supervises the SM.</p>
+                </div>
+              </div>
+              <ol class="con__subs">
+                <li><span class="con__sn">12.1</span><p><strong>Appointment of the Director.</strong> The incoming Director is selected from the eligible CMs other than the current Director by a two-thirds majority vote of all Members; the current Director presides over the entire appointment process. The CMs shall then jointly submit a formal application to the VC, naming the incoming Director, at least 3 months before the end of the current Director's tenure. Upon the VC's approval, the new Director assumes office on the day immediately following the expiry of the previous Director's tenure.</p></li>
+                <li><span class="con__sn">12.2</span><p>If the Director is on leave or vacates the office, a CM designated by the remaining CMs shall assume caretaker duties of the Office for up to 30 days, within which a successor shall be appointed by a two-thirds majority vote of all CMs and AMs and submitted to the VC for approval. If no suitable candidate is identified within this period, a new faculty member of equivalent standing may be appointed into the role within 3 to 6 months.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">13</span>
+            <div class="con__body">
+              <p><strong>Members.</strong></p>
+              <div class="con__roles">
+                <div class="con__role">
+                  <p class="con__role-h">Core Member (CM) <span class="con__role-d">2–5 years, renewable</span></p>
+                  <p><strong>Eligibility.</strong> IUB full-time faculty with a PhD in A&amp;A or SPSE; or with a PhD in another discipline and major CASSA-affiliated publications; or a founding CM.</p>
+                  <p><strong>Responsibilities.</strong> Designs and leads their own research and outreach programs and the projects within them, including securing grants, recruiting and supervising personnel, and overseeing publications and public outreach; uses CASSA affiliation on all A&amp;A/SPSE papers; applies for at least 1 grant/year; attends monthly Core Meetings.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">Associate Member (AM) <span class="con__role-d">1–3 years, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Active post-PhD researcher or faculty in a CASSA-relevant field at any institution; eligible for Lifetime AM status after two consecutive terms (see clause 13.5).</p>
+                  <p><strong>Responsibilities.</strong> Uses CASSA affiliation on papers; supervises students and applies for grants; delivers at least 1 talk/year; attends quarterly Plenary Meetings.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">Graduate Member (GM) <span class="con__role-d">2 years or until PhD</span></p>
+                  <p><strong>Eligibility.</strong> PhD student or candidate in a CASSA-relevant field.</p>
+                  <p><strong>Responsibilities.</strong> Same as AM; additionally mentors CASSA students on MSc/PhD applications and scholarship opportunities.</p>
+                </div>
+              </div>
+              <ol class="con__subs">
+                <li><span class="con__sn">13.1</span><p>The responsibilities listed above are not all mandatory. Fulfilling any two of the listed responsibilities in a given year shall be considered sufficient.</p></li>
+                <li><span class="con__sn">13.2</span><p><strong>Meetings and agenda.</strong> CASSA holds two kinds of meeting: <strong>Core Meetings</strong>, the principal executive meetings, held monthly with all CMs; and <strong>Plenary Meetings</strong>, held quarterly and open to all Members, to review CASSA's overall progress and direction. The Director presides over both. At least 2 weeks before each meeting, the SM shall email all those entitled to attend to collect agenda items and shall circulate the consolidated agenda ahead of the meeting.</p></li>
+                <li><span class="con__sn">13.3</span><p><strong>Voting.</strong> At both Core and Plenary Meetings, members may vote in person or by email if absent, and absentees shall be consulted in either form. Quorum is a two-thirds majority of those entitled to vote at the meeting. Decisions on fund disbursement, Member status, and other substantive matters require such a vote, taken either at the meeting or by equivalent email consultation.</p></li>
+                <li><span class="con__sn">13.4</span><p><strong>Minutes.</strong> The SM shall take minutes during each meeting under the supervision of the Director. Following the meeting, the Director and the SM shall jointly prepare the final minutes memo, which the SM shall circulate by email to all those entitled to attend that meeting. All recipients must reply within 7 days with either their consent or any comments. Upon receipt of consent, the minutes shall be authorised by the Director and kept on record by the SM.</p></li>
+                <li><span class="con__sn">13.5</span><p><strong>Lifetime AM</strong> status is conferred by a two-thirds Core Meeting vote, upon nomination by any CM, after at least two consecutive AM terms. Lifetime AMs are exempt from renewal review and retain all AM duties and privileges. The Director shall issue written confirmation upon conferral.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">14</span>
+            <div class="con__body">
+              <p><strong>Administrative and Technical Staff.</strong></p>
+              <div class="con__roles">
+                <div class="con__role">
+                  <p class="con__role-h">Manager (Science) (SM) <span class="con__role-d">2 years, renewable</span></p>
+                  <p><strong>Eligibility.</strong> MSc in a relevant field; proficiency in scientific computing, Ubuntu Server, Google Workspace, and AI tools; project management experience preferred.</p>
+                  <p><strong>Responsibilities.</strong> Constitutes, together with the Director, the Office of the Director; manages CASSA assets, official documents and annual budget; coordinates student researchers; manages the HPC under the supervision of the HPC Custodian; liaises with PIs and CMs on fund disbursement.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">Systems &amp; Observatory Manager (SOM) <span class="con__role-d">2 years, renewable</span></p>
+                  <p><strong>Eligibility.</strong> MSc in a relevant field; proficiency in operating astronomical telescopes, scientific computing, and server management.</p>
+                  <p><strong>Responsibilities.</strong> Ensures continuous operation of CASSA observatories; works under the supervision of the CM responsible for the relevant observatory program.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">Project Manager <span class="con__role-d">1–2 years</span></p>
+                  <p><strong>Eligibility.</strong> Bachelor's in a relevant field; demonstrable experience in grant or project administration; appointed on a project-specific basis, renewable subject to funding.</p>
+                  <p><strong>Responsibilities.</strong> Manages timelines, budgets, and reporting for a funded project; serves as administrative liaison between the PI/project lead and IUB finance/administration.</p>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">15</span>
+            <div class="con__body">
+              <p><strong>Affiliates.</strong></p>
+              <div class="con__roles">
+                <div class="con__role">
+                  <p class="con__role-h">Research Affiliate <span class="con__role-d">1–2 years, renewable</span></p>
+                  <p><strong>Eligibility.</strong> IUB full-time, visiting, or adjunct faculty from any department who conduct research on a CASSA project or apply for grants through CASSA.</p>
+                  <p><strong>Responsibilities.</strong> Uses CASSA affiliation on jointly produced outputs; (co)supervises students and participates in CASSA events as appropriate.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">Technical Affiliate <span class="con__role-d">1–2 years, renewable</span></p>
+                  <p><strong>Eligibility.</strong> IUB R&amp;D officers, lab managers, or researchers without a PhD who work on a CASSA technical project.</p>
+                  <p><strong>Responsibilities.</strong> Provides hands-on technical support for CASSA projects (e.g., telescope hardware, HPC setup, data pipelines); is acknowledged in relevant CASSA outputs.</p>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">16</span>
+            <div class="con__body">
+              <p><strong>Student Researchers and Communicators.</strong></p>
+              <div class="con__roles">
+                <div class="con__role">
+                  <p class="con__role-h">RA (Graduate) <span class="con__role-d">1 year, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Master's student or completed Master's, qualified for the specific project.</p>
+                  <p><strong>Responsibilities.</strong> Conducts research under the supervision of a Member of CASSA; contributes to journal publications and outreach.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">RA (Postbac) <span class="con__role-d">1 year, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Completed bachelor's, not enrolled in a master's, qualified for the specific project.</p>
+                  <p><strong>Responsibilities.</strong> Same as RA (Graduate).</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">RA (Undergraduate) <span class="con__role-d">6 months, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Undergraduate student currently enrolled at IUB.</p>
+                  <p><strong>Responsibilities.</strong> Same as RA (Graduate).</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">Outreach Ambassador <span class="con__role-d">1 year, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Undergraduate student currently enrolled at IUB.</p>
+                  <p><strong>Responsibilities.</strong> Represents CASSA at school visits, public events, and Durbin/BDOAA activities; position is paid.</p>
+                </div>
+              </div>
+              <ol class="con__subs">
+                <li><span class="con__sn">16.1</span><p>Each Research Assistant (RA) shall have a designated supervisor. A supervision agreement shall be signed at the time of appointment. If the supervisor leaves CASSA, the Director shall ensure a replacement supervisor is appointed within 30 days. RAs may raise welfare concerns directly with the Director without going through their supervisor.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">17</span>
+            <div class="con__body">
+              <p><strong>Student Interns.</strong></p>
+              <div class="con__roles">
+                <div class="con__role">
+                  <p class="con__role-h">RI (Graduate) <span class="con__role-d">6 months, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Master's student or completed Master's, qualified for the specific project.</p>
+                  <p><strong>Responsibilities.</strong> Same as RA (Graduate); position is unpaid.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">RI (Postbac) <span class="con__role-d">6 months, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Completed bachelor's, not enrolled in a master's, qualified for the specific project.</p>
+                  <p><strong>Responsibilities.</strong> Same as RA (Postbac); position is unpaid.</p>
+                </div>
+                <div class="con__role">
+                  <p class="con__role-h">RI (Undergraduate) <span class="con__role-d">6 months, renewable</span></p>
+                  <p><strong>Eligibility.</strong> Undergraduate student currently enrolled at a university.</p>
+                  <p><strong>Responsibilities.</strong> Same as RA (Undergraduate); position is unpaid.</p>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">18</span>
+            <div class="con__body">
+              <p>CASSA shall <strong>collaborate</strong> with departments and schools within IUB, and with researchers from other national and international universities, institutions, and industries.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">18.1</span><p>All substantial collaborations shall be governed by Letters or Memoranda of Agreement or Understanding (LoA/U, MoA/U) between the collaborating entity and CASSA.</p></li>
+                <li><span class="con__sn">18.2</span><p><strong>Adjunct</strong> and <strong>visiting</strong> professors, researchers, and national and international collaborators may become AMs based on their contributions through grants, teaching, or roles as co-supervisors of students and co-investigators on projects.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">19</span>
+            <div class="con__body"><p>CASSA shall constitute a <strong>Scientific Advisory Board (SAB)</strong> of three to five external researchers, at least two of international standing, appointed by Core Meeting vote for three-year terms. The SAB shall meet at least annually (in person or virtually), review CASSA's research programme and scientific direction, and submit a written report to the Office of the VC. SAB members may be drawn from the AM ranks but must be external to IUB.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">20</span>
+            <div class="con__body">
+              <p>Any CASSA Member, affiliate, staff, or student researcher who consistently violates the CASSA <a href={withBase('/coc')}>Code of Conduct</a> (Appendix D) or <a href={withBase('/sgp')}>Safeguarding Policy</a> (Appendix E) may be removed through the following two-step process.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">20.1</span><p>The individual shall be issued a written notice of concern. They shall have 30 days to submit a written response, which shall be discussed at a Core Meeting.</p></li>
+                <li><span class="con__sn">20.2</span><p>Removal shall require a unanimous vote of all CMs, with the individual under review excluded from the vote. If the individual to be removed is the Director or a CM, the removal notice shall be issued by the Office of the VC; for all other personnel, the Director shall effect removal upon the unanimous vote.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">21</span>
+            <div class="con__body">
+              <p>This clause governs all paid post-bachelor's positions funded by CASSA: SM, SOM, Project Manager, and paid RAs. Volunteer and unpaid intern positions are exempt.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">21.1</span><p><strong>Creation and advertisement.</strong> A new position requires a formal request from the Director to the VC and IUB HR — stating title, number, reporting line, responsibility, and funding source — and may be opened only with approval from the relevant IUB authority. CASSA then prepares the circular and, after HR vetting, publishes it on the CASSA website and other appropriate platforms, while HR posts it on IUB platforms; CASSA sets the deadlines and timelines, and shortlists candidates against the advertised criteria.</p></li>
+                <li><span class="con__sn">21.2</span><p><strong>Panel and selection.</strong> The principal supervisor of the post — the Director, a CM, a PI, or a Project Lead — convenes an interview panel of at least two members graded above the post, at least one a CM; conflicts of interest are governed by clause 9. The final decision is taken jointly by the principal supervisor and at least one CM, recorded in writing, and supported by at least two references.</p></li>
+                <li><span class="con__sn">21.3</span><p><strong>Appointment.</strong> On confirmation of the candidate and budget certification, IUB HR issues the appointment letter specifying title, duties, start date, salary, contract type, probation, and notice terms, consistent with the relevant laws and policies. The SM coordinates onboarding — ID card, institutional accounts, and payroll.</p></li>
+                <li><span class="con__sn">21.4</span><p><strong>Probation and renewal.</strong> All appointees serve a three-month probation, confirmed in writing by the Director on satisfactory review. Fixed-term contracts are renewed only where funding is available and performance satisfactory, with written notice of renewal or non-renewal at least 30 days before expiry.</p></li>
+                <li><span class="con__sn">21.5</span><p><strong>Equity and inclusion.</strong> All hiring complies with the EDI commitments of the <a href={withBase('/coc')}>Code of Conduct</a> (Appendix D); diversity-monitoring data is collected at application stage, stored separately, and inaccessible to panel members during selection.</p></li>
+                <li><span class="con__sn">21.6</span><p><strong>Failed search.</strong> If no suitable candidate is identified, the Director reports to the CMs. The post may then be re-advertised, but only following a documented review of its requirements, grade, and advertising reach; if the second search also fails, the position shall be reconsidered by the CMs before any further re-advertisement.</p></li>
+              </ol>
+            </div>
+          </li>
+        </ol>
+
+        <!-- ── C. Premises, Assets and Funds ────────────────────────────── -->
+        <Reveal><h3 class="con__sec">C. Premises, Assets and Funds</h3></Reveal>
+
+        <ol class="con__clauses">
+          <li class="con__clause" data-reveal>
+            <span class="con__n">22</span>
+            <div class="con__body">
+              <p>All IUB assets related to A&amp;A and SPSE shall be owned by IUB and managed by CASSA.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">22.1</span><p>All fixed assets of CASSA are listed in Appendix C, together with the funding source for each asset. Guardianship of an asset shall be determined either by a Letter of Agreement (LOA) or automatically based on the funds contributed by the entity.</p></li>
+                <li><span class="con__sn">22.2</span><p>The list of fixed assets shall be recorded in the IUB Book of Accounts by the Office of the Director at least once every six months, and the assets shall be subject to IUB's annual audit.</p></li>
+                <li><span class="con__sn">22.3</span><p>Operational custody and day-to-day management of each fixed asset rest with the custodian assigned in Appendix C; the Office of the Director maintains overall administrative oversight on behalf of the CMs.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">23</span>
+            <div class="con__body"><p>Assets and funds acquired through independent research or outreach grants by a Member of CASSA shall be managed by the respective person through CASSA.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">24</span>
+            <div class="con__body">
+              <p>Intellectual property (IP) generated through IUB-funded research is jointly owned by IUB and the Principal Investigator (PI) per IUB IP policy. IP arising from independently secured grants is governed by the respective funder's terms. In the absence of specific funder terms, the PI retains ownership but grants CASSA a non-exclusive right to cite and publicize the work. The use, storage, retention, access controls, and deletion of data on CASSA's computing infrastructure shall be governed by the CASSA HPC Manual (Appendix H).</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">24.1</span><p>Where CASSA-developed technology (e.g. instrumentation, software, or HPC and space-technology systems) has commercial potential, patents shall be filed jointly by IUB and the inventor(s) per IUB IP policy, with filing led by the PI and supported by the Office of the Director.</p></li>
+                <li><span class="con__sn">24.2</span><p>Industry licensing and any spin-off company shall be established under a Letter of Agreement approved by the CMs and IUB, and net revenue shall be shared among IUB, CASSA, and the inventor(s) in accordance with IUB IP policy.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">25</span>
+            <div class="con__body"><p>Assets and funds acquired by CASSA jointly with another academic or research unit of IUB shall be managed jointly by CASSA and that unit under an LOA that sets out each party's share and responsibilities.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">26</span>
+            <div class="con__body">
+              <p>The Office of CASSA is the rooftop space on the main academic building of IUB (Bashundhara Residential Area, Dhaka), as detailed in the CASSA Detailed Proposal.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">26.1</span><p>CASSA Office shall be used primarily as an open research workspace and for mini-courses or workshops organised by CASSA. It may also be used for meetings by Members, provided that CASSA employees can continue working undisturbed in the open office during such meetings.</p></li>
+                <li><span class="con__sn">26.2</span><p>On all working days, CASSA Office shall be open to all Members and the official students of CASSA, unless booked for an official CASSA event.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">27</span>
+            <div class="con__body">
+              <p>CASSA's expenses shall be funded through: (i) the annual budget allocated by IUB, (ii) financial grants secured by CASSA or its Members, (iii) revenue from CASSA's non-degree mini-courses and workshops, and (iv) other legally approved funding.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">27.1</span><p>Funds from sources (i) and (iv) shall be managed by the CMs, with disbursement decisions made collectively at Core Meetings or by email.</p></li>
+                <li><span class="con__sn">27.2</span><p>Funds from sources (ii) and (iii) shall be managed by the individual who secured the grant (e.g., the Principal Investigator, Grant Lead, or Project Lead) or conducted the mini-courses or workshops, and shall be reported to the Office of the Director on an annual basis.</p></li>
+                <li><span class="con__sn">27.3</span><p>All funds are detailed in Appendix B. By 14 August of each year, CASSA shall publish an annual report for the preceding fiscal year covering its Members' grants (source ii), all expenditure by category, publications with CASSA affiliation, and a summary of teaching and outreach activities. The report shall be led by the Director and published on the CASSA website or equivalent public platform.</p></li>
+                <li><span class="con__sn">27.4</span><p>CASSA shall seek funding through IUB from various national and international space agencies, universities, and organizations, such as the International Astronomical Union.</p></li>
+                <li><span class="con__sn">27.5</span><p>Signatory authority over CASSA funds is held exclusively by the Director, Principal Investigators, and project leads, as appropriate to the fund source. The SM shall have no independent signatory authority.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">28</span>
+            <div class="con__body">
+              <p>In the event of the dissolution of CASSA or the withdrawal of its recognition by IUB, the following provisions shall apply.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">28.1</span><p>All fixed assets shall revert to IUB ownership. Active grant funds shall be returned to funders or transferred in accordance with the relevant grant terms.</p></li>
+                <li><span class="con__sn">28.2</span><p>Ongoing student supervision shall be transferred to the relevant academic department of IUB, and the outreach programs shall be transferred to an appropriate body or discontinued.</p></li>
+                <li><span class="con__sn">28.3</span><p>Dissolution of CASSA requires an Office Order from the VC and may not be effected by Core Meeting vote alone.</p></li>
+              </ol>
+            </div>
+          </li>
+        </ol>
+
+        <!-- ── D. Vision and Missions ───────────────────────────────────── -->
+        <Reveal><h3 class="con__sec">D. Vision and Missions</h3></Reveal>
+
+        <ol class="con__clauses">
+          <li class="con__clause" data-reveal>
+            <span class="con__n">30</span>
+            <div class="con__body"><p>The <strong>vision</strong> of CASSA is to be the pathfinder in Bangladesh, be impactful in South Asia, and be a part of the international community in the fields of A&amp;A and SPSE. This vision shall be achieved via three <strong>missions</strong>: research, teaching, and outreach.</p></div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">31</span>
+            <div class="con__body">
+              <p>The <strong>research mission</strong> of CASSA is to conduct cutting-edge research in simulation, instrumentation, theory, and observation (SITO), and to publish the results in peer-reviewed international journals and conference proceedings. This mission shall be accomplished through the following <strong>action plans</strong>.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">31.1</span><p>Develop international collaborations to provide CASSA Members access to leading sensitive and high-resolution ground-based and space telescopes.</p></li>
+                <li><span class="con__sn">31.2</span><p>Seek research funding through grant applications by Members to IUB, the Bangladeshi government and private sector, and international organizations.</p></li>
+                <li><span class="con__sn">31.3</span><p>Upgrade the HPC server on a regular basis to increase computing capacity.</p></li>
+                <li><span class="con__sn">31.4</span><p>Support IUB academic departments in faculty recruitment for A&amp;A and SPSE by providing advice that prioritizes the research strengths of potential hires.</p></li>
+                <li><span class="con__sn">31.5</span><p>Promote the creation of Postdoctoral Research Fellowships within CASSA.</p></li>
+                <li><span class="con__sn">31.6</span><p>Partner with IUB's Office for Graduate Studies and Research and SETS departments to develop a PhD program roadmap for A&amp;A or SPSE.</p></li>
+                <li><span class="con__sn">31.7</span><p>Maintain IUB's on-campus and off-campus observatories, which shall operate under the Observatory Manual (Appendix G).</p></li>
+                <li><span class="con__sn">31.8</span><p>Advance Bangladesh's space economy by generating space research jobs and forging collaborations with national and international space agencies and their key missions.</p></li>
+                <li><span class="con__sn">31.9</span><p>Organize regular online, offline, and hybrid seminars, symposia, talks, and conferences featuring invited and guest speakers to enhance collaboration in relevant fields.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">32</span>
+            <div class="con__body">
+              <p>The <strong>teaching mission</strong> of CASSA is to contribute to the research aspects of A&amp;A and SPSE courses offered by various departments, and to offer its own non-degree workshops, schools, and mini-courses. This mission shall be accomplished through the following <strong>action plans</strong>.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">32.1</span><p>Contribute to the research components of the minor program in A&amp;A.</p></li>
+                <li><span class="con__sn">32.2</span><p>Contribute to the proposal for an MSc in the fields of A&amp;A and SPSE in collaboration with the relevant departments.</p></li>
+                <li><span class="con__sn">32.3</span><p>Contribute to the Data-Intensive Astronomy and Space Science Track (DIASS) within the MSc in Data Science and AI.</p></li>
+                <li><span class="con__sn">32.4</span><p>Involve visiting professors and researchers in existing courses, and develop new specialized courses with instructors from IUB and other universities.</p></li>
+                <li><span class="con__sn">32.5</span><p>Organize regular summer and winter schools with invited speakers and instructors from various national and international universities and organizations.</p></li>
+              </ol>
+            </div>
+          </li>
+          <li class="con__clause" data-reveal>
+            <span class="con__n">33</span>
+            <div class="con__body">
+              <p>The <strong>outreach mission</strong> of CASSA is to engage students from schools and other universities, and the public at large, and to use popular science for the enlightenment and development of society through various outreach events, images, and articles. All outreach events shall be documented in the CASSA outreach log. This mission shall be accomplished through the following <strong>action plans</strong>.</p>
+              <ol class="con__subs">
+                <li><span class="con__sn">33.1</span><p>The national outreach program <strong>Durbin</strong>, established under the LOA between IUB and the University of Toronto and now funded by a British Council Bangladesh grant through Women of the World, shall remain a volunteer-run program supervised by the CMs. Overall responsibility for it rests with the relevant CMs, and day-to-day coordination with the <strong>Durbin Management Team (DMT)</strong> under the Outreach Manual (Appendix F). Any change in Durbin's funding or affiliation shall be managed by the DMT in consultation with the CMs.</p></li>
+                <li><span class="con__sn">33.2</span><p>The <strong>Bangladesh Olympiad on Astronomy and Astrophysics (BDOAA)</strong> is a national outreach program of CASSA, established by the affiliation agreement between CASSA and BDOAA and governed by an Executive Committee under the Outreach Manual (Appendix F). Overall responsibility for it within CASSA rests with the relevant CMs; any change in BDOAA's affiliation or operational structure shall be managed by the relevant CMs.</p></li>
+              </ol>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Centered document column, like the site's Prose pages */
+  .con { max-width: 72ch; margin-inline: auto; }
+
+  /* Part headings: Preamble / Definitions / The Clauses */
+  .con__part {
+    color: var(--ink);
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -.015em;
+    border-top: 1px solid var(--line);
+    margin: 3rem 0 1.3rem;
+    padding-top: 2.4rem;
+  }
+  .con__part--lead { border-top: none; margin-top: 0; padding-top: 0; }
+
+  .con p {
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin: 0 0 1rem;
+  }
+  .con p:last-child { margin-bottom: 0; }
+  .con strong { color: var(--ink); }
+  .con a { color: var(--accent); }
+  .con a:hover { opacity: .75; }
+
+  .con__defs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+  }
+  .con__defs li {
+    color: var(--ink-soft);
+    line-height: 1.75;
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--line-strong);
+  }
+
+  /* Lettered section headings: A.–D. */
+  .con__sec {
+    color: var(--ink);
+    font-size: 1.28rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    border-top: 1px solid var(--line);
+    margin: 3rem 0 0;
+    padding-top: 2.4rem;
+  }
+  /* "The Clauses" is immediately followed by section A inside the same block:
+     no second rule, just a tight subordinate heading */
+  .con__part + .con__sec { border-top: none; margin-top: 1.5rem; padding-top: 0; }
+
+  .con__clauses {
+    list-style: none;
+    margin: 1.7rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.7rem;
+  }
+  .con__clause {
+    display: grid;
+    grid-template-columns: 3.2ch minmax(0, 1fr);
+    gap: .85rem;
+  }
+  .con__n {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-size: .95rem;
+    font-weight: 700;
+    line-height: 1.75;
+  }
+  .con__body { min-width: 0; }
+
+  .con__subs {
+    list-style: none;
+    margin: .3rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+  .con__subs li {
+    display: grid;
+    grid-template-columns: 4.6ch minmax(0, 1fr);
+    gap: .8rem;
+  }
+  .con__sn {
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    font-size: .88rem;
+    font-weight: 600;
+    line-height: 1.75;
+  }
+
+  .con__roles {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: .4rem 0 1.1rem;
+  }
+  .con__role {
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+  }
+  [data-theme="light"] .con__role { box-shadow: 0 1px 2px rgba(12,18,34,.05), 0 6px 14px rgba(12,18,34,.04); }
+  .con__role p { font-size: .92rem; margin-bottom: .6rem; }
+  .con__role p:last-child { margin-bottom: 0; }
+  .con__role-h {
+    color: var(--ink) !important;
+    font-weight: 700;
+    font-size: 1rem !important;
+  }
+  .con__role-d {
+    color: var(--ink-faint);
+    font-weight: 500;
+    font-size: .8rem;
+    font-style: italic;
+    margin-left: .5rem;
+  }
+</style>
