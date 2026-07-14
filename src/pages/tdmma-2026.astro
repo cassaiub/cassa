@@ -8,9 +8,11 @@ import { withBase } from "../data/site-nav.ts";
 const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3rem 0 0;color:var(--ink)";
 
 /* ── Programme data ───────────────────────────────────────────────────────
-   Verbatim from the circulated preliminary schedule (TDMMA_Workshop_
-   Schedule_2026.pdf). Session speakers are not yet assigned — every
-   lecture/tutorial/discussion renders a TBD line until they are. */
+   Verbatim from the FINAL schedule (TDMMA_Workshop_Schedule_2026.pdf,
+   SA Uddin, 14 Jul 2026). Cell titles are shortened for the calendar; each
+   drawer carries the exact PDF session title. The PDF assigns no session
+   speakers, so cells carry no speaker line; the drawer shows "to be
+   announced". Neutrino astrophysics was dropped by the SOC (same email). */
 type SType = "lec" | "tut" | "disc" | "cer" | "brk";
 /* t: short display title (the cell); d: the topics covered (the drawer);
    link: optional related page shown at the foot of the drawer */
@@ -22,32 +24,32 @@ const DAYS: Day[] = [
     wd: "Mon", date: "Sep 7", short: "Foundations",
     theme: "Introduction & Foundations of Time-Domain Astronomy",
     sessions: [
-      /* Restructured to four 90-min blocks a day (user, 2026-07-12): shorter
-         coffees (15 min), 90-min lunch, the PDF's paired 45-min topics merged
-         into single blocks. */
-      { s: "10:00", e: "11:30", t: "Opening & Overview", k: "cer", who: "Syed Ashraf Uddin", d: [
-        "Opening ceremony and welcome address",
-        "What is time-domain and multi-messenger astronomy",
-        "The messengers: light, gravitational waves, neutrinos, cosmic rays",
-        "Roadmap of the week",
+      { s: "10:00", e: "10:30", t: "Opening & Welcome", k: "cer", d: [
+        "Opening Ceremony & Welcome Address",
       ] },
-      { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "13:15", t: "The Transient Sky & Survey Astronomy", k: "lec", who: "Syed Ashraf Uddin", d: [
-        "The electromagnetic transient sky — variables, novae and explosions",
-        "Modern survey astronomy: ZTF and Rubin/LSST",
-        "Alert brokers and the follow-up ecosystem",
+      { s: "10:30", e: "11:15", t: "Overview of TDMMA", k: "lec", d: [
+        "Overview of Time-Domain and Multi-Messenger Astronomy",
       ] },
-      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
-      { s: "14:45", e: "16:15", t: "Stellar Endpoints & Compact Objects", k: "lec", who: "Andrew L. Miller", d: [
-        "Stellar evolution endpoints and their observational signatures",
-        "Compact object physics — neutron stars and black holes",
-        "Compact objects as engines of the transient sky",
+      { s: "11:15", e: "11:30", t: "Coffee Break", k: "brk" },
+      { s: "11:30", e: "12:15", t: "The EM Transient Sky", k: "lec", d: [
+        "The Electromagnetic Transient Sky — Variables, Novae, and Explosions",
       ] },
-      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
-      { s: "16:30", e: "18:00", t: "Hands-on: Alert Brokers", k: "tut", who: "Syed Ashraf Uddin", d: [
-        "Navigating alert streams in practice",
-        "Hands-on with the ALeRCE and Fink brokers",
-        "Building and filtering a follow-up target list",
+      { s: "12:15", e: "13:00", t: "Modern Survey Astronomy", k: "lec", d: [
+        "Modern Survey Astronomy — ZTF, Rubin/LSST, and Alert Brokers",
+      ] },
+      { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
+      { s: "14:30", e: "15:15", t: "Compact Object Physics", k: "lec", d: [
+        "Compact Object Physics — Neutron Stars and Black Holes",
+      ] },
+      { s: "15:15", e: "16:00", t: "Intro to GW Detection", k: "lec", d: [
+        "Introduction to Gravitational Wave Detection: LIGO / Virgo / KAGRA",
+      ] },
+      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
+      { s: "16:15", e: "17:00", t: "Stellar Evolution Endpoints", k: "lec", d: [
+        "Stellar Evolution Endpoints and Observational Signatures",
+      ] },
+      { s: "17:00", e: "18:00", t: "Hands-on: Alert Brokers", k: "tut", d: [
+        "Navigating Alert Brokers — Hands-on with ALeRCE and Fink",
       ] },
     ],
   },
@@ -55,60 +57,65 @@ const DAYS: Day[] = [
     wd: "Tue", date: "Sep 8", short: "Gravitational Waves",
     theme: "Gravitational Waves & Multi-Messenger Events",
     sessions: [
-      { s: "10:00", e: "11:30", t: "GW Detection & Sources", k: "lec", who: "Andrew L. Miller", d: [
-        "How interferometers hear spacetime: LIGO / Virgo / KAGRA",
-        "Binary neutron-star and black-hole mergers as GW sources",
-        "Detected populations and what they tell us",
+      { s: "10:00", e: "10:45", t: "GW Sources", k: "lec", d: [
+        "GW Sources — Binary Neutron Star and Black Hole Mergers",
+      ] },
+      { s: "10:45", e: "11:30", t: "GW Data Analysis", k: "lec", d: [
+        "GW Data Analysis Pipeline and Parameter Estimation",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "13:15", t: "GW Data Analysis & GW170817", k: "lec", who: "Andrew L. Miller", d: [
-        "The GW data-analysis pipeline and parameter estimation",
-        "GW170817 — anatomy of the first binary neutron-star multi-messenger event",
-        "Lessons from O3 and the outlook for O4 / O5",
+      { s: "11:45", e: "12:30", t: "GW170817", k: "lec", d: [
+        "GW170817 — Anatomy of the First Binary Neutron Star Multi-Messenger Event",
       ] },
-      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
-      { s: "14:45", e: "16:15", t: "Kilonovae & Short GRBs", k: "lec", who: "Syed Ashraf Uddin", d: [
-        "Kilonovae — observations and theoretical models",
-        "r-process nucleosynthesis and heavy-element production in mergers",
-        "Short gamma-ray bursts as compact binary merger counterparts",
+      { s: "12:30", e: "13:00", t: "Lessons from O3", k: "disc", d: [
+        "Lessons from O3 and Outlook for O4 / O5",
       ] },
-      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
-      /* Hands-on rotation (user, 2026-07-12): light-curve analysis closes the
-         GW/multi-messenger day — GW170817's kilonova is the worked example. */
-      { s: "16:30", e: "18:00", t: "Hands-on: Light Curves", k: "tut", who: "Syed Ashraf Uddin", d: [
-        "Reading the light curves of multi-messenger events — GW170817's kilonova as the worked example",
-        "Multi-wavelength light-curve analysis for high-energy transients",
-        "From raw photometry to physical interpretation",
+      { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
+      { s: "14:30", e: "15:15", t: "Kilonovae", k: "lec", d: [
+        "Kilonovae — Observations and Theoretical Models",
+      ] },
+      { s: "15:15", e: "16:00", t: "Pulsar in the Time Domain", k: "lec", d: [
+        "Pulsar in the Time Domain",
+      ] },
+      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
+      { s: "16:15", e: "17:00", t: "Gap Transients", k: "lec", d: [
+        "Gap Transients — Luminosity Gap Events Between Novae and Supernovae",
+      ] },
+      { s: "17:00", e: "18:00", t: "Hands-on: GW Sky Localization", k: "tut", d: [
+        "GW Sky Localization and EM Follow-up Strategies with LIGO Alerts",
       ] },
     ],
   },
   {
-    wd: "Wed", date: "Sep 9", short: "High-Energy & Neutrinos",
-    theme: "High-Energy Transients & Neutrino Astronomy",
+    wd: "Wed", date: "Sep 9", short: "X-ray Binaries & TESS",
+    theme: "X-ray Binaries, Stellar Transients & TESS Exoplanet Follow-up",
     sessions: [
-      { s: "10:00", e: "11:30", t: "Long GRBs & Tidal Disruptions", k: "lec", who: "Syed Ashraf Uddin", d: [
-        "Long gamma-ray bursts — progenitors, jets and afterglows",
-        "Tidal disruption events — theory and multiwavelength observations",
+      { s: "10:00", e: "10:45", t: "X-ray Binaries", k: "lec", d: [
+        "X-ray Binaries — Accretion Physics, Outbursts, and Jet Formation",
+      ] },
+      { s: "10:45", e: "11:30", t: "Tidal Disruption Events", k: "lec", d: [
+        "Tidal Disruption Events — Theory and Multiwavelength Observations",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "13:15", t: "Neutrino Astronomy with IceCube", k: "lec", who: "Andrew L. Miller", d: [
-        "Detecting high-energy neutrinos at the South Pole",
-        "Neutrino source searches and multi-messenger connections",
+      { s: "11:45", e: "12:30", t: "The TESS Mission", k: "lec", d: [
+        "TESS Mission — Survey Design, Photometry Pipeline, and Planet Detection",
       ] },
-      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
-      { s: "14:45", e: "16:15", t: "Neutrino Sources & Cosmic Rays", k: "lec", who: "Andrew L. Miller", d: [
-        "Candidate sources — AGN, blazars and starburst galaxies",
-        "TXS 0506+056 — a neutrino–blazar multi-messenger case study",
-        "AGN variability and changing-look AGN",
-        "Ultra-high-energy cosmic rays and their multi-messenger connections",
+      { s: "12:30", e: "13:00", t: "TESS Follow-up Programs", k: "disc", d: [
+        "TESS Follow-up Programs and the Community Alert Ecosystem",
       ] },
-      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
-      /* Hands-on rotation (user, 2026-07-12): ML classification closes the
-         high-energy day — classifying the transients covered in its lectures. */
-      { s: "16:30", e: "18:00", t: "Hands-on: ML Classification", k: "tut", who: "Andrew L. Miller", d: [
-        "Light-curve classification with ParSNIP and RAPID",
-        "Training, validating and interpreting a transient classifier",
-        "Applying the classifiers to the day's transients — GRBs, TDEs and their impostors",
+      { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
+      { s: "14:30", e: "15:15", t: "Exoplanet Transit Photometry", k: "lec", d: [
+        "Exoplanet Transit Photometry — Light Curve Modeling and Parameter Estimation",
+      ] },
+      { s: "15:15", e: "16:00", t: "Atmospheric Characterization", k: "lec", d: [
+        "Atmospheric Characterization — Transmission Spectroscopy with JWST and HST",
+      ] },
+      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
+      { s: "16:15", e: "17:00", t: "Ground-Based Follow-up", k: "lec", d: [
+        "Ground-Based Follow-up Strategies — Radial Velocity, Imaging, and Transit Confirmation",
+      ] },
+      { s: "17:00", e: "18:00", t: "Hands-on: TESS Light Curves", k: "tut", d: [
+        "TESS Light Curve Analysis with Lightkurve — Hands-on Exoplanet Transit Fitting",
       ] },
     ],
   },
@@ -116,37 +123,32 @@ const DAYS: Day[] = [
     wd: "Thu", date: "Sep 10", short: "Transients & Data Science",
     theme: "Stellar Transients & Data Science Methods",
     sessions: [
-      { s: "10:00", e: "11:30", t: "Supernovae", k: "lec", who: "Syed Ashraf Uddin", d: [
-        "Core-collapse supernovae — explosion mechanisms and multi-messenger signatures",
-        "Type Ia supernovae as cosmological standard candles",
+      { s: "10:00", e: "10:45", t: "Core-Collapse Supernovae", k: "lec", d: [
+        "Core-Collapse Supernovae — Explosion Mechanisms and Multi-Messenger Signatures",
+      ] },
+      { s: "10:45", e: "11:30", t: "Type Ia Supernovae", k: "lec", d: [
+        "Type Ia Supernovae as Cosmological Standard Candles",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      /* Asad's sessions 1 + 2 combined (Jul 4 abstracts) — pulsars and FRBs
-         in one block per user, 2026-07-12. */
-      { s: "11:45", e: "13:15", t: "Pulsars & Fast Radio Bursts", k: "lec", who: "Khan Muhammad Bin Asad", d: [
-        "Pulsars as clock-like radio sources: discovery and timing — beamforming, dedispersion, folding, arrival-time modelling",
-        "MeerKAT precision timing and searches (MeerTime, the MeerKAT PTA, TRAPUM) and LOFAR's metre-wavelength view of scattering and the interstellar medium",
-        "Pulsar timing arrays as a nanohertz GW detector (the 2023 background); neutron-star masses and the equation of state feeding merger science",
-        "Fast radio bursts — millisecond flashes from cosmological distances; dispersion measure as a cosmic ruler; repeaters versus one-offs",
-        "MeerKAT's real-time MeerTRAP localizations pinning bursts to host galaxies; LOFAR's 110 MHz detection of repeater FRB 20180916B",
-        "The obstacles head-on: dispersion, scattering, scintillation, interference; localizing single bursts and identifying hosts",
-        "Ahead to SKA-Mid, DSA-2000, CHORD and BURSTT; the Macquart relation and the magnetar connection to the GW sky",
+      { s: "11:45", e: "12:30", t: "Fast Radio Bursts", k: "lec", d: [
+        "Fast Radio Bursts — Phenomenology, Localizations, and Progenitor Models",
       ] },
-      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
-      { s: "14:45", e: "16:15", t: "Machine Learning for Transients", k: "lec", who: "Andrew L. Miller", d: [
-        "ML methods for transient classification",
-        "Real-time pipelines and photometric classification in the LSST era",
-        "Challenges and opportunities in big-data astronomy",
+      { s: "12:30", e: "13:00", t: "AGN Variability", k: "disc", d: [
+        "AGN Variability and Changing-Look AGN",
       ] },
-      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
-      /* TART hands-on dropped (user, 2026-07-14): the ionosphere fits none of the
-         four key sciences. Exoplanet transients — the fourth science's other half
-         — take the slot; speaker pending (SA Uddin is approaching Md Redyan Ahmed). */
-      { s: "16:30", e: "18:00", t: "Hands-on: Exoplanet Transits", k: "tut", d: [
-        "Transiting exoplanets in the time domain — the periodic dip, and what its depth, duration and shape encode",
-        "Working with survey light curves: TESS and Kepler photometry, detrending and folding",
-        "Finding transits in practice — box-least-squares search and machine-learning classifiers",
-        "Transits as the calibration case for the week's other light curves: periodic signal versus one-off transient",
+      { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
+      { s: "14:30", e: "15:15", t: "ML for Transient Classification", k: "lec", d: [
+        "Machine Learning for Transient Classification — Methods and Applications",
+      ] },
+      { s: "15:15", e: "16:00", t: "Real-Time Pipelines", k: "lec", d: [
+        "Real-Time Pipelines and Photometric Classification in the LSST Era",
+      ] },
+      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
+      { s: "16:15", e: "17:15", t: "Hands-on: ML Classification", k: "tut", d: [
+        "Hands-on ML Light Curve Classification with ParSNIP / RAPID",
+      ] },
+      { s: "17:15", e: "18:00", t: "Big Data Astronomy", k: "disc", d: [
+        "Challenges and Opportunities in Big Data Astronomy",
       ] },
     ],
   },
@@ -154,28 +156,35 @@ const DAYS: Day[] = [
     wd: "Fri", date: "Sep 11", short: "Future Facilities",
     theme: "Future Facilities & Synthesis",
     sessions: [
-      { s: "10:00", e: "11:30", t: "Next-Generation Facilities", k: "lec", who: "Andrew L. Miller", d: [
-        "Next-generation GW detectors — Einstein Telescope, Cosmic Explorer, LISA",
-        "Future radio facilities — SKA and ngVLA for transient science",
-        "Rubin LSST — science drivers, data products, community access",
-        "High-energy multi-messenger astronomy with CTA and Fermi",
+      { s: "10:00", e: "10:45", t: "Next-Generation GW Detectors", k: "lec", d: [
+        "Next-Generation GW Detectors — Einstein Telescope, Cosmic Explorer, and LISA",
+      ] },
+      { s: "10:45", e: "11:30", t: "Future Radio Facilities", k: "lec", d: [
+        "Future Radio Facilities — SKA and ngVLA for Transient Science",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "13:15", t: "GW Follow-up Strategies", k: "lec", who: "Andrew L. Miller", d: [
-        "GW sky localization and low-latency alerts",
-        "Electromagnetic follow-up strategies for LIGO / Virgo / KAGRA events",
-        "Coordinating multi-messenger observing campaigns",
+      { s: "11:45", e: "12:30", t: "Rubin LSST", k: "lec", d: [
+        "Rubin LSST — Science Drivers, Data Products, and Community Access",
       ] },
-      { s: "13:15", e: "14:45", t: "Lunch Break", k: "brk" },
-      { s: "14:45", e: "16:15", t: "Space Observatories & Synergies", k: "lec", who: "Syed Ashraf Uddin", d: [
-        "Space-based observatories — SVOM, THESEUS and beyond",
-        "Synergies across messengers — integrated science cases for the 2030s",
+      { s: "12:30", e: "13:00", t: "The Ionosphere with TART", k: "lec", d: [
+        "The Ionosphere as Foreground: TEC and Scintillation with TART",
+      ], link: { href: "/research/tart", label: "TART at IUB" } },
+      { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
+      { s: "14:30", e: "15:15", t: "Space-Based Observatories", k: "lec", d: [
+        "Space-Based Observatories — SVOM, THESEUS, and Beyond",
       ] },
-      { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
-      { s: "16:30", e: "18:00", t: "Short Talks · Panel · Closing", k: "cer", who: "Syed Ashraf Uddin", d: [
-        "Participant short talks",
-        "Panel discussion: the future of TDMMA — open questions and opportunities",
-        "Closing remarks and certificate distribution",
+      { s: "15:15", e: "16:00", t: "Synergies Across Messengers", k: "lec", d: [
+        "Synergies Across Messengers — Integrated Science Cases for the 2030s",
+      ] },
+      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
+      { s: "16:15", e: "17:00", t: "Participant Short Talks", k: "cer", d: [
+        "Participant Short Talks",
+      ] },
+      { s: "17:00", e: "17:45", t: "Panel: The Future of TDMMA", k: "disc", d: [
+        "Panel Discussion: The Future of TDMMA — Open Questions and Opportunities",
+      ] },
+      { s: "17:45", e: "18:00", t: "Closing & Certificates", k: "cer", d: [
+        "Closing Remarks & Certificate Distribution",
       ] },
     ],
   },
@@ -258,43 +267,43 @@ const COMMITTEES = [
   },
 ];
 
-/* The four key sciences (SA Uddin, Jul 13 email) — one per day, Mon–Thu; the
-   About section renders them as a rail beside the lede. Exoplanet transients
-   live in science 1 and the radio time domain in science 4. */
+/* The four key sciences — one per day, Mon–Thu, mirroring the final PDF's
+   day themes and key topics (SA Uddin, 14 Jul 2026); the About section
+   renders them as a rail beside the lede. */
 const SCIENCES = [
   {
     day: "Day 1 · Mon Sep 7",
-    t: "The time-domain sky & its foundations",
-    d: "Survey astronomy, alert brokers, stellar endpoints and compact-object physics — including exoplanet transients, caught by the same survey light curves as any exploding star.",
+    t: "Foundations of time-domain astronomy",
+    d: "Survey astronomy, alert brokers, compact-object physics and the principles of gravitational-wave detection.",
   },
   {
     day: "Day 2 · Tue Sep 8",
     t: "Gravitational waves & multi-messenger events",
-    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae and r-process nucleosynthesis.",
+    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae, pulsars and gap transients.",
   },
   {
     day: "Day 3 · Wed Sep 9",
-    t: "High-energy transients & neutrino astronomy",
-    d: "Long gamma-ray bursts, tidal disruption events, IceCube neutrinos, cosmic rays, and the multi-messenger case studies that tie them together.",
+    t: "X-ray binaries, stellar transients & TESS exoplanet follow-up",
+    d: "X-ray binaries, tidal disruption events, the TESS mission, exoplanet transit photometry, atmospheric characterization and ground-based follow-up strategies.",
   },
   {
     day: "Day 4 · Thu Sep 10",
     t: "Stellar transients & data-science methods",
-    d: "Core-collapse and thermonuclear supernovae, the radio time domain — pulsars and fast radio bursts with MeerKAT and LOFAR — and machine learning for real-time classification.",
+    d: "Core-collapse and thermonuclear supernovae, fast radio bursts, machine learning for transient classification and real-time pipelines.",
   },
 ];
 ---
 
 <BaseLayout
   title="TDMMA Workshop 2026 — CASSA"
-  description="CASSA's workshop on Time-Domain and Multi-Messenger Astronomy (TDMMA), 7–11 September 2026 at Independent University, Bangladesh — five days of lectures, hands-on tutorials and panels on the changing sky: transients and surveys, gravitational waves, neutrinos, and the radio time domain."
+  description="CASSA's workshop on Time-Domain and Multi-Messenger Astronomy (TDMMA), 7–11 September 2026 at Independent University, Bangladesh — five days of lectures, hands-on tutorials and panels on the changing sky: transients and surveys, gravitational waves, TESS exoplanet follow-up, and future facilities."
   current="/tdmma-2026"
 >
   <AnimatedHero
     theme="merger"
     eyebrow="CASSA Workshop · 7–11 September 2026"
     title="Time-Domain & Multi-Messenger Astronomy"
-    lede="Five days on the astronomy of a changing sky — the transient universe, and the messengers that carry it to us: light, gravitational waves and neutrinos — at Independent University, Bangladesh."
+    lede="Five days on the astronomy of a changing sky — the transient universe, and the messengers that carry it to us — at Independent University, Bangladesh."
   >
     <Fragment slot="meta">
       <span>Sept 7–11, 2026</span><span aria-hidden="true">·</span>
@@ -342,9 +351,9 @@ const SCIENCES = [
               <p>
                 Astronomy no longer watches a still sky. Surveys like ZTF and the
                 upcoming Rubin&nbsp;LSST catch the universe changing night by
-                night, while gravitational-wave detectors and neutrino
-                observatories listen to it through entirely different
-                messengers. <strong>Time-Domain and Multi-Messenger Astronomy
+                night, while gravitational-wave detectors listen to it through
+                an entirely different
+                messenger. <strong>Time-Domain and Multi-Messenger Astronomy
                 (TDMMA)</strong> is where those signals meet. The <strong>time
                 domain is this workshop's centre of gravity</strong> — the
                 changing sky, and everything we learn by watching it change —
@@ -369,8 +378,8 @@ const SCIENCES = [
                 objects to the gravitational-wave sessions; and
                 <strong>Dr.&nbsp;Khan&nbsp;Muhammad&nbsp;Bin&nbsp;Asad</strong>
                 on the radio time domain — pulsars and fast radio bursts with
-                MeerKAT and LOFAR. Further resource people and session
-                facilitators will be announced with the final programme.
+                MeerKAT and LOFAR. Session speakers and further facilitators
+                will be announced before the workshop.
               </p>
               <p>
                 The goal is capacity building: participants leave able to read a
@@ -396,8 +405,8 @@ const SCIENCES = [
             </ol>
             <p class="sci__coda">
               The fifth day looks outward — Einstein Telescope, SKA,
-              Rubin&nbsp;LSST and CTA — and closes with participant talks and a
-              panel.
+              Rubin&nbsp;LSST, CTA and TART — and closes with participant talks
+              and a panel.
             </p>
           </aside>
         </Reveal>
@@ -406,9 +415,9 @@ const SCIENCES = [
       <div class="facts">
         {[
           ["Dates", "September 7–11, 2026 (Mon–Fri)"],
-          ["Hours", "10:00 AM – 6:00 PM · lunch 1:15–2:45 PM"],
+          ["Hours", "10:00 AM – 6:00 PM · lunch 1:00–2:30 PM"],
           ["Venue", "Independent University, Bangladesh — Bashundhara, Dhaka"],
-          ["Format", "Four 90-minute sessions a day — lectures · hands-on tutorials · panels"],
+          ["Format", "Lectures · Tutorials · Panel Discussions"],
           ["Certificates", "Awarded at the closing ceremony"],
         ].map(([k, v], i) => (
           <Reveal delay={100 + i * 60}>
@@ -423,16 +432,8 @@ const SCIENCES = [
   <!-- ── Programme calendar ───────────────────────────────────────────── -->
   <section class="section section--elev" id="programme">
     <div class="wrap">
-      <Reveal><p class="eyebrow">Tentative programme</p></Reveal>
+      <Reveal><p class="eyebrow">Programme</p></Reveal>
       <Reveal delay={60}><h2 style={h2}>The week, hour by hour</h2></Reveal>
-      <Reveal delay={90}>
-        <p class="cal-tentative">
-          <strong>This programme is tentative.</strong> Sessions, speakers and
-          timings may still be adjusted — though the shape of the week will
-          stay largely as it is — right up to the start of the workshop on
-          7&nbsp;September.
-        </p>
-      </Reveal>
       <Reveal delay={100}>
         <div class="legend" aria-hidden="true">
           {(["lec", "tut", "disc", "cer"] as const)
@@ -478,7 +479,7 @@ const SCIENCES = [
             d.sessions.filter((x) => !isCommonBreak(x)).map((x, si) => (
               <button
                 type="button"
-                class:list={["s", `s--${x.k}`]}
+                class:list={["s", `s--${x.k}`, x.k !== "brk" && { "s--sm": mins(x.e) - mins(x.s) <= 30, "s--xs": mins(x.e) - mins(x.s) <= 15 }]}
                 style={`grid-column:${di + 2};grid-row:${row(x.s)} / ${row(x.e)};--d:${di * 70 + si * 45}ms`}
                 data-session
                 data-title={x.t}
@@ -493,7 +494,7 @@ const SCIENCES = [
                 aria-haspopup="dialog"
               >
                 <span class="s__title">{x.t}</span>
-                {tbdRole[x.k] && <span class="s__who">{tbdRole[x.k]} · <b>{shortWho(x.who) ?? "TBD"}</b></span>}
+                {tbdRole[x.k] && x.who && <span class="s__who">{tbdRole[x.k]} · <b>{shortWho(x.who)}</b></span>}
               </button>
             ))
           )}
@@ -505,7 +506,7 @@ const SCIENCES = [
       <div class="stats">
         {[
           ["5", "days"],
-          [String(nSes), "sessions of 90 minutes"],
+          [String(nSes), "sessions"],
           [String(nLec), "lectures"],
           [String(nTut), "hands-on tutorials"],
         ].map(([n, l], i) => (
@@ -517,6 +518,7 @@ const SCIENCES = [
       <Reveal delay={160}>
         <p class="cal-note">
           Click a session for details; on phones, swipe the calendar sideways.
+          Session speakers will be announced before the workshop.
         </p>
       </Reveal>
     </div>
@@ -558,8 +560,8 @@ const SCIENCES = [
             The workshop runs at <strong>Independent University, Bangladesh</strong>
             — Plot 16, Block B, Aftabuddin Ahmed Road, Bashundhara Residential
             Area, Dhaka 1245 — home of CASSA. Sessions run 10:00 AM to 6:00 PM
-            with a 90-minute lunch break; the exact room will be announced with
-            the final programme. The week falls in the semester break, and
+            with a 90-minute lunch break; the exact room will be announced to
+            registered participants. The week falls in the semester break, and
             participants completing the workshop receive certificates at the
             closing ceremony.
           </p>
@@ -978,7 +980,7 @@ const SCIENCES = [
      start, Day 4's 17:15 split, Day 5's closing trio) land exactly. */
   .cal-scroll { overflow-x: auto; margin-top: 2rem; -webkit-overflow-scrolling: touch; }
   .cal {
-    --unit: 0.95rem;
+    --unit: 1.35rem; /* 45-min sessions span 3 units — roomy enough for a two-line title */
     --unit-lunch: 0.38rem; /* lunch rows compressed — the band is indicative */
     display: grid;
     grid-template-columns: 3.6rem repeat(5, minmax(158px, 1fr));
@@ -1049,23 +1051,31 @@ const SCIENCES = [
     border: 0;
     border-left: 3px solid var(--sc);
     border-radius: 8px;
-    padding: 0.55rem 0.75rem;
+    padding: 0.5rem 0.7rem;
     min-width: 0; overflow: hidden;
     transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
   }
   .s:hover, .s:focus-visible {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     background: color-mix(in srgb, var(--sc) 16%, var(--bg-elev));
-    box-shadow: 0 14px 32px color-mix(in srgb, var(--sc) 18%, transparent);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--sc) 18%, transparent);
     z-index: 2;
   }
-  .s__title { font-size: 0.9rem; font-weight: 600; line-height: 1.26; letter-spacing: -0.012em; color: var(--ink); }
+  .s__title { font-size: 0.82rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.008em; color: var(--ink); }
   .s__who {
     margin-top: auto;
     font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
     color: var(--ink-faint);
   }
   .s__who b { font-weight: 700; color: var(--sc); }
+
+  /* Compact variants — 30-min slots get tighter padding and smaller type;
+     the lone 15-min slot (Day 5 closing) centres a single ellipsised line
+     so nothing ever crops mid-glyph. */
+  .s--sm { padding: 0.28rem 0.65rem; gap: 0.08rem; justify-content: center; }
+  .s--sm .s__title { font-size: 0.72rem; line-height: 1.25; }
+  .s--xs { padding: 0.1rem 0.6rem; }
+  .s--xs .s__title { font-size: 0.66rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Staggered entrance — cells cascade in when the calendar's Reveal fires */
   .s { opacity: 0; }

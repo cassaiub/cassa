@@ -4,11 +4,10 @@ import AnimatedHero from "../components/immersive/AnimatedHero.astro";
 import Reveal from "../components/immersive/Reveal.astro";
 import { withBase } from "../data/site-nav.ts";
 
-// The CASSA Code of Conduct (draft, under consultation). Core clauses are ported
+// The CASSA Code of Conduct (final). Core clauses are ported
 // from Appendix D of the Constitution (v2.1.0 line); the teamwork, premises,
 // safety, and reporting sections consolidate the workplace standards announced
-// to personnel on 11 July 2026. Where this page and the Constitution differ,
-// the Constitution prevails (stated in the Authority block below).
+// to personnel on 11 July 2026.
 type Section = { title: string; clauses: string[] };
 
 const sections: Section[] = [
@@ -136,7 +135,7 @@ const sections: Section[] = [
 
 <BaseLayout
   title="Code of Conduct — CASSA"
-  description="The professional and ethical standards binding all CASSA Members, staff, student researchers, and volunteers — draft Code of Conduct, under consultation."
+  description="The Code of Conduct of CASSA — the professional and ethical standards binding all Members, staff, student researchers, and volunteers."
   current="/about"
 >
   <AnimatedHero
@@ -151,13 +150,6 @@ const sections: Section[] = [
     <div class="wrap">
       <div class="coc">
         <Reveal>
-          <p class="coc__draft">
-            Draft — under consultation. CASSA personnel will be invited to submit feedback via
-            <a href="https://inside.cassa.bd" target="_blank" rel="noopener">inside.cassa.bd</a>
-            before the Code is adopted.
-          </p>
-        </Reveal>
-        <Reveal delay={40}>
           <p class="coc__preamble">
             All CASSA Members, staff, student researchers, and volunteers are bound by the
             professional and ethical standards set out in this Code; compliance is a condition of
@@ -188,39 +180,10 @@ const sections: Section[] = [
     </div>
   </section>
 
-  <!-- ── Authority ────────────────────────────────────────────────────────── -->
-  <section class="section">
-    <div class="wrap">
-      <div class="coc coc--meta">
-        <Reveal>
-          <div class="coc__section coc__section--meta">
-            <h2 class="coc__h coc__h--meta">Authority</h2>
-            <p class="coc__meta-p">
-              This Code extends Appendix D of the CASSA Constitution with the workplace standards
-              announced to CASSA personnel on 11 July 2026. Where the wording on this page and the
-              Constitution differ, the Constitution prevails.
-            </p>
-          </div>
-        </Reveal>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
   .coc { max-width: 72ch; margin-inline: auto; }
-
-  .coc__draft {
-    display: inline-block;
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-    border-radius: 10px;
-    padding: .6rem .95rem;
-    color: var(--ink-soft);
-    font-size: .88rem;
-    line-height: 1.6;
-    margin: 0 0 1.8rem;
-  }
-  .coc__draft a { color: var(--accent); }
 
   .coc__preamble {
     color: var(--ink);
@@ -278,22 +241,4 @@ const sections: Section[] = [
   }
   .coc__ct :global(a) { color: var(--accent); }
   .coc__ct :global(a:hover) { opacity: .75; }
-
-  /* Meta section — same document column, lighter headings */
-  .coc--meta .coc__section--meta:first-child { border-top: none; margin-top: 0; padding-top: 0; }
-  .coc__section--meta { margin-top: 2.1rem; padding-top: 1.8rem; }
-  .coc__h--meta {
-    font-size: .72rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--ink-faint);
-  }
-  .coc__meta-p {
-    color: var(--ink-soft);
-    line-height: 1.75;
-    margin: .7rem 0 0;
-  }
-  .coc__meta-p a { color: var(--accent); }
-  .coc__meta-p a:hover { opacity: .75; }
 </style>
