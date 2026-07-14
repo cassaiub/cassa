@@ -15,13 +15,12 @@ type SType = "lec" | "tut" | "disc" | "cer" | "brk";
 /* t: short display title (the cell); d: the topics covered (the drawer);
    link: optional related page shown at the foot of the drawer */
 interface Session { s: string; e: string; t: string; k: SType; who?: string; d?: string[]; link?: { href: string; label: string } }
-interface Day { wd: string; date: string; short: string; theme: string; topics: string; sessions: Session[] }
+interface Day { wd: string; date: string; short: string; theme: string; sessions: Session[] }
 
 const DAYS: Day[] = [
   {
     wd: "Mon", date: "Sep 7", short: "Foundations",
     theme: "Introduction & Foundations of Time-Domain Astronomy",
-    topics: "Survey astronomy · alert brokers · stellar endpoints · compact-object physics",
     sessions: [
       /* Restructured to four 90-min blocks a day (user, 2026-07-12): shorter
          coffees (15 min), 90-min lunch, the PDF's paired 45-min topics merged
@@ -55,7 +54,6 @@ const DAYS: Day[] = [
   {
     wd: "Tue", date: "Sep 8", short: "Gravitational Waves",
     theme: "Gravitational Waves & Multi-Messenger Events",
-    topics: "GW detection & sources · data analysis · GW170817 · kilonovae · light-curve hands-on",
     sessions: [
       { s: "10:00", e: "11:30", t: "GW Detection & Sources", k: "lec", who: "Andrew L. Miller", d: [
         "How interferometers hear spacetime: LIGO / Virgo / KAGRA",
@@ -87,7 +85,6 @@ const DAYS: Day[] = [
   {
     wd: "Wed", date: "Sep 9", short: "High-Energy & Neutrinos",
     theme: "High-Energy Transients & Neutrino Astronomy",
-    topics: "Long GRBs · tidal disruption events · IceCube · cosmic rays · ML classification hands-on",
     sessions: [
       { s: "10:00", e: "11:30", t: "Long GRBs & Tidal Disruptions", k: "lec", who: "Syed Ashraf Uddin", d: [
         "Long gamma-ray bursts — progenitors, jets and afterglows",
@@ -118,7 +115,6 @@ const DAYS: Day[] = [
   {
     wd: "Thu", date: "Sep 10", short: "Transients & Data Science",
     theme: "Stellar Transients & Data Science Methods",
-    topics: "Core-collapse & thermonuclear SNe · pulsars & FRBs · ML for transients · TART ionosphere hands-on",
     sessions: [
       { s: "10:00", e: "11:30", t: "Supernovae", k: "lec", who: "Syed Ashraf Uddin", d: [
         "Core-collapse supernovae — explosion mechanisms and multi-messenger signatures",
@@ -143,24 +139,20 @@ const DAYS: Day[] = [
         "Challenges and opportunities in big-data astronomy",
       ] },
       { s: "16:15", e: "16:30", t: "Coffee Break", k: "brk" },
-      /* Asad's session 3 (Jul 4 abstract) — TART lands on the data-methods day,
-         straight after his morning Pulsars & FRBs lecture, whose dispersion
-         measures this hands-on corrects (rotation, 2026-07-12). */
-      { s: "16:30", e: "18:00", t: "Hands-on: Ionosphere with TART", k: "tut", who: "Khan Muhammad Bin Asad",
-        link: { href: "/research/tart", label: "CASSA's TART array" }, d: [
-        "The ionosphere as the foreground of low-frequency timing and burst work — dispersion-like delays, phase corruption, and scintillation that mimics or masks a source's own variability",
-        "CASSA's TART — a 24-antenna rooftop aperture-synthesis array on the IUB campus, observing in the GPS L1 band",
-        "Measuring total electron content (TEC) with GNSS signals; capturing scintillation directly with all-sky imaging",
-        "Dhaka under the crest of the Equatorial Ionization Anomaly, where TEC gradients and scintillation peak",
-        "Mitigation: co-located TEC corrects the morning lecture's pulsar-timing and FRB dispersion measures · Discrimination: separating cosmic from local scintillation",
-        "The array behind CASSA's planned radio-astronomy school",
+      /* TART hands-on dropped (user, 2026-07-14): the ionosphere fits none of the
+         four key sciences. Exoplanet transients — the fourth science's other half
+         — take the slot; speaker pending (SA Uddin is approaching Md Redyan Ahmed). */
+      { s: "16:30", e: "18:00", t: "Hands-on: Exoplanet Transits", k: "tut", d: [
+        "Transiting exoplanets in the time domain — the periodic dip, and what its depth, duration and shape encode",
+        "Working with survey light curves: TESS and Kepler photometry, detrending and folding",
+        "Finding transits in practice — box-least-squares search and machine-learning classifiers",
+        "Transits as the calibration case for the week's other light curves: periodic signal versus one-off transient",
       ] },
     ],
   },
   {
     wd: "Fri", date: "Sep 11", short: "Future Facilities",
     theme: "Future Facilities & Synthesis",
-    topics: "Einstein Telescope · Rubin LSST · CTA · GW follow-up · participant talks · closing panel",
     sessions: [
       { s: "10:00", e: "11:30", t: "Next-Generation Facilities", k: "lec", who: "Andrew L. Miller", d: [
         "Next-generation GW detectors — Einstein Telescope, Cosmic Explorer, LISA",
@@ -244,20 +236,46 @@ const SOC = [
 ];
 const LOC = [
   { name: "Muhammad Jobair Hasan", aff: "Science Manager, CASSA", email: "jobair@iub.edu.bd" },
-  { name: "Md Shahadat Hossain Shahal", aff: "Research Assistant, CASSA", email: "shahadatw6@gmail.com" },
+  { name: "Nublat Hafsa", aff: "Undergraduate Research Assistant, CASSA", email: "" },
+];
+
+/* The four key sciences (SA Uddin, Jul 13 email) — one per day, Mon–Thu; the
+   About section renders them as a rail beside the lede. Exoplanet transients
+   live in science 1 and the radio time domain in science 4. */
+const SCIENCES = [
+  {
+    day: "Day 1 · Mon Sep 7",
+    t: "The time-domain sky & its foundations",
+    d: "Survey astronomy, alert brokers, stellar endpoints and compact-object physics — including exoplanet transients, caught by the same survey light curves as any exploding star.",
+  },
+  {
+    day: "Day 2 · Tue Sep 8",
+    t: "Gravitational waves & multi-messenger events",
+    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae and r-process nucleosynthesis.",
+  },
+  {
+    day: "Day 3 · Wed Sep 9",
+    t: "High-energy transients & neutrino astronomy",
+    d: "Long gamma-ray bursts, tidal disruption events, IceCube neutrinos, cosmic rays, and the multi-messenger case studies that tie them together.",
+  },
+  {
+    day: "Day 4 · Thu Sep 10",
+    t: "Stellar transients & data-science methods",
+    d: "Core-collapse and thermonuclear supernovae, the radio time domain — pulsars and fast radio bursts with MeerKAT and LOFAR — and machine learning for real-time classification.",
+  },
 ];
 ---
 
 <BaseLayout
   title="TDMMA Workshop 2026 — CASSA"
-  description="CASSA's workshop on Time-Domain and Multi-Messenger Astronomy (TDMMA), 7–11 September 2026 at Independent University, Bangladesh — five days of lectures, hands-on tutorials and panels, from GW170817 to the Rubin-LSST era."
+  description="CASSA's workshop on Time-Domain and Multi-Messenger Astronomy (TDMMA), 7–11 September 2026 at Independent University, Bangladesh — five days of lectures, hands-on tutorials and panels on the changing sky: transients and surveys, gravitational waves, neutrinos, and the radio time domain."
   current="/tdmma-2026"
 >
   <AnimatedHero
     theme="merger"
     eyebrow="CASSA Workshop · 7–11 September 2026"
     title="Time-Domain & Multi-Messenger Astronomy"
-    lede="Five days on the astronomy of a changing sky — gravitational waves, neutrinos, and light from the most violent events in the universe — at Independent University, Bangladesh."
+    lede="Five days on the astronomy of a changing sky — the transient universe, and the messengers that carry it to us: light, gravitational waves and neutrinos — at Independent University, Bangladesh."
   >
     <Fragment slot="meta">
       <span>Sept 7–11, 2026</span><span aria-hidden="true">·</span>
@@ -267,58 +285,102 @@ const LOC = [
     </Fragment>
   </AnimatedHero>
 
-  <!-- Right-rail TOC: bare lines; labels reveal on hover/focus; active section
-       tracked on scroll. Desktop only. -->
-  <nav class="toc" aria-label="On this page">
-    {[
-      ["about", "About"],
-      ["days", "The five days"],
-      ["programme", "Programme"],
-      ["venue", "Venue"],
-      ["committees", "Committees"],
-      ["apply", "Apply"],
-    ].map(([id, label]) => (
-      <a href={`#${id}`} data-toc={id}>
-        <span class="toc__label">{label}</span>
-        <span class="toc__line" aria-hidden="true"></span>
+  <!-- Page submenu: sits directly under the hero, then pins beneath the site
+       nav for the rest of the page. Active section tracked on scroll. -->
+  <nav class="subnav" aria-label="On this page">
+    <div class="wrap subnav__row">
+      <a class="subnav__brand" href="#" aria-label="TDMMA 2026 — back to top">
+        TDMMA<span>2026</span>
       </a>
-    ))}
+      <div class="subnav__links">
+        {[
+          ["about", "About"],
+          ["programme", "Programme"],
+          ["venue", "Venue"],
+          ["committees", "Committees"],
+        ].map(([id, label]) => (
+          <a class="subnav__link" href={`#${id}`} data-sec={id}>{label}</a>
+        ))}
+      </div>
+      <a class="subnav__cta" href="#apply" data-sec="apply">Apply</a>
+    </div>
   </nav>
 
   <!-- ── Overview ─────────────────────────────────────────────────────── -->
-  <section class="section section--elev" id="about">
+  <!-- Sections alternate plain / elevated down the page: about · programme ·
+       venue · committees · apply. The programme keeps --elev so the calendar's
+       sticky time rail can mask scrolling cells with the same background. -->
+  <section class="section" id="about">
     <div class="wrap">
       <Reveal><p class="eyebrow">About the workshop</p></Reveal>
-      <Reveal delay={70}>
-        <Prose>
-          <h2>One sky, many messengers</h2>
-          <p>
-            Astronomy no longer watches a still sky. Surveys like ZTF and the
-            upcoming Rubin&nbsp;LSST catch the universe changing night by night,
-            while gravitational-wave detectors and neutrino observatories listen
-            to it through entirely different messengers. <strong>Time-Domain and
-            Multi-Messenger Astronomy (TDMMA)</strong> is where those signals
-            meet — and this workshop is CASSA's five-day introduction to doing
-            science there, from the physics of compact-object mergers to the
-            machine-learning pipelines that sort a million alerts a night.
-          </p>
-          <p>
-            The programme is anchored by <strong>Dr.&nbsp;Andrew&nbsp;L.
-            Miller</strong> — assistant professor at the International Centre for
-            Theoretical Physics Asia-Pacific (ICTP-AP, UCAS Beijing) and a member
-            of the LIGO/Virgo collaboration — visiting CASSA as invited lecturer
-            for the gravitational-wave portion of the week, alongside CASSA
-            faculty and resource people from IUB. Individual session speakers
-            will be announced with the final programme.
-          </p>
-          <p>
-            The goal is capacity building: participants leave able to follow a
-            gravitational-wave alert, read a kilonova light curve, and start
-            research in gravitational-wave astrophysics and time-domain
-            astronomy in general.
-          </p>
-        </Prose>
-      </Reveal>
+      <div class="about">
+        <Reveal delay={70}>
+          <div class="about__lede">
+            <Prose>
+              <h2>One sky, many messengers</h2>
+              <p>
+                Astronomy no longer watches a still sky. Surveys like ZTF and the
+                upcoming Rubin&nbsp;LSST catch the universe changing night by
+                night, while gravitational-wave detectors and neutrino
+                observatories listen to it through entirely different
+                messengers. <strong>Time-Domain and Multi-Messenger Astronomy
+                (TDMMA)</strong> is where those signals meet. The <strong>time
+                domain is this workshop's centre of gravity</strong> — the
+                changing sky, and everything we learn by watching it change —
+                with the other messengers entering as the sky's most violent
+                events demand them.
+              </p>
+              <p>
+                The visiting lecturer for the week is
+                <strong>Dr.&nbsp;Andrew&nbsp;L. Miller</strong> — assistant
+                professor at the International Centre for Theoretical Physics
+                Asia-Pacific (ICTP-AP, UCAS Beijing) and a member of the
+                LIGO/Virgo collaboration — who comes to CASSA for the
+                gravitational-wave portion of the programme. He is joined by
+                <strong>Dr.&nbsp;Syed&nbsp;Ashraf&nbsp;Uddin</strong>, a
+                supernova cosmologist who uses Type&nbsp;Ia supernovae as
+                standard candles to probe dark energy and the Hubble tension,
+                formerly of the Carnegie Supernova Project and a member of the
+                Dark Energy Survey;
+                <strong>Dr.&nbsp;Jewel&nbsp;Kumar&nbsp;Ghosh</strong>, a
+                theoretical physicist at IUB working on string theory and
+                gravity, who brings the theory of black holes and compact
+                objects to the gravitational-wave sessions; and
+                <strong>Dr.&nbsp;Khan&nbsp;Muhammad&nbsp;Bin&nbsp;Asad</strong>
+                on the radio time domain — pulsars and fast radio bursts with
+                MeerKAT and LOFAR. Further resource people and session
+                facilitators will be announced with the final programme.
+              </p>
+              <p>
+                The goal is capacity building: participants leave able to read a
+                transient light curve, follow a gravitational-wave alert, and
+                start research in time-domain astronomy and the multi-messenger
+                science that grows out of it.
+              </p>
+            </Prose>
+          </div>
+        </Reveal>
+
+        <Reveal delay={130}>
+          <aside class="about__sci" aria-label="The four key sciences">
+            <p class="about__sci-h">Four key sciences · four days</p>
+            <ol class="sci">
+              {SCIENCES.map((s) => (
+                <li>
+                  <span class="sci__day">{s.day}</span>
+                  <span class="sci__t">{s.t}</span>
+                  <p class="sci__d">{s.d}</p>
+                </li>
+              ))}
+            </ol>
+            <p class="sci__coda">
+              The fifth day looks outward — Einstein Telescope, SKA,
+              Rubin&nbsp;LSST and CTA — and closes with participant talks and a
+              panel.
+            </p>
+          </aside>
+        </Reveal>
+      </div>
 
       <div class="facts">
         {[
@@ -337,37 +399,6 @@ const LOC = [
   </section>
 
   <!-- ── The five days ────────────────────────────────────────────────── -->
-  <section class="section" id="days">
-    <div class="wrap">
-      <Reveal><p class="eyebrow">The arc of the week</p></Reveal>
-      <Reveal delay={60}><h2 style={h2}>Five days, five themes</h2></Reveal>
-      <div class="days">
-        {DAYS.map((d, i) => (
-          <Reveal delay={90 + i * 70}>
-            <article class="day">
-              <span class="day__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-              <p class="day__date">{d.wd} · {d.date}</p>
-              <h3 class="day__theme">{d.theme}</h3>
-              <p class="day__topics">{d.topics}</p>
-            </article>
-          </Reveal>
-        ))}
-      </div>
-      <div class="stats">
-        {[
-          ["5", "days"],
-          [String(nSes), "sessions of 90 minutes"],
-          [String(nLec), "lectures"],
-          [String(nTut), "hands-on tutorials"],
-        ].map(([n, l], i) => (
-          <Reveal delay={120 + i * 60}>
-            <div class="stat"><span class="stat__n">{n}</span><span class="stat__l">{l}</span></div>
-          </Reveal>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <!-- ── Programme calendar ───────────────────────────────────────────── -->
   <section class="section section--elev" id="programme">
     <div class="wrap">
@@ -386,13 +417,15 @@ const LOC = [
     <Reveal delay={140}>
       <div class="cal-scroll wrap" role="region" aria-label="Workshop programme calendar" tabindex="0">
         <div class="cal" style={`grid-template-rows:auto ${rowsTemplate}`}>
-          {/* day headers */}
-          <div class="cal__corner" aria-hidden="true"></div>
-          {DAYS.map((d) => (
+          {/* Day headers — each column is titled by its day's theme, so the
+              calendar alone carries the arc of the week. */}
+          <div class="cal__corner"><span>Time</span></div>
+          {DAYS.map((d, i) => (
             <div class="cal__day">
-              <span class="cal__wd">{d.wd}</span>
-              <span class="cal__date">{d.date}</span>
+              <span class="cal__num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <span class="cal__wd">{d.wd} · {d.date}</span>
               <span class="cal__short">{d.short}</span>
+              <span class="cal__theme">{d.theme}</span>
             </div>
           ))}
 
@@ -440,6 +473,18 @@ const LOC = [
     </Reveal>
 
     <div class="wrap">
+      <div class="stats">
+        {[
+          ["5", "days"],
+          [String(nSes), "sessions of 90 minutes"],
+          [String(nLec), "lectures"],
+          [String(nTut), "hands-on tutorials"],
+        ].map(([n, l], i) => (
+          <Reveal delay={150 + i * 60}>
+            <div class="stat"><span class="stat__n">{n}</span><span class="stat__l">{l}</span></div>
+          </Reveal>
+        ))}
+      </div>
       <Reveal delay={160}>
         <p class="cal-note">
           Preliminary schedule — session order, times and speakers may change
@@ -524,7 +569,7 @@ const LOC = [
                 <li>
                   <span class="com__name">{p.name}</span>
                   <span class="com__aff">{p.aff}</span>
-                  <a class="com__mail" href={`mailto:${p.email}`}>{p.email}</a>
+                  {p.email && <a class="com__mail" href={`mailto:${p.email}`}>{p.email}</a>}
                 </li>
               ))}
             </ul>
@@ -575,13 +620,18 @@ const LOC = [
 </BaseLayout>
 
 <script is:inline>
-  /* Right-rail TOC — highlights the section currently in view. */
+  /* Page submenu — highlights the section currently in view and, on narrow
+     screens where the bar scrolls sideways, keeps that link visible. */
   (function () {
-    var links = Array.prototype.slice.call(document.querySelectorAll(".toc a[data-toc]"));
+    var bar = document.querySelector(".subnav");
+    if (!bar) return;
+    var rail = bar.querySelector(".subnav__links");
+    var links = Array.prototype.slice.call(bar.querySelectorAll("[data-sec]"));
     if (!links.length) return;
     var sections = links
-      .map(function (a) { return document.getElementById(a.getAttribute("data-toc")); })
+      .map(function (a) { return document.getElementById(a.getAttribute("data-sec")); })
       .filter(Boolean);
+    var current = null;
     function update() {
       var mark = window.innerHeight * 0.4;
       var active = null;
@@ -589,8 +639,19 @@ const LOC = [
         if (sections[i].getBoundingClientRect().top <= mark) active = sections[i].id;
       }
       links.forEach(function (a) {
-        a.classList.toggle("is-active", a.getAttribute("data-toc") === active);
+        a.classList.toggle("is-active", a.getAttribute("data-sec") === active);
       });
+      if (active === current) return;
+      current = active;
+      /* Only the overflowing link rail scrolls; the Apply pill sits outside it. */
+      if (!rail || rail.scrollWidth <= rail.clientWidth + 1) return;
+      var link = links.filter(function (a) { return a.getAttribute("data-sec") === active; })[0];
+      if (link && rail.contains(link)) {
+        rail.scrollTo({
+          left: link.offsetLeft - (rail.clientWidth - link.offsetWidth) / 2,
+          behavior: "smooth",
+        });
+      }
     }
     var ticking = false;
     window.addEventListener("scroll", function () {
@@ -673,42 +734,135 @@ const LOC = [
   })();
 </script>
 
+<style is:global>
+  /* This page only: the site nav scrolls away with the hero — the page submenu
+     below is the one sticky bar. (Global default is position: fixed.) */
+  #site-nav { position: absolute; }
+</style>
+
 <style>
-  /* ── Right-rail TOC — bare lines; labels appear on hover/focus ── */
-  .toc {
-    position: fixed; right: clamp(0.7rem, 1.8vw, 1.6rem); top: 50%;
-    transform: translateY(-50%); z-index: 60;
-    display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;
+  /* ── Page submenu ──
+     Rides directly under the hero, then pins to the viewport top — the site
+     nav scrolls away on this page (see the is:global block above). */
+  .subnav {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
   }
-  .toc a {
-    display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem;
-    padding: 0.22rem 0;
+  .subnav__row { display: flex; align-items: center; gap: 1rem; height: 54px; }
+  /* Wordmark — the page's own identity on the pinned bar */
+  .subnav__brand {
+    flex-shrink: 0;
+    display: inline-flex; align-items: baseline; gap: 0.28rem;
+    font-family: var(--font-display); font-weight: 800; font-size: 1.05rem;
+    letter-spacing: -0.015em; color: var(--ink); line-height: 1;
+    padding-right: clamp(0.7rem, 2vw, 1.3rem);
+    border-right: 1px solid var(--line);
   }
-  .toc__line {
-    width: 1.3rem; height: 2px; border-radius: 2px; flex-shrink: 0;
-    background: color-mix(in srgb, var(--ink) 28%, transparent);
-    transition: width 0.25s ease, background 0.25s ease;
+  .subnav__brand span { color: var(--accent); }
+  .subnav__links {
+    display: flex; align-items: center; gap: clamp(0.9rem, 2.4vw, 2rem);
+    min-width: 0; flex: 1 1 auto;
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
-  .toc a:hover .toc__line, .toc a:focus-visible .toc__line { background: var(--accent); }
-  .toc a.is-active .toc__line { width: 2.1rem; background: var(--accent); }
-  .toc__label {
-    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink-soft); white-space: nowrap;
-    background: color-mix(in srgb, var(--bg-elev) 86%, transparent);
-    border: 1px solid var(--line); border-radius: 999px;
-    padding: 0.24rem 0.7rem;
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    opacity: 0; transform: translateX(8px);
-    transition: opacity 0.22s ease, transform 0.22s ease;
-    pointer-events: none;
+  .subnav__links::-webkit-scrollbar { display: none; }
+  .subnav__link {
+    position: relative; flex-shrink: 0;
+    display: inline-flex; align-items: center; height: 54px;
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--ink-faint); white-space: nowrap;
+    transition: color 0.2s ease;
   }
-  .toc:hover .toc__label, .toc:focus-within .toc__label { opacity: 1; transform: none; }
-  .toc a.is-active .toc__label { color: var(--accent); }
-  /* Sections stop under the fixed nav when jumped to */
-  #about, #days, #programme, #venue, #committees, #apply { scroll-margin-top: 72px; }
-  @media (max-width: 900px) { .toc { display: none; } }
+  /* Accent rule that rides the bar's bottom border on the active section */
+  .subnav__link::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background: var(--accent); border-radius: 2px;
+    transform: scaleX(0); transform-origin: center;
+    transition: transform 0.25s ease;
+  }
+  .subnav__link:hover { color: var(--ink); }
+  .subnav__link.is-active { color: var(--accent); }
+  .subnav__link.is-active::after { transform: scaleX(1); }
+
+  /* Apply stays a pill, outside the scrolling rail — always reachable */
+  .subnav__cta {
+    flex-shrink: 0;
+    font-size: 0.8rem; font-weight: 600; white-space: nowrap;
+    color: var(--accent-ink); background: var(--accent);
+    padding: 0.42rem 1rem; border-radius: 999px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .subnav__cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+
+  /* Sections stop under the pinned submenu when jumped to */
+  #about, #programme, #venue, #committees, #apply { scroll-margin-top: 70px; }
+
+  @media (max-width: 640px) {
+    .subnav__row { gap: 0.7rem; }
+    .subnav__links { gap: 1.1rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .toc__line, .toc__label { transition: none; }
+    .subnav__link, .subnav__link::after, .subnav__cta { transition: none; }
+    .subnav__cta:hover { transform: none; }
+  }
+
+  /* ── About: lede beside the four-sciences rail ── */
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+    gap: clamp(2.2rem, 5vw, 4.8rem);
+    align-items: start;
+    margin-top: 0.4rem;
+  }
+  /* The prose fills its column instead of self-centering at 68ch */
+  .about__lede :global(.prose-cassa) { max-width: none; margin-inline: 0; }
+  .about__sci {
+    border-left: 1px solid var(--line);
+    padding-left: clamp(1.4rem, 2.6vw, 2.2rem);
+  }
+  .about__sci-h {
+    margin: 0.6rem 0 0;
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.18em;
+    font-weight: 700; color: var(--ink-faint);
+  }
+  .sci { list-style: none; counter-reset: sci; margin: 0.4rem 0 0; padding: 0; }
+  .sci > li {
+    counter-increment: sci;
+    position: relative;
+    padding: 1.05rem 0 1.1rem 3.1rem;
+    border-top: 1px solid var(--line);
+  }
+  .sci > li:first-child { border-top: 0; }
+  .sci > li::before {
+    content: counter(sci, decimal-leading-zero);
+    position: absolute; left: 0; top: 1.05rem;
+    font-family: var(--font-display); font-weight: 800; font-size: 1.75rem; line-height: 1;
+    letter-spacing: -0.03em; color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .sci__day {
+    display: block;
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 700; color: var(--accent);
+  }
+  .sci__t {
+    display: block; margin-top: 0.25rem;
+    font-weight: 700; font-size: 0.98rem; line-height: 1.35;
+    letter-spacing: -0.01em; color: var(--ink);
+  }
+  .sci__d { margin: 0.4rem 0 0; font-size: 0.85rem; line-height: 1.62; color: var(--ink-soft); }
+  .sci__coda {
+    margin: 0; padding-top: 1.05rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.85rem; line-height: 1.62; color: var(--ink-faint);
+  }
+  @media (max-width: 900px) {
+    .about { grid-template-columns: 1fr; }
+    .about__sci { border-left: 0; padding-left: 0; }
   }
 
   /* ── Fact cards ── */
@@ -716,8 +870,7 @@ const LOC = [
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
     gap: 0.9rem;
-    max-width: 68ch;
-    margin: 2.6rem auto 0;
+    margin-top: 2.8rem;
   }
   .fact {
     height: 100%;
@@ -733,38 +886,8 @@ const LOC = [
   }
   .fact__v { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5; }
 
-  /* ── Day-theme cards ── */
-  .days {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 215px), 1fr));
-    gap: 1rem;
-    margin-top: 2.4rem;
-  }
-  .day {
-    position: relative; overflow: clip; height: 100%;
-    background: var(--bg-elev);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 1.15rem 1.2rem 1.25rem;
-    transition: border-color 0.25s ease, transform 0.25s ease;
-  }
-  .day:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); transform: translateY(-2px); }
-  .day__num {
-    position: absolute; top: -0.9rem; right: 0.15rem;
-    font-family: var(--font-display); font-weight: 800; font-size: 4.6rem; line-height: 1;
-    letter-spacing: -0.04em; color: transparent;
-    -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 12%, transparent);
-    pointer-events: none; user-select: none;
-  }
-  .day__date {
-    margin: 0; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.16em;
-    font-weight: 600; color: var(--accent);
-  }
-  .day__theme { margin: 0.5rem 0 0; font-size: 1.02rem; line-height: 1.35; letter-spacing: -0.01em; color: var(--ink); }
-  .day__topics { margin: 0.6rem 0 0; font-size: 0.8rem; line-height: 1.55; color: var(--ink-faint); }
-
-  /* ── Stat tiles ── */
-  .stats { display: flex; flex-wrap: wrap; gap: 2.2rem 3.4rem; margin-top: 2.8rem; }
+  /* ── Stat tiles (under the calendar) ── */
+  .stats { display: flex; flex-wrap: wrap; gap: 2.2rem 3.4rem; margin-top: 2.6rem; }
   .stat { display: flex; flex-direction: column; gap: 0.15rem; }
   .stat__n {
     font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em;
@@ -812,54 +935,83 @@ const LOC = [
     padding-bottom: 0.5rem;
   }
 
-  .cal__corner { grid-column: 1; grid-row: 1; position: sticky; left: 0; z-index: 3; background: var(--bg-elev); }
+  .cal__corner {
+    grid-column: 1; grid-row: 1;
+    position: sticky; left: 0; z-index: 3;
+    background: var(--bg-elev);
+    display: flex; align-items: flex-end; justify-content: flex-end;
+    padding: 0 0.55rem 0.75rem 0;
+  }
+  .cal__corner span {
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 700; color: var(--ink-faint);
+  }
   .cal__day {
     grid-row: 1;
-    display: flex; flex-direction: column; gap: 0.1rem;
-    padding: 0.55rem 0.75rem 0.7rem;
-    border-bottom: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    position: relative; overflow: clip;
+    display: flex; flex-direction: column; gap: 0.12rem;
+    padding: 0.7rem 0.8rem 0.75rem;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, var(--bg-elev-2)), var(--bg-elev-2));
+    border: 1px solid var(--line);
+    border-bottom: 2px solid var(--accent);
+    border-radius: 14px 14px 0 0;
   }
-  .cal__wd { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600; color: var(--accent); }
-  .cal__date { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--ink); }
-  .cal__short { font-size: 0.72rem; color: var(--ink-faint); }
+  .cal__num {
+    position: absolute; top: -0.7rem; right: 0.2rem;
+    font-family: var(--font-display); font-weight: 800; font-size: 3.4rem; line-height: 1;
+    letter-spacing: -0.04em; color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 13%, transparent);
+    pointer-events: none; user-select: none;
+  }
+  .cal__wd {
+    font-family: var(--font-display); font-weight: 800; font-size: 1.05rem;
+    letter-spacing: -0.01em; color: var(--ink); line-height: 1.2;
+  }
+  .cal__short {
+    font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 700; color: var(--accent);
+  }
+  .cal__theme { margin-top: 0.3rem; font-size: 0.78rem; line-height: 1.4; color: var(--ink-soft); }
 
-  .cal__rule { grid-column: 1 / -1; border-top: 1px dashed color-mix(in srgb, var(--ink) 8%, transparent); z-index: 0; pointer-events: none; }
+  .cal__rule { grid-column: 1 / -1; border-top: 1px solid color-mix(in srgb, var(--ink) 5%, transparent); z-index: 0; pointer-events: none; }
   .cal__time {
     grid-column: 1;
     position: sticky; left: 0; z-index: 2;
     background: var(--bg-elev);
     font-variant-numeric: tabular-nums;
-    font-size: 0.64rem; line-height: 1; color: var(--ink-faint);
-    padding: 0.12rem 0.5rem 0 0;
+    font-size: 0.72rem; font-weight: 600; line-height: 1; color: var(--ink-soft);
+    padding: 0.18rem 0.55rem 0 0;
     text-align: right;
   }
 
-  /* Session cell — a real button; times live on the rail, details in the drawer */
+  /* Session cell — a real button; times live on the rail, details in the drawer.
+     Kept quiet: a flat tint and a type-coloured left bar, no outline — the bar
+     and the legend carry the colour coding. */
   .s {
     position: relative; z-index: 1;
     display: flex; flex-direction: column; gap: 0.2rem;
     font: inherit; text-align: left; color: inherit; cursor: pointer;
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--sc) 19%, var(--bg-elev)),
-      color-mix(in srgb, var(--sc) 7%, var(--bg-elev))
-    );
-    border: 1px solid color-mix(in srgb, var(--sc) 26%, transparent);
+    background: color-mix(in srgb, var(--sc) 9%, var(--bg-elev));
+    border: 0;
     border-left: 3px solid var(--sc);
-    border-radius: 10px;
-    padding: 0.45rem 0.65rem;
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
     min-width: 0; overflow: hidden;
-    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
   }
   .s:hover, .s:focus-visible {
     transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--sc) 72%, transparent);
-    box-shadow: 0 14px 32px color-mix(in srgb, var(--sc) 20%, transparent);
+    background: color-mix(in srgb, var(--sc) 16%, var(--bg-elev));
+    box-shadow: 0 14px 32px color-mix(in srgb, var(--sc) 18%, transparent);
     z-index: 2;
   }
   .s__title { font-size: 0.9rem; font-weight: 600; line-height: 1.26; letter-spacing: -0.012em; color: var(--ink); }
-  .s__who { margin-top: auto; font-size: 0.68rem; color: var(--ink-faint); }
-  .s__who b { font-weight: 700; color: var(--sc); letter-spacing: 0.04em; }
+  .s__who {
+    margin-top: auto;
+    font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+  .s__who b { font-weight: 700; color: var(--sc); }
 
   /* Staggered entrance — cells cascade in when the calendar's Reveal fires */
   .s { opacity: 0; }
@@ -869,19 +1021,27 @@ const LOC = [
     to { opacity: 1; transform: none; }
   }
 
-  /* Breaks — hairline pills, quiet, not clickable */
+  /* Breaks — a centred label between two fading hairlines, quiet, not clickable */
   .s--brk {
     justify-content: center; cursor: default;
-    background: transparent;
-    border: 1px dashed color-mix(in srgb, var(--ink) 20%, transparent);
-    border-radius: 999px;
+    background: transparent; border: 0; border-radius: 0;
   }
   .s--brk .s__title {
+    flex-shrink: 0;
     font-size: 0.6rem; font-weight: 600; color: var(--ink-faint);
-    text-transform: uppercase; letter-spacing: 0.16em;
+    text-transform: uppercase; letter-spacing: 0.2em;
   }
-  .s--brk:hover { transform: none; box-shadow: none; border-color: color-mix(in srgb, var(--ink) 20%, transparent); }
-  .s--span { grid-column: 2 / -1; flex-direction: row; align-items: center; justify-content: center; text-align: center; }
+  .s--brk:hover { transform: none; box-shadow: none; background: transparent; }
+  .s--span {
+    grid-column: 2 / -1;
+    flex-direction: row; align-items: center; justify-content: center; text-align: center;
+    gap: 1rem;
+  }
+  .s--span::before, .s--span::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ink) 16%, transparent));
+  }
+  .s--span::after { background: linear-gradient(270deg, transparent, color-mix(in srgb, var(--ink) 16%, transparent)); }
 
   /* ── Session drawer ── */
   .sdrawer { position: fixed; inset: 0; z-index: 1000; }
@@ -1015,14 +1175,13 @@ const LOC = [
   .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 30%, transparent); }
 
   @media (prefers-reduced-motion: reduce) {
-    .s, .day, .btn { transition: none; }
-    .s:hover, .day:hover, .btn:hover { transform: none; }
+    .s, .btn { transition: none; }
+    .s:hover, .btn:hover { transform: none; }
     .s { opacity: 1; animation: none !important; }
   }
 
   /* Phones: the calendar keeps its shape and scrolls sideways (rule 21). */
   @media (max-width: 640px) {
     .cal { min-width: 880px; }
-    .stats { gap: 1.6rem 2.4rem; }
   }
 </style>
