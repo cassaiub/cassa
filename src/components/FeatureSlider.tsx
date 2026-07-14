@@ -7,6 +7,8 @@ export type Slide = {
   title: string;
   excerpt: string;
   href: string;
+  /** CTA label — defaults to the news-story wording */
+  cta?: string;
 };
 
 const DURATION = 7000; // ms each story holds — slow succession
@@ -73,7 +75,7 @@ export default function FeatureSlider({ slides }: { slides: Slide[] }) {
             <p className="eyebrow">{s.eyebrow}</p>
             <h2 className="fslide__title">{s.title}</h2>
             <p className="fslide__excerpt">{s.excerpt}</p>
-            <a className="btn btn--solid" href={s.href}>Read the story →</a>
+            <a className="btn btn--solid" href={s.href}>{s.cta ?? "Read the story"} →</a>
           </div>
         </article>
       ))}

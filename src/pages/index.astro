@@ -94,7 +94,19 @@ const featuredSlides: Slide[] = [...featuredNews, ...featuredOpps, ...featuredEv
   .sort((a, b) => +b.date - +a.date)
   .slice(0, 3)
   .map(({ theme, eyebrow, title, excerpt, href }) => ({ theme, eyebrow, title, excerpt, href }));
-const slides: Slide[] = featuredSlides.length > 0 ? featuredSlides : fallbackSlides;
+// TDMMA 2026 — a bespoke page, not a collection entry, so it can't carry a
+// `featured` flag; pinned here by hand as the lead slide while applications
+// are open (through 14 Aug 2026). Remove after the workshop.
+const tdmmaSlide: Slide = {
+  theme: "merger",
+  eyebrow: "Workshop · 7–11 September 2026",
+  title: "Time-Domain & Multi-Messenger Astronomy",
+  excerpt:
+    "Five days on the astronomy of a changing sky — lectures and hands-on tutorials at IUB, with visiting lecturer Andrew L. Miller. Applications close 14 August 2026.",
+  href: withBase("/tdmma-2026"),
+  cta: "Explore & apply",
+};
+const slides: Slide[] = [tdmmaSlide, ...(featuredSlides.length > 0 ? featuredSlides : fallbackSlides)];
 
 // ── Latest strip: 3 events (upcoming first, backfilled with recent) + latest 3 news ──
 const nowD = new Date();
