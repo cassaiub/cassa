@@ -228,15 +228,34 @@ const DEADLINES = [
 ];
 const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / hands-on", disc: "Discussion · panel", cer: "Ceremony · talks" };
 
-/* ── Committees ── */
-const SOC = [
-  { name: "Andrew L. Miller", aff: "ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn" },
-  { name: "Syed Ashraf Uddin", aff: "Core Member, CASSA · Independent University, Bangladesh", email: "uddinsa@iub.edu.bd" },
-  { name: "Khan Muhammad Bin Asad", aff: "Core Member, CASSA · Independent University, Bangladesh", email: "kasad@iub.edu.bd" },
+/* ── People: invited speakers (full-width, prominent) + the two committees ──
+   web: each speaker's public page — CASSA profiles for Uddin and Asad,
+   personal / institutional sites otherwise (Miller's from his email
+   signature). Photos for Miller and Ghosh fetched from those sites
+   (2026-07-14); the rest reuse the people-collection portraits. */
+const SPEAKERS = [
+  { name: "Andrew L. Miller", aff: "Assistant Professor, ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn", web: "https://andrew-l-miller.github.io", ext: true, photo: "/people/miller.webp" },
+  { name: "Syed Ashraf Uddin", aff: "Associate Professor, IUB · Core Member, CASSA", email: "uddinsa@iub.edu.bd", web: withBase("/people/uddin"), ext: false, photo: "/people/uddin.webp" },
+  { name: "Khan Muhammad Bin Asad", aff: "Assistant Professor, IUB · Core Member, CASSA", email: "kasad@iub.edu.bd", web: withBase("/people/asad"), ext: false, photo: "/people/asad.webp" },
+  { name: "Jewel Kumar Ghosh", aff: "Assistant Professor, Department of Physical Sciences, IUB", email: "jewel.ghosh@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/jewel.ghosh", ext: true, photo: "/people/ghosh.webp" },
+  { name: "Md Redyan Ahmed", aff: "PhD candidate, University of Sydney · Graduate Member, CASSA", email: "mahm0320@uni.sydney.edu.au", web: "https://sites.google.com/view/md-redyan-ahmed", ext: true, photo: "/people/ahmed.webp" },
 ];
-const LOC = [
-  { name: "Muhammad Jobair Hasan", aff: "Science Manager, CASSA", email: "jobair@iub.edu.bd" },
-  { name: "Nublat Hafsa", aff: "Undergraduate Research Assistant, CASSA", email: "" },
+
+const COMMITTEES = [
+  {
+    title: "Scientific Organizing Committee",
+    people: [
+      { name: "Syed Ashraf Uddin", aff: "Core Member, CASSA · Independent University, Bangladesh", email: "uddinsa@iub.edu.bd" },
+      { name: "Khan Muhammad Bin Asad", aff: "Core Member, CASSA · Independent University, Bangladesh", email: "kasad@iub.edu.bd" },
+    ],
+  },
+  {
+    title: "Local Organizing Committee",
+    people: [
+      { name: "Muhammad Jobair Hasan", aff: "Science Manager, CASSA", email: "jobair@iub.edu.bd" },
+      { name: "Nublat Hafsa", aff: "Undergraduate Research Assistant, CASSA", email: "" },
+    ],
+  },
 ];
 
 /* The four key sciences (SA Uddin, Jul 13 email) — one per day, Mon–Thu; the
@@ -297,7 +316,8 @@ const SCIENCES = [
           ["about", "About"],
           ["programme", "Programme"],
           ["venue", "Venue"],
-          ["committees", "Committees"],
+          ["speakers", "Speakers"],
+          ["organisers", "Organisers"],
         ].map(([id, label]) => (
           <a class="subnav__link" href={`#${id}`} data-sec={id}>{label}</a>
         ))}
@@ -308,8 +328,9 @@ const SCIENCES = [
 
   <!-- ── Overview ─────────────────────────────────────────────────────── -->
   <!-- Sections alternate plain / elevated down the page: about · programme ·
-       venue · committees · apply. The programme keeps --elev so the calendar's
-       sticky time rail can mask scrolling cells with the same background. -->
+       venue · speakers · organisers · apply. The programme keeps --elev so the
+       calendar's sticky time rail can mask scrolling cells with the same
+       background. -->
   <section class="section" id="about">
     <div class="wrap">
       <Reveal><p class="eyebrow">About the workshop</p></Reveal>
@@ -402,8 +423,16 @@ const SCIENCES = [
   <!-- ── Programme calendar ───────────────────────────────────────────── -->
   <section class="section section--elev" id="programme">
     <div class="wrap">
-      <Reveal><p class="eyebrow">Preliminary programme</p></Reveal>
+      <Reveal><p class="eyebrow">Tentative programme</p></Reveal>
       <Reveal delay={60}><h2 style={h2}>The week, hour by hour</h2></Reveal>
+      <Reveal delay={90}>
+        <p class="cal-tentative">
+          <strong>This programme is tentative.</strong> Sessions, speakers and
+          timings may still be adjusted — though the shape of the week will
+          stay largely as it is — right up to the start of the workshop on
+          7&nbsp;September.
+        </p>
+      </Reveal>
       <Reveal delay={100}>
         <div class="legend" aria-hidden="true">
           {(["lec", "tut", "disc", "cer"] as const)
@@ -487,9 +516,7 @@ const SCIENCES = [
       </div>
       <Reveal delay={160}>
         <p class="cal-note">
-          Preliminary schedule — session order, times and speakers may change
-          until the final programme is published. Click a session for details;
-          on phones, swipe the calendar sideways.
+          Click a session for details; on phones, swipe the calendar sideways.
         </p>
       </Reveal>
     </div>
@@ -541,46 +568,62 @@ const SCIENCES = [
     </div>
   </section>
 
-  <!-- ── Committees ───────────────────────────────────────────────────── -->
-  <section class="section section--elev" id="committees">
+  <!-- ── Speakers ─────────────────────────────────────────────────────── -->
+  <section class="section section--elev" id="speakers">
+    <div class="wrap">
+      <Reveal><p class="eyebrow">Resource people</p></Reveal>
+      <Reveal delay={60}><h2 style={h2}>Invited speakers</h2></Reveal>
+      <div class="spk">
+        {SPEAKERS.map((p, i) => (
+          <Reveal delay={100 + i * 50}>
+            <article class="spk__card">
+              <img class="spk__photo" src={withBase(p.photo)} alt={p.name} width="480" height="480" loading="lazy" />
+              <div class="spk__body">
+                <h3 class="spk__name">
+                  <a
+                    href={p.web}
+                    target={p.ext ? "_blank" : undefined}
+                    rel={p.ext ? "noopener" : undefined}
+                  >{p.name}{p.ext && <span class="spk__ext" aria-hidden="true"> ↗</span>}</a>
+                </h3>
+                <p class="spk__aff">{p.aff}</p>
+                {p.email && <a class="spk__mail" href={`mailto:${p.email}`}>{p.email}</a>}
+              </div>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Organisers ───────────────────────────────────────────────────── -->
+  <section class="section" id="organisers">
     <div class="wrap">
       <Reveal><p class="eyebrow">Organisation</p></Reveal>
-      <Reveal delay={60}><h2 style={h2}>Committees</h2></Reveal>
-      <div class="coms">
-        <Reveal delay={100}>
-          <div class="com">
-            <h3 class="com__title">Scientific Organizing Committee</h3>
-            <ul class="com__list">
-              {SOC.map((p) => (
-                <li>
-                  <span class="com__name">{p.name}</span>
-                  <span class="com__aff">{p.aff}</span>
-                  <a class="com__mail" href={`mailto:${p.email}`}>{p.email}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
-        <Reveal delay={160}>
-          <div class="com">
-            <h3 class="com__title">Local Organizing Committee</h3>
-            <ul class="com__list">
-              {LOC.map((p) => (
-                <li>
-                  <span class="com__name">{p.name}</span>
-                  <span class="com__aff">{p.aff}</span>
-                  {p.email && <a class="com__mail" href={`mailto:${p.email}`}>{p.email}</a>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
+      <Reveal delay={60}><h2 style={h2}>Organisers</h2></Reveal>
+      <div class="orgs">
+        {COMMITTEES.map((g, gi) => (
+          <Reveal delay={100 + gi * 60}>
+            <div class="org">
+              <h3 class="org__title">{g.title}</h3>
+              <ul class="org__list">
+                {g.people.map((p) => (
+                  <li>
+                    <span class="org__name">{p.name}</span>
+                    <span class="org__aff">{p.aff}</span>
+                    {p.email && <a class="org__mail" href={`mailto:${p.email}`}>{p.email}</a>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+        ))}
       </div>
     </div>
   </section>
 
   <!-- ── Registration ─────────────────────────────────────────────────── -->
-  <section class="section" id="apply">
+  <section class="section section--elev" id="apply">
     <div class="wrap cta">
       <Reveal><p class="eyebrow">Take part</p></Reveal>
       <Reveal delay={60}><h2 style={h2}>Applications & registration</h2></Reveal>
@@ -799,7 +842,7 @@ const SCIENCES = [
   }
 
   /* Sections stop under the pinned submenu when jumped to */
-  #about, #programme, #venue, #committees, #apply { scroll-margin-top: 70px; }
+  #about, #programme, #venue, #speakers, #organisers, #apply { scroll-margin-top: 70px; }
 
   @media (max-width: 640px) {
     .subnav__row { gap: 0.7rem; }
@@ -904,6 +947,17 @@ const SCIENCES = [
   :global([data-theme="light"]) .s--lec  { --sc: #2f6bd8; }
   :global([data-theme="light"]) .s--tut  { --sc: #1d7f4e; }
   :global([data-theme="light"]) .s--disc { --sc: #7444b8; }
+
+  /* Tentative-programme notice — deliberately prominent, above the legend */
+  .cal-tentative {
+    margin: 1.5rem 0 0; max-width: 64ch;
+    padding: 0.8rem 1.1rem;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    border-radius: 0 12px 12px 0;
+    font-size: 0.94rem; line-height: 1.65; color: var(--ink-soft);
+  }
+  .cal-tentative strong { color: var(--ink); }
 
   /* ── Legend ── */
   .legend { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.6rem; }
@@ -1112,30 +1166,62 @@ const SCIENCES = [
   .cal-note { margin-top: 1.4rem; font-size: 0.82rem; color: var(--ink-faint); max-width: 68ch; }
 
   /* ── Committees ── */
-  .coms {
+  /* ── Speakers — monogram cards in a responsive grid ── */
+  .spk {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 1rem;
     margin-top: 2.4rem;
-    max-width: 60rem;
   }
-  .com {
+  .spk__card {
     height: 100%;
+    display: flex; gap: 1rem; align-items: flex-start;
     background: var(--bg-elev-2);
     border: 1px solid var(--line);
     border-radius: 16px;
-    padding: 1.3rem 1.4rem 1.4rem;
+    padding: 1.2rem 1.25rem;
+    transition: border-color 0.25s ease, transform 0.25s ease;
   }
-  .com__title {
-    margin: 0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em;
-    font-weight: 600; color: var(--accent);
+  .spk__card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); transform: translateY(-2px); }
+  .spk__photo {
+    flex-shrink: 0;
+    width: 5.25rem; height: 5.25rem; border-radius: 999px;
+    object-fit: cover;
+    border: 2px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+    background: var(--bg-elev);
   }
-  .com__list { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.85rem; }
-  .com__list li { display: flex; flex-direction: column; gap: 0.15rem; }
-  .com__name { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
-  .com__aff { font-size: 0.8rem; color: var(--ink-faint); line-height: 1.45; }
-  .com__mail { font-size: 0.8rem; color: var(--accent-2); width: fit-content; }
-  .com__mail:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .spk__name { margin: 0; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+  .spk__name a { color: var(--ink); transition: color 0.2s ease; }
+  .spk__name a:hover { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  .spk__ext { font-size: 0.8em; color: var(--ink-faint); }
+  .spk__aff { margin: 0.3rem 0 0; font-size: 0.8rem; line-height: 1.5; color: var(--ink-faint); }
+  .spk__mail { display: inline-block; margin-top: 0.35rem; font-size: 0.78rem; color: var(--accent-2); }
+  .spk__mail:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ── Organisers — boxless committee rails under an accent-ruled title ── */
+  .orgs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: clamp(1.8rem, 4.5vw, 4rem);
+    margin-top: 2.4rem;
+    max-width: 62rem;
+  }
+  .org__title {
+    margin: 0; padding-bottom: 0.7rem;
+    border-bottom: 2px solid var(--accent);
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 700; color: var(--accent);
+  }
+  .org__list { list-style: none; margin: 0; padding: 0; }
+  .org__list li {
+    display: flex; flex-direction: column; gap: 0.15rem;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .org__name { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+  .org__aff { font-size: 0.8rem; color: var(--ink-faint); line-height: 1.45; }
+  .org__mail { font-size: 0.78rem; color: var(--accent-2); width: fit-content; }
+  .org__mail:hover { text-decoration: underline; text-underline-offset: 3px; }
 
   /* ── CTA ── */
   .cta__p { color: var(--ink-soft); max-width: 58ch; margin: 1.1rem 0 0; font-size: 1.05rem; line-height: 1.7; }
