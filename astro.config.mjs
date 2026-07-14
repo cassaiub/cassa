@@ -145,6 +145,9 @@ export default defineConfig({
   site: 'https://cassa.bd',
   base: '/',
   trailingSlash: 'never',
+  // One port per CASSA repo so four dev servers coexist on this box:
+  // inside 2025 · cassa 2026 · ast100 2027 · kriterion 2028.
+  server: { port: 2026 },
   // The radio telescope was renamed STAR → TART; keep the old facility URL alive.
   redirects: {
     '/research/star': '/research/tart',

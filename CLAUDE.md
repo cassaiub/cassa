@@ -11,13 +11,23 @@ When building or planning any page or section, invoke the `/cassa-create` skill 
 ## Commands
 
 ```bash
-npm run dev        # Dev server at :4321 (falls back to :4322)
+npm run dev        # Dev server at :2026 (port pinned in astro.config.mjs)
 npm run build      # Static build → dist/
 npm run preview    # Serve dist/ locally
 npx astro check    # TypeScript validation (build does not type-check)
 ```
 
-To validate, run `npm run build` only. The user keeps `astro dev` running in a `screen` session and watches it live — do NOT start, restart, or kill the dev/preview server. After a build, ask them to hard-refresh. If a config/markdown-plugin change isn't taking effect, the `.astro/` content cache is stale: `rm -rf .astro dist && npm run build`.
+**Port 2026 is this repo's.** Each CASSA repo owns one port so all four dev
+servers coexist on the box: `inside` 2025 · `cassa` 2026 · `ast100` 2027 ·
+`kriterion` 2028. Never start this one on any other port.
+
+A `SessionStart` hook (`.claude/settings.local.json`, machine-local, untracked)
+launches `npm run dev` in a `screen` session named `cassa-dev` when a Claude
+session opens here — but only if nothing is already listening on :2026, so it
+never double-starts. The user watches that server live: let the hook start it,
+and do NOT restart or kill it yourself. Reattach with `screen -r cassa-dev`.
+
+To validate, run `npm run build` only. After a build, ask them to hard-refresh. If a config/markdown-plugin change isn't taking effect, the `.astro/` content cache is stale: `rm -rf .astro dist && npm run build`.
 
 ## Architecture
 
