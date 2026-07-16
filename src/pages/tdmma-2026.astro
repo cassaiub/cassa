@@ -12,7 +12,10 @@ const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3
    SA Uddin, 14 Jul 2026). Cell titles are shortened for the calendar; each
    drawer carries the exact PDF session title. The PDF assigns no session
    speakers, so cells carry no speaker line; the drawer shows "to be
-   announced". Neutrino astrophysics was dropped by the SOC (same email). */
+   announced". Exception: the neutrino astrophysics session, dropped by the
+   SOC on 14 Jul, was restored in the updated PDF (user, 16 Jul 2026) with
+   M Arshad Momen as its speaker; the user renamed the PDF's "astronomy"
+   to "astrophysics" (2026-07-16). */
 type SType = "lec" | "tut" | "disc" | "cer" | "brk";
 /* t: short display title (the cell); d: the topics covered (the drawer);
    link: optional related page shown at the foot of the drawer */
@@ -67,8 +70,8 @@ const DAYS: Day[] = [
       { s: "11:45", e: "12:30", t: "GW170817", k: "lec", d: [
         "GW170817 — Anatomy of the First Binary Neutron Star Multi-Messenger Event",
       ] },
-      { s: "12:30", e: "13:00", t: "Lessons from O3", k: "disc", d: [
-        "Lessons from O3 and Outlook for O4 / O5",
+      { s: "12:30", e: "13:00", t: "Neutrino Astrophysics", k: "lec", who: "M Arshad Momen", d: [
+        "High-Energy Neutrino Astrophysics — IceCube, Sources, and Multi-Messenger Connections",
       ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
       { s: "14:30", e: "15:15", t: "Kilonovae", k: "lec", d: [
@@ -217,14 +220,9 @@ const rowsTemplate = Array.from({ length: 32 }, (_, i) => {
   return m >= mins(LUNCH.s) && m < mins(LUNCH.e) ? "var(--unit-lunch)" : "var(--unit)";
 }).join(" ");
 
+/* Speaker names stay out of the calendar cells (user, 2026-07-16) — the
+   drawer alone carries the attribution. */
 const tbdRole: Record<string, string> = { lec: "Speaker", tut: "Moderator", disc: "Moderator", cer: "Speaker" };
-/* Cells carry initials-style short names; the drawer shows the full name. */
-const SHORT: Record<string, string> = {
-  "Khan Muhammad Bin Asad": "KMB Asad",
-  "Syed Ashraf Uddin": "SA Uddin",
-  "Andrew L. Miller": "AL Miller",
-};
-const shortWho = (w?: string) => (w ? (SHORT[w] ?? w) : undefined);
 
 /* Registration milestones — opening date set by the SOC (user, 2026-07-12);
    the intermediate dates are reasonable placeholders pending confirmation. */
@@ -244,6 +242,7 @@ const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / han
    (2026-07-14); the rest reuse the people-collection portraits. */
 const SPEAKERS = [
   { name: "Andrew L. Miller", aff: "Assistant Professor, ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn", web: "https://andrew-l-miller.github.io", ext: true, photo: "/people/miller.webp" },
+  { name: "M Arshad Momen", aff: "Professor, IUB · Core Member, CASSA", email: "arshad@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/arshad", ext: true, photo: "/people/momen.webp" },
   { name: "Syed Ashraf Uddin", aff: "Associate Professor, IUB · Core Member, CASSA", email: "uddinsa@iub.edu.bd", web: withBase("/people/uddin"), ext: false, photo: "/people/uddin.webp" },
   { name: "Khan Muhammad Bin Asad", aff: "Assistant Professor, IUB · Core Member, CASSA", email: "kasad@iub.edu.bd", web: withBase("/people/asad"), ext: false, photo: "/people/asad.webp" },
   { name: "Jewel Kumar Ghosh", aff: "Assistant Professor, Department of Physical Sciences, IUB", email: "jewel.ghosh@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/jewel.ghosh", ext: true, photo: "/people/ghosh.webp" },
@@ -279,7 +278,7 @@ const SCIENCES = [
   {
     day: "Day 2 · Tue Sep 8",
     t: "Gravitational waves & multi-messenger events",
-    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae, pulsars and gap transients.",
+    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae, neutrino astrophysics, pulsars and gap transients.",
   },
   {
     day: "Day 3 · Wed Sep 9",
@@ -367,6 +366,10 @@ const SCIENCES = [
                 Asia-Pacific (ICTP-AP, UCAS Beijing) and a member of the
                 LIGO/Virgo collaboration — who comes to CASSA for the
                 gravitational-wave portion of the programme. He is joined by
+                <strong>Prof.&nbsp;M&nbsp;Arshad&nbsp;Momen</strong>, a
+                theoretical physicist at IUB working on quantum field theory,
+                gravitation and particle physics, who takes the programme's
+                high-energy neutrino astrophysics session;
                 <strong>Dr.&nbsp;Syed&nbsp;Ashraf&nbsp;Uddin</strong>, a
                 supernova cosmologist who uses Type&nbsp;Ia supernovae as
                 standard candles to probe dark energy and the Hubble tension,
@@ -494,7 +497,6 @@ const SCIENCES = [
                 aria-haspopup="dialog"
               >
                 <span class="s__title">{x.t}</span>
-                {tbdRole[x.k] && x.who && <span class="s__who">{tbdRole[x.k]} · <b>{shortWho(x.who)}</b></span>}
               </button>
             ))
           )}
@@ -1062,12 +1064,6 @@ const SCIENCES = [
     z-index: 2;
   }
   .s__title { font-size: 0.82rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.008em; color: var(--ink); }
-  .s__who {
-    margin-top: auto;
-    font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--ink-faint);
-  }
-  .s__who b { font-weight: 700; color: var(--sc); }
 
   /* Compact variants — 30-min slots get tighter padding and smaller type;
      the lone 15-min slot (Day 5 closing) centres a single ellipsised line
