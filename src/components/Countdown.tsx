@@ -8,8 +8,21 @@ import { useEffect, useState } from "react";
  * against the site's CSS tokens (var(--ink) etc.) so it follows the dark/light
  * theme with no global CSS.
  */
+// Deadlines are Bangladesh Standard Time (UTC+6), never the viewer's zone.
+// A value carrying an offset ("…T23:59:00+06:00") or a "Z" is already a fixed
+// instant — the countdown to it is identical worldwide, which is what we want.
+// The two ambiguous shapes are normalised to BST: a bare date means the END of
+// that day, and a local-looking timestamp is read as BST rather than as the
+// viewer's own clock (a reader in London must see the Dhaka deadline).
+export function bstInstant(value: string): number {
+  const s = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return new Date(`${s}T23:59:59+06:00`).getTime();
+  if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2})?$/.test(s)) return new Date(`${s.replace(" ", "T")}+06:00`).getTime();
+  return new Date(s).getTime();
+}
+
 export default function Countdown({ closesAt }: { closesAt: string }) {
-  const target = new Date(closesAt).getTime();
+  const target = bstInstant(closesAt);
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {

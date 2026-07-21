@@ -199,6 +199,17 @@ const events = defineCollection({
     }),
 });
 
+// A deadline is a MOMENT IN BANGLADESH, always. Written bare ("2026-03-05"),
+// z.coerce.date() reads it as UTC midnight — 06:00 in Dhaka — so applications
+// would shut and the countdown hit zero at dawn on the closing day, eighteen
+// hours early. A bare date therefore means the END of that day, BST (UTC+6).
+// A value that already carries an offset ("2026-07-28T23:59:00+06:00") is a
+// fixed instant already and is passed through untouched.
+const bstDeadline = z.preprocess(
+  (v) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v.trim()) ? `${v.trim()}T23:59:59+06:00` : v),
+  z.coerce.date(),
+);
+
 // Opportunities — job circulars, internships and volunteer calls. Open vs.
 // closed is derived from `deadline` (>= now ⇒ open) unless `outcome` is set
 // (a position filled before its deadline). Moved here OUT of the news feed.
@@ -207,7 +218,7 @@ const opportunities = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(), // posted
-    deadline: z.coerce.date().optional(), // application deadline; omit ⇒ rolling/open
+    deadline: bstDeadline.optional(), // application deadline (BST); omit ⇒ rolling/open
     kind: z.enum(["job", "internship", "volunteer"]).default("job"),
     // Named annual program this circular belongs to (e.g. "tra" — the Tinsley
     // RAship). The program's evergreen page collects its circulars across
