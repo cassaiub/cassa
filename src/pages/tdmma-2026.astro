@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import AnimatedHero from "../components/immersive/AnimatedHero.astro";
 import Reveal from "../components/immersive/Reveal.astro";
 import Prose from "../components/immersive/Prose.astro";
+import Countdown from "../components/Countdown.tsx";
 import { withBase } from "../data/site-nav.ts";
 
 const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3rem 0 0;color:var(--ink)";
@@ -225,14 +226,22 @@ const rowsTemplate = Array.from({ length: 32 }, (_, i) => {
 const tbdRole: Record<string, string> = { lec: "Speaker", tut: "Moderator", disc: "Moderator", cer: "Speaker" };
 
 /* Registration milestones — opening date set by the SOC (user, 2026-07-12);
-   the intermediate dates are reasonable placeholders pending confirmation. */
+   the intermediate dates are reasonable placeholders pending confirmation.
+   The close was moved forward from 14 August to 31 July for logistics (user,
+   2026-07-21); the announcement and payment dates deliberately stayed put,
+   which simply widens the review window. */
 const DEADLINES = [
   ["Application opens", "14 July 2026"],
-  ["Application closes", "14 August 2026"],
+  ["Application closes", "31 July 2026"],
   ["Participant list announced", "21 August 2026"],
   ["Registration & payment", "by 31 August 2026"],
   ["Workshop begins", "7 September 2026"],
 ];
+
+/* The same instant the inside-portal form closes on (end of 31 July, Dhaka) —
+   keep in sync with CLOSES_AT in inside's scripts/create-tdmma-2026-form.ts so
+   the page counter and the form counter never disagree. */
+const APPLY_CLOSES = "2026-07-31T23:59:00+06:00";
 const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / hands-on", disc: "Discussion · panel", cer: "Ceremony · talks" };
 
 /* ── People: invited speakers (full-width, prominent) + the two committees ──
@@ -633,13 +642,19 @@ const SCIENCES = [
       <Reveal delay={60}><h2 style={h2}>Applications & registration</h2></Reveal>
       <Reveal delay={100}>
         <p class="cta__p">
-          Applications open on 14 July 2026 — the workshop is designed for
+          Applications are open until <strong>31 July 2026</strong> — the workshop
+          is designed for
           <strong> university students from Bangladesh and beyond</strong>, and a
           few seats may go to exceptional high-school applicants, subject to
           availability. Selected participants confirm their seat by paying a
           registration fee of <strong>BDT&nbsp;5,000 online</strong>; waivers of
           <strong>20% or 50%</strong> are available on the basis of merit and need.
         </p>
+      </Reveal>
+      <Reveal delay={115}>
+        <div class="cta__count">
+          <Countdown client:idle closesAt={APPLY_CLOSES} />
+        </div>
       </Reveal>
       <Reveal delay={130}>
         <div class="dl">
@@ -1232,6 +1247,9 @@ const SCIENCES = [
   /* ── CTA ── */
   .cta__p { color: var(--ink-soft); max-width: 58ch; margin: 1.1rem 0 0; font-size: 1.05rem; line-height: 1.7; }
   .cta__p--note { font-size: 0.92rem; color: var(--ink-faint); }
+  /* Live counter to the application deadline — the island styles itself off the
+     theme tokens, so this only has to place and bound it. */
+  .cta__count { margin-top: 1.7rem; max-width: 30rem; }
 
   /* Key dates */
   .dl {
