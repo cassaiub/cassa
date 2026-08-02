@@ -12,6 +12,6 @@ paperTitle: "Host-Galaxy Stellar Ages & the Hubble-Residual Age Step in Type Ia 
 
 **Host-Galaxy Stellar Ages & the Hubble-Residual Age Step in Type Ia Supernovae**
 
-**Presenter:** **Deba Priyo Guha** (Postbac Research Assistant at CASSA; M.Sc. (ongoing) in Theoretical Physics, University of Dhaka)
+**Presenter:** **Deba Priyo Guha** (M.Sc. (ongoing) in Theoretical Physics, University of Dhaka)
 
 **Supervisor:** **Syed Ashraf Uddin, PhD** (Core Member of CASSA; Associate Professor, Department of Physical Sciences, Independent University, Bangladesh)
