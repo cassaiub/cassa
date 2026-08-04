@@ -6,11 +6,11 @@ venue: "CASSA, IUB Main Building Rooftop, Plot 16, Aftabuddin Ahmed Road, Block 
 organizer: "CASSA, Independent University, Bangladesh"
 series: "journal-talk"
 category: "Journal Talk"
-summary: "Host-Galaxy Stellar Ages & the Hubble-Residual Age Step in Type Ia Supernovae."
-paperTitle: "Host-Galaxy Stellar Ages & the Hubble-Residual Age Step in Type Ia Supernovae"
+summary: "Host-Galaxy Stellar Ages of Type Ia Supernovae."
+paperTitle: "Host-Galaxy Stellar Ages of Type Ia Supernovae"
 ---
 
-**Host-Galaxy Stellar Ages & the Hubble-Residual Age Step in Type Ia Supernovae**
+**Host-Galaxy Stellar Ages of Type Ia Supernovae**
 
 ## Abstract
 
