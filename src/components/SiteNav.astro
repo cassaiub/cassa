@@ -41,14 +41,10 @@ function isParentActive(href: string, cur: string): boolean {
                       class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
                       href={withBase(n.href)}
                       aria-current={current === n.href ? "page" : undefined}
-                      aria-haspopup="true"
                     >
                       {n.label}
-                      <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <polyline points="2 4 6 8 10 4" />
-                      </svg>
                     </a>
-                    <button class="nav__submenu-toggle" type="button" aria-label={`Toggle ${n.label} submenu`} aria-expanded="false">
+                    <button class="nav__submenu-toggle" type="button" aria-label={`Toggle ${n.label} submenu`} aria-haspopup="true" aria-expanded="false">
                       <svg class="nav__toggle-icon" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <polyline points="2 4 6 8 10 4" />
                       </svg>
@@ -93,14 +89,10 @@ function isParentActive(href: string, cur: string): boolean {
                       class:list={["nav__link", "nav__link--parent", { "nav__link--active": active }]}
                       href={withBase(n.href)}
                       aria-current={current === n.href ? "page" : undefined}
-                      aria-haspopup="true"
                     >
                       {n.label}
-                      <svg class="nav__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <polyline points="2 4 6 8 10 4" />
-                      </svg>
                     </a>
-                    <button class="nav__submenu-toggle" type="button" aria-label={`Toggle ${n.label} submenu`} aria-expanded="false">
+                    <button class="nav__submenu-toggle" type="button" aria-label={`Toggle ${n.label} submenu`} aria-haspopup="true" aria-expanded="false">
                       <svg class="nav__toggle-icon" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <polyline points="2 4 6 8 10 4" />
                       </svg>
@@ -201,14 +193,27 @@ function isParentActive(href: string, cur: string): boolean {
   panel?.querySelectorAll("a").forEach((a) =>
     a.addEventListener("click", () => setMenu(false)),
   );
-  // Escape closes the overlay.
+  const closeItem = (item: Element) => {
+    item.classList.remove("is-open");
+    item.querySelector(".nav__submenu-toggle")?.setAttribute("aria-expanded", "false");
+  };
+
+  // Escape closes the overlay and any open dropdown (returning focus to its toggle).
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && panel?.classList.contains("is-open")) setMenu(false);
+    if (e.key !== "Escape") return;
+    if (panel?.classList.contains("is-open")) setMenu(false);
+    document.querySelectorAll(".nav__item.is-open").forEach((item) => {
+      const hadFocus = item.contains(document.activeElement);
+      closeItem(item);
+      if (hadFocus) item.querySelector<HTMLButtonElement>(".nav__submenu-toggle")?.focus();
+    });
   });
 
-  /* ── Mobile: tap the chevron to expand/collapse a section ──────────── */
-  // The label still navigates to the section landing page; this button only
-  // toggles the nested child list (collapsed by default). Hidden on desktop.
+  /* ── Chevron button: tap/click to expand/collapse a section ────────── */
+  // The split-button (disclosure) pattern, at every width: the label always
+  // navigates to the section landing page; this adjacent button toggles the
+  // submenu. On desktop, hover still opens it for mouse users — the button is
+  // the guaranteed path for touchscreens (tablets, IFPs, touch laptops).
   document.querySelectorAll<HTMLButtonElement>(".nav__submenu-toggle").forEach((btn) =>
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -217,15 +222,19 @@ function isParentActive(href: string, cur: string): boolean {
       if (!item) return;
       const open = item.classList.toggle("is-open");
       btn.setAttribute("aria-expanded", String(open));
+      if (open) {
+        // One open panel at a time.
+        document.querySelectorAll(".nav__item.is-open").forEach((other) => {
+          if (other !== item) closeItem(other);
+        });
+      }
     }),
   );
 
-  /* ── Desktop dropdown: close on outside click ──────────────────────── */
+  /* ── Dropdowns: close on outside click/tap ─────────────────────────── */
   document.addEventListener("click", (e) => {
-    document.querySelectorAll(".nav__item[data-has-children]").forEach((item) => {
-      if (!item.contains(e.target as Node)) {
-        item.classList.remove("is-open");
-      }
+    document.querySelectorAll(".nav__item[data-has-children].is-open").forEach((item) => {
+      if (!item.contains(e.target as Node)) closeItem(item);
     });
   });
 
@@ -258,50 +267,40 @@ function isParentActive(href: string, cur: string): boolean {
     align-items: center;
   }
 
-  /* ── Parent link (with chevron) ────────────────────────────────────── */
+  /* ── Parent link ───────────────────────────────────────────────────── */
   .nav__link--parent {
-    position: relative; /* positioning context for the out-of-flow caret */
     display: inline-flex;
     align-items: center;
-    gap: 0;
   }
 
-  /* ── Parent row + mobile expand/collapse toggle ────────────────────── */
-  /* On desktop the row is transparent (display:contents) so the bar layout is
-     unchanged and the toggle button is hidden — hover opens the panel. On mobile
-     the row becomes a flex line and the toggle drives a collapsible nested list. */
+  /* ── Parent row + expand/collapse toggle (all widths) ──────────────── */
+  /* Split-button disclosure pattern: the label is a plain link (tap/click
+     always navigates); the adjacent chevron button toggles the submenu. On
+     desktop the row is transparent (display:contents) so the bar layout is
+     unchanged; on mobile it becomes a flex line. The button is the guaranteed
+     open path on touchscreens, where hover doesn't exist. */
   .nav__item-row { display: contents; }
   .nav__submenu-toggle {
-    display: none;
+    display: inline-grid;
     flex-shrink: 0;
     place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
     background: transparent;
     border: none;
-    color: inherit;
+    color: rgba(255, 255, 255, 0.55);
     cursor: pointer;
+    transition: color 0.14s ease;
   }
-  .nav__toggle-icon { transition: transform 0.2s ease; }
-
-  /* ── Chevron icon ──────────────────────────────────────────────────── */
-  /* Sits OUT OF FLOW (absolute, centered just below its label) so it adds no
-     width to the bar and never shifts the row. Hidden at rest, it fades and
-     slides in on hover/focus as a "menu opens below" cue. */
-  .nav__chevron {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    flex-shrink: 0;
-    opacity: 0;
-    transform: translate(-50%, -6px);
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-  }
-
-  .nav__item:hover .nav__chevron,
-  .nav__item:focus-within .nav__chevron {
-    opacity: 1;
-    transform: translate(-50%, -1px);
-  }
+  .nav.is-scrolled .nav__submenu-toggle { color: var(--ink-faint); }
+  .nav__submenu-toggle:hover { color: #fff; }
+  .nav.is-scrolled .nav__submenu-toggle:hover { color: var(--ink); }
+  [data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__submenu-toggle { color: var(--ink-faint); }
+  [data-theme="light"] body:has(.hero--sky, .fslider) .nav:not(.is-scrolled) .nav__submenu-toggle:hover { color: var(--ink); }
+  .nav__item.is-open .nav__submenu-toggle { color: var(--accent) !important; }
+  .nav__toggle-icon { width: 12px; height: 12px; transition: transform 0.2s ease; }
+  .nav__item.is-open .nav__toggle-icon { transform: rotate(180deg); }
 
   /* ── Dropdown panel (desktop) ──────────────────────────────────────── */
   .nav__submenu {
@@ -336,11 +335,22 @@ function isParentActive(href: string, cur: string): boolean {
     height: 12px;
   }
 
-  .nav__item:hover .nav__submenu,
-  .nav__item:focus-within .nav__submenu {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
+  /* Open states (desktop): click/tap on the chevron (.is-open), keyboard focus
+     landing inside the panel, or — only on devices that can hover — hover. */
+  @media (min-width: 861px) {
+    .nav__item.is-open .nav__submenu,
+    .nav__submenu:focus-within {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+  @media (min-width: 861px) and (hover: hover) {
+    .nav__item:hover .nav__submenu {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
   }
 
   /* ── Submenu links ─────────────────────────────────────────────────── */
@@ -421,11 +431,20 @@ function isParentActive(href: string, cur: string): boolean {
     transition: opacity 0.18s ease, transform 0.18s ease;
     z-index: 200;
   }
-  .nav__item:hover .nav__megamenu,
-  .nav__item:focus-within .nav__megamenu {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
+  @media (min-width: 861px) {
+    .nav__item.is-open .nav__megamenu,
+    .nav__megamenu:focus-within {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+  @media (min-width: 861px) and (hover: hover) {
+    .nav__item:hover .nav__megamenu {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
   }
   .nav__megamenu-col { display: flex; flex-direction: column; }
   /* Group heads read as the headline of each megamenu column — larger, brighter
@@ -508,12 +527,11 @@ function isParentActive(href: string, cur: string): boolean {
       border-radius: 12px;
       color: var(--ink-soft);
     }
+    .nav__submenu-toggle:hover { color: var(--ink); }
     .nav__submenu-toggle:active {
       background: color-mix(in srgb, var(--ink) 8%, transparent);
     }
     .nav__toggle-icon { width: 18px; height: 18px; }
-    .nav__item.is-open .nav__submenu-toggle { color: var(--accent); }
-    .nav__item.is-open .nav__toggle-icon { transform: rotate(180deg); }
 
     /* Collapsible nested lists — clearly legible over the solid overlay, set off
        by an accent rule and a modest indent (not pushed off to the left). */
@@ -571,7 +589,5 @@ function isParentActive(href: string, cur: string): boolean {
     }
     .nav__megamenu-col-head--link { color: var(--ink-soft); }
     .nav__megamenu-col-head--link:hover { color: var(--accent); }
-
-    .nav__chevron { display: none; }
   }
 </style>
