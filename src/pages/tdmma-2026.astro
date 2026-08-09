@@ -229,34 +229,43 @@ const tbdRole: Record<string, string> = { lec: "Speaker", tut: "Moderator", disc
    the intermediate dates are reasonable placeholders pending confirmation.
    The close was moved forward from 14 August to 31 July for logistics (user,
    2026-07-21), then EXTENDED to 7 August (user, 2026-08-02) — the 31 July close
-   had already passed, so this reopens applications for a further week. The
-   announcement and payment dates have never moved; the review window narrows
-   from three weeks to two. */
+   had already passed, so this reopens applications for a further week. EXTENDED
+   again to 14 August (user, 2026-08-09), back to the original close and the date
+   the printed A5 brochure carries; the 7 August close had already passed, so
+   this reopens applications for a further week. The announcement and payment
+   dates have never moved; the review window narrows from three weeks to one. */
 const DEADLINES = [
   ["Application opens", "14 July 2026"],
-  ["Application closes", "7 August 2026"],
+  ["Application closes", "14 August 2026"],
   ["Participant list announced", "21 August 2026"],
   ["Registration & payment", "by 31 August 2026"],
   ["Workshop begins", "7 September 2026"],
 ];
 
-/* The same instant the inside-portal form closes on (end of 7 August, Dhaka) —
+/* The same instant the inside-portal form closes on (end of 14 August, Dhaka) —
    keep in sync with CLOSES_AT in inside's scripts/create-tdmma-2026-form.ts so
    the page counter and the form counter never disagree. */
-const APPLY_CLOSES = "2026-08-07T23:59:00+06:00";
+const APPLY_CLOSES = "2026-08-14T23:59:00+06:00";
 const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / hands-on", disc: "Discussion · panel", cer: "Ceremony · talks" };
 
 /* ── People: invited speakers (full-width, prominent) + the two committees ──
    web: each speaker's public page — CASSA profiles for Uddin and Asad,
    personal / institutional sites otherwise (Miller's from his email
    signature). Photos for Miller and Ghosh fetched from those sites
-   (2026-07-14); the rest reuse the people-collection portraits. */
+   (2026-07-14); the rest reuse the people-collection portraits.
+   Burke added 2026-08-09 (user) — the printed A5 brochure lists seven resource
+   people and the page had six. Title/affiliation from his Yale listing and
+   personal site, portrait cropped from the full-length photo there (the
+   brochure's own thumbnail is only 100px). He sits after the IUB faculty and
+   before Ahmed, matching both the seniority order used here and the brochure's
+   Burke→Ahmed adjacency. */
 const SPEAKERS = [
   { name: "Andrew L. Miller", aff: "Assistant Professor, ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn", web: "https://andrew-l-miller.github.io", ext: true, photo: "/people/miller.webp" },
   { name: "M Arshad Momen", aff: "Professor, IUB · Core Member, CASSA", email: "arshad@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/arshad", ext: true, photo: "/people/momen.webp" },
   { name: "Syed Ashraf Uddin", aff: "Associate Professor, IUB · Core Member, CASSA", email: "uddinsa@iub.edu.bd", web: withBase("/people/uddin"), ext: false, photo: "/people/uddin.webp" },
   { name: "Khan Muhammad Bin Asad", aff: "Assistant Professor, IUB · Core Member, CASSA", email: "kasad@iub.edu.bd", web: withBase("/people/asad"), ext: false, photo: "/people/asad.webp" },
   { name: "Jewel Kumar Ghosh", aff: "Assistant Professor, Department of Physical Sciences, IUB", email: "jewel.ghosh@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/jewel.ghosh", ext: true, photo: "/people/ghosh.webp" },
+  { name: "Colin J. Burke", aff: "NSF AAPF Postdoctoral Fellow, Department of Astronomy, Yale University · incoming Assistant Professor, University of North Texas", email: "colin.j.burke@yale.edu", web: "https://burke86.github.io", ext: true, photo: "/people/burke.webp" },
   { name: "Md Redyan Ahmed", aff: "PhD candidate, University of Sydney · Graduate Member, CASSA", email: "mahm0320@uni.sydney.edu.au", web: "https://sites.google.com/view/md-redyan-ahmed", ext: true, photo: "/people/ahmed.webp" },
 ];
 
@@ -644,7 +653,7 @@ const SCIENCES = [
       <Reveal delay={60}><h2 style={h2}>Applications & registration</h2></Reveal>
       <Reveal delay={100}>
         <p class="cta__p">
-          Applications are open until <strong>7 August 2026</strong> — the workshop
+          Applications are open until <strong>14 August 2026</strong> — the workshop
           is designed for
           <strong> university students from Bangladesh and beyond</strong>, and a
           few seats may go to exceptional high-school applicants, subject to
