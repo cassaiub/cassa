@@ -1,14 +1,13 @@
 ---
 name: cassa-post
-description: Publish a news post or event to the CASSA site from a category + content. Placement is automatic — the right `category`/`series`/`durbin`/`lang` frontmatter files the markdown into the correct collection so it surfaces on the right pages (main News feed, Durbin Updates, Bangla series, or the Events calendar) with NO page edits. Invoke when the user types "/cassa-post ..." or says "post a news", "add an event", "publish this colloquium / journal talk / workshop / astronomy night", "add a Durbin update", "add a Bangla article", or gives a category plus a writeup to publish. Handles slug, frontmatter, image localization, and build validation. Never deploys.
+description: Publish a news post or event to the CASSA site from a category + content. Placement is automatic — the right `category`/`series`/`lang` frontmatter files the markdown into the correct collection so it surfaces on the right pages (main News feed, Bangla series, or the Events calendar) with NO page edits. Invoke when the user types "/cassa-post ..." or says "post a news", "add an event", "publish this colloquium / journal talk / workshop / astronomy night", "add a Bangla article", or gives a category plus a writeup to publish. Handles slug, frontmatter, image localization, and build validation. Never deploys.
 ---
 
 # Post news & events to CASSA
 
 Publish a **news post** or **event** by writing one markdown file into the
 correct content collection. **Placement is entirely frontmatter-driven** —
-every listing page filters the collection by `category` / `series` / `durbin` /
-`lang`, so a correctly-filed entry appears in the right place automatically.
+every listing page filters the collection by `category` / `series` / `lang`, so a correctly-filed entry appears in the right place automatically.
 **You never edit a page to place a post.** Your whole job is: classify → fill
 the schema → localize images → validate the build.
 
@@ -44,10 +43,9 @@ it against these tables. If their category isn't listed, pick the closest and
 |---|---|---|
 | `Milestones` | — | `/news` |
 | `People` | — | `/news` |
-| `Outreach` | add `durbin: true` to ALSO cross-list to Durbin | `/news` (+ `/outreach/durbin/updates` if `durbin: true`) |
+| `Outreach` | — | `/news` |
 | `Colloquia` | — | `/news` |
 | `Workshops` | — | `/news` |
-| `Durbin` | — | `/outreach/durbin/updates` **only** (excluded from main `/news`) |
 | `নতুন কথা` (Notun Kotha) | `lang: "bn"` | `/outreach/bangla` (Notun Kotha series) |
 | `দূরের কথা` (Durer Kotha) | `lang: "bn"` | `/outreach/bangla` (Durer Kotha series) |
 | `সহজ কথা` (Shohoj Kotha) | `lang: "bn"` | `/outreach/bangla` (Shohoj Kotha series) |
@@ -57,9 +55,11 @@ Key rules:
 - The four **Bangla series** names are an exact-match join key
   (`src/data/bangla-series.ts`). They are **excluded from the main `/news` feed**
   and live only under `/outreach/bangla`. Always pair with `lang: "bn"`.
-- `category: "Durbin"` is **excluded from the main `/news` feed** and shows only
-  in Durbin Updates. To put a post in BOTH the main feed and Durbin Updates, use
-  a normal category (e.g. `Outreach`) **plus** `durbin: true`.
+- **Durbin content does not belong in this repo.** Durbin moved to its own site
+  (durbin.cc) on 2026-08-11; the `/durbin` pages, the Durbin Updates feed and the
+  `durbin:` flag are all gone from here. A Durbin post goes in `../durbin`
+  (`src/content/news/`), not here. A CASSA post that merely mentions Durbin is
+  fine under a normal category.
 - Every other category flows into the main `/news` feed and becomes a filter
   chip there automatically. The chip order preference is
   Milestones → People → Outreach → Colloquia → Workshops; new categories sort last.
@@ -143,7 +143,6 @@ Use these exact frontmatter shapes (schemas in `src/content.config.ts`).
 title: "…"
 date: "2026-06-07T17:00:00+06:00"
 category: "Outreach"          # see NEWS table
-durbin: false                 # true → also in Durbin Updates
 summary: "One–two sentence teaser for the list view."
 hero: "../../assets/news/<slug>/<img>.webp"   # omit if none
 heroAlt: "Descriptive alt text."

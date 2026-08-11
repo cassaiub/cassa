@@ -95,16 +95,9 @@ export const NAV: NavItem[] = [
     label: "Outreach",
     live: true,
     groups: [
-      {
-        label: "Durbin",
-        href: "/durbin",
-        children: [
-          { href: "/durbin/images", label: "Astrophotography" },
-          { href: "/durbin/manual", label: "Durbin Manual" },
-          { href: "/durbin/volunteers", label: "Volunteers" },
-          { href: "/durbin/updates", label: "Updates" },
-        ],
-      },
+      // Durbin moved to its own site (durbin.cc) on 2026-08-11; its pages, the
+      // astrophotography collection and its updates feed are no longer built
+      // here. The Outreach page still describes the programme in prose.
       {
         label: "BDOAA",
         href: "/bdoaa",

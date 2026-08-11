@@ -34,7 +34,7 @@ export const asad: ProfileData = {
 
   engagements: [
     { title: "Courses taught", desc: "Astronomy, physics and electronics courses at IUB, including the Minor in Astronomy & Astrophysics.", href: "/people/asad/teaching" },
-    { title: "Outreach — Durbin & BDOAA", desc: "Durbin (astrophotography & science communication for the public) and the Bangladesh Olympiad on Astronomy & Astrophysics (BDOAA).", href: "/durbin" },
+    { title: "Outreach — Durbin & BDOAA", desc: "Durbin (astrophotography & science communication for the public) and the Bangladesh Olympiad on Astronomy & Astrophysics (BDOAA).", href: "/outreach" },
   ],
 
   workEducation: [

@@ -9,7 +9,7 @@ import { getCollection } from "astro:content";
 import { withBase } from "../data/site-nav.ts";
 
 // BDOAA-tagged events surface here automatically: any src/content/events/*.md
-// with `category: "BDOAA"` or `bdoaa: true` (mirrors the Durbin Updates feed).
+// with `category: "BDOAA"` or `bdoaa: true`.
 const isBdoaa = (data: { status?: string; category?: string; bdoaa?: boolean }) =>
   data.status !== "draft" && (data.category === "BDOAA" || data.bdoaa === true);
 const bdoaaEvents = (await getCollection("events", ({ data }) => isBdoaa(data)))

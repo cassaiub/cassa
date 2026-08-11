@@ -123,9 +123,9 @@ const featuredEvents = [...upcoming, ...recentPast].slice(0, 3);
 // The very next upcoming event gets the glowing timeline node.
 const nextEventId = upcoming[0]?.id;
 
-// Latest institutional news — same feed as /news (excludes the Bengali series and Durbin updates).
+// Latest institutional news — same feed as /news (excludes the Bengali series).
 const recentNews = (await getCollection("news", ({ data }) =>
-  data.status !== "draft" && !isBanglaSeries(data.category) && data.category !== "Durbin"))
+  data.status !== "draft" && !isBanglaSeries(data.category)))
   .sort((a, b) => +b.data.date - +a.data.date)
   .slice(0, 3);
 

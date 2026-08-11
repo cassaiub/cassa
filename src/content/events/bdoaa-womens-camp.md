@@ -7,7 +7,6 @@ venue: "CASSA, Independent University, Bangladesh (IUB)"
 organizer: "BDOAA & Durbin"
 series: "outreach"
 category: "BDOAA Workshop"
-durbin: true
 bdoaa: true
 register: "/events/bdoaa-womens-camp/register"
 summary: "A free two-day intensive camp introducing girls in Classes 6–10 to observational and theoretical astronomy — 10–11 July 2026 at CASSA, IUB."

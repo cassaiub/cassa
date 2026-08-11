@@ -8,11 +8,12 @@ import { getCollection } from "astro:content";
 import { withBase } from "../data/site-nav.ts";
 import { isBanglaSeries } from "../data/bangla-series.ts";
 
-// The Bengali article series live under /outreach/bangla, and Durbin updates
-// live under /durbin/updates — neither shows in the main news feed.
-// (Their /news/<slug> detail pages still exist; those sections link to them.)
+// The Bengali article series live under /outreach/bangla and do not show in the
+// main news feed. (Their /news/<slug> detail pages still exist; that section
+// links to them.) Durbin posts were excluded here too until Durbin moved to
+// durbin.cc on 2026-08-11; they are no longer in this repo at all.
 const all = (await getCollection("news", ({ data }) =>
-  data.status !== "draft" && !isBanglaSeries(data.category) && data.category !== "Durbin"))
+  data.status !== "draft" && !isBanglaSeries(data.category)))
   .sort((a, b) => +b.data.date - +a.data.date);
 
 const TZ = "Asia/Dhaka";

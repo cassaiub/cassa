@@ -741,7 +741,7 @@ html.fig-armed .prose-cassa .article-figure.is-emerged .article-figure__cap { op
 
 .nfrow { --c: var(--accent); display: flex; flex-direction: column; gap: .45rem; background: var(--bg-elev-2); border: 1px solid var(--line); border-left: 3px solid var(--c); border-radius: 14px; padding: 1.1rem 1.3rem; transition: border-color .2s, transform .2s; }
 .nfrow:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); transform: translateY(-2px); }
-/* media variant: feature-image thumbnail beside the text (news + durbin updates) */
+/* media variant: feature-image thumbnail beside the text (news list views) */
 .nfrow--media { flex-direction: row; align-items: stretch; gap: 1.1rem; }
 .nfrow__thumb { flex-shrink: 0; width: 148px; height: 104px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-elev); align-self: center; }
 /* NB: plain `img` here, NOT `:global(img)` — this rule lives in the GLOBAL

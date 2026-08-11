@@ -207,10 +207,10 @@ pages. Proposed collections (confirm exact schemas in STEP 1):
   `/news/[slug]` + index + section feeds.
 - **`events`** — title, slug, start, end, venue, organizer, series
   (colloquium|journal-talk|workshop|outreach), link, status. → `/events`.
-- **`gallery`** — the astrophotography/portfolio image entries (~110): title,
-  object, image, instrument, category (nebulae|galaxies|stars|clusters|…),
-  exposure/data. → an immersive gallery (placement TBD — likely under Outreach
-  or its own Astrophotography section; **confirm with user**).
+- **`gallery`** — vestigial: schema only, no entries. The astrophotography
+  exhibition it was sketched for moved to the separate `../durbin` repo
+  (durbin.cc/exhibition) on 2026-08-11 and is not built here. Do not author
+  image entries into `gallery` without **confirming with the user** first.
 
 **Frontmatter routing model** (what the user asked for): a markdown file
 carries `type`/`section`/`status` in frontmatter; a dynamic route reads those
@@ -350,7 +350,7 @@ without explicit instruction. Deployment is deferred.
 16. **Home feature slider = research or colloquia stories only** — not
     outreach. Reason: the landing should foreground the center's science; the
     user corrected an outreach-led slider on 2026-05-28. Outreach has its own
-    Outreach/Durbin section.
+    Outreach section (Durbin itself now lives at durbin.cc, not in this repo).
 17. **Primary landing/feature backgrounds are original, code-generated
     animations** (e.g. `SkyCanvas`), thematically tied to the content — not
     static photographs. Reason: the user wants living, bespoke backdrops

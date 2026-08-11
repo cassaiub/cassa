@@ -12,9 +12,10 @@ export const SITE = {
   // Verified CASSA social profiles (from knb/). The YouTube channel found in the
   // scrape is NOT included — it could not be confirmed as CASSA's (flagging, not
   // fabricating). Add it here once confirmed.
+  // Durbin's page was dropped here on 2026-08-11: Durbin is its own site
+  // (durbin.cc) and claims that profile in its own structured data.
   sameAs: [
     "https://facebook.com/cassa.iub",
-    "https://facebook.com/durbin.cassa",
   ],
 } as const;
 

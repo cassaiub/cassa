@@ -97,13 +97,8 @@ const news = defineCollection({
       title: z.string(),
       date: z.coerce.date(),
       category: z.string().optional(),
-      // Opt-in cross-listing into the Durbin Updates feed for posts whose primary
-      // `category` is NOT "Durbin" (e.g. an Outreach post Durbin co-hosted). A
-      // bare `category: "Durbin"` post is in that feed automatically; this flag
-      // adds non-Durbin-category posts without pulling the whole category in.
-      durbin: z.boolean().default(false),
       // Feature image = the best image within the post; rendered as an optimized
-      // thumbnail in the /news and /durbin/updates list views.
+      // thumbnail in the /news list view.
       hero: image().optional(),
       heroAlt: z.string().optional(),
       // Optional visible caption rendered under the hero figure on the detail
@@ -157,11 +152,8 @@ const events = defineCollection({
       // Suppress the "Type" row in the detail-page meta card (the category/series
       // still drives placement, the hero eyebrow, and listing tags).
       hideType: z.boolean().default(false),
-      // Cross-list a non-"Durbin"-category event into the Durbin Updates feed
-      // (mirrors news.durbin). A bare category:"Durbin" event is included anyway.
-      durbin: z.boolean().default(false),
-      // Cross-list an event onto the /bdoaa page's events list (mirrors `durbin`).
-      // A bare category:"BDOAA" event is included there anyway.
+      // Cross-list an event onto the /bdoaa page's events list. A bare
+      // category:"BDOAA" event is included there anyway.
       bdoaa: z.boolean().default(false),
       link: z.string().optional(),
       // Registration URL — external (e.g. an Inside form) or an internal path.
@@ -257,64 +249,4 @@ const gallery = defineCollection({
   }),
 });
 
-// Astrophotography — one object per entry, with a fullscreen photo, the two
-// legacy info tables, and EN (body) / BN (essayBn) essays. The image() helper
-// resolves the co-located photo to an optimizable ImageMetadata for <Image>.
-const astrophotography = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/astrophotography" }),
-  schema: ({ image }) => {
-    // The Astrophotographic ("how it was captured") block — reused by the
-    // primary capture and by each additional slider slide, so a multi-author
-    // entry keeps every contributor's distinct capture details.
-    const astrophotoFields = z.object({
-      photographer: z.string().optional(),
-      location: z.string().optional(),
-      date: z.string().optional(),
-      exposure: z.string().optional(),
-      telescope: z.string().optional(),
-      camera: z.string().optional(),
-      fov: z.string().optional(),
-      processing: z.string().optional(),
-      processingMethod: z.string().optional(),
-    });
-    return z.object({
-      title: z.string(),
-      object: z.string().optional(),
-      catalog: z.string().optional(),
-      categories: z.array(z.string()).default([]),
-      image: image(),
-      imageAlt: z.string().optional(),
-      caption: z.string().optional(),
-      astrophoto: astrophotoFields.default({}),
-      // Additional captures of the SAME object by other photographers. When
-      // present, the detail page renders a slider (primary image first, then
-      // these) and swaps the Astrophotographic table to match the active slide.
-      // The object facts (astrophysics) are shared across all slides.
-      slides: z
-        .array(
-          z.object({
-            image: image(),
-            alt: z.string().optional(),
-            credit: z.string().optional(),
-            astrophoto: astrophotoFields.default({}),
-          }),
-        )
-        .optional(),
-      astrophysics: z
-        .object({
-          objectType: z.string().optional(),
-          constellation: z.string().optional(),
-          distance: z.string().optional(),
-          angularSize: z.string().optional(),
-          physicalSize: z.string().optional(),
-          magnitude: z.string().optional(),
-        })
-        .default({}),
-      credit: z.string().optional(),
-      essayBn: z.string().optional(),
-      status: z.enum(["published", "draft"]).default("published"),
-    });
-  },
-});
-
-export const collections = { people, projects, publications, news, workshops, events, opportunities, gallery, astrophotography };
+export const collections = { people, projects, publications, news, workshops, events, opportunities, gallery };
