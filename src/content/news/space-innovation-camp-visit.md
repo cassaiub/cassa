@@ -4,7 +4,7 @@ date: "2026-08-08T12:00:00+06:00"
 category: "Outreach"
 summary: "Children aged seven to thirteen from Space Innovation Camp — some barely tall enough to reach a telescope eyepiece — spent an afternoon at the Center, trading textbook astronomy for a 24-antenna array on the roof, a live signal on a screen, and an eyepiece of their own."
 hero: "../../assets/news/space-innovation-camp-visit/camp-group-photo-rooftop.webp"
-heroAlt: "Students of Space Innovation Camp gather with CASSA staff, interns, and their guardians on the rooftop of IUB's academic building."
+heroAlt: "Students of Space Innovation Camp, aged seven to thirteen, and their guardians gather with CASSA's astronomer, research assistants, interns, and volunteers on the rooftop of IUB's academic building at CASSA."
 heroCaption: "Students of Space Innovation Camp, aged seven to thirteen, and their guardians gather with CASSA's astronomer, research assistants, interns, and volunteers on the rooftop of IUB's academic building at CASSA."
 featured: false
 author: "Farhana Ferdous"
