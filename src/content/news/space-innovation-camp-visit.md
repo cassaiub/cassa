@@ -2,16 +2,16 @@
 title: "A Day Looking Up: CASSA Fills With a Different Kind of Noise Than Usual"
 date: "2026-08-08T12:00:00+06:00"
 category: "Outreach"
-summary: "Children aged seven to thirteen from Space Innovation Camp — some barely tall enough to reach a telescope eyepiece — spent an afternoon at the Center, trading textbook astronomy for a 24-antenna array on the roof, a live signal on a screen, and an eyepiece of their own."
+summary: "Children aged five to thirteen from Space Innovation Camp — some barely tall enough to reach a telescope eyepiece — spent an afternoon at the Center, trading textbook astronomy for a 24-antenna array on the roof, a live signal on a screen, and an eyepiece of their own."
 hero: "../../assets/news/space-innovation-camp-visit/camp-group-photo-rooftop.webp"
-heroAlt: "Students of Space Innovation Camp, aged seven to thirteen, and their guardians gather with CASSA's astronomer, research assistants, interns, and volunteers on the rooftop of IUB's academic building at CASSA."
-heroCaption: "Students of Space Innovation Camp, aged seven to thirteen, and their guardians gather with CASSA's astronomer, research assistants, interns, and volunteers on the rooftop of IUB's academic building at CASSA."
+heroAlt: "Students of Space Innovation Camp, aged five to thirteen, and their guardians gather with CASSA's astronomer, research assistants, interns, and volunteers on the rooftop of IUB's academic building at CASSA."
+heroCaption: "Students of Space Innovation Camp, aged five to thirteen, and their guardians gather with CASSA's astronomer, research assistants, interns, and volunteers on the rooftop of IUB's academic building at CASSA."
 featured: false
 author: "Farhana Ferdous"
 lang: "en"
 ---
 
-At noon on August 8, CASSA was bustling with the particular chatter of children who have just been told they are about to look through a telescope. They came from Space Innovation Camp, ranging in age from seven to thirteen, and for most of them this was a first visit to a working astronomy center. As the children settled, Dr. Syed Ashraf Uddin stepped forward to welcome them. He kept his introduction simple, just enough to set the stage, before letting the day itself do the talking. By the time they left, they had looked at the sky in three very different ways: as a matter of scale, as an invisible signal, and as a point of light bent through glass.
+At noon on August 8, CASSA was bustling with the particular chatter of children who have just been told they are about to look through a telescope. They came from Space Innovation Camp, ranging in age from five to thirteen, and for most of them this was a first visit to a working astronomy center. As the children settled, Dr. Syed Ashraf Uddin stepped forward to welcome them. He kept his introduction simple, just enough to set the stage, before letting the day itself do the talking. By the time they left, they had looked at the sky in three very different ways: as a matter of scale, as an invisible signal, and as a point of light bent through glass.
 
 The day opened indoors, where CASSA intern Farhana Ferdous led *Cosmic Scale: How Big Is the Universe?* Before showing anything, she began with a memory: the first time she truly understood the size of the universe was while staring at a picture of the solar system back in grade six. Then she asked the room a simple question — how big do you think the universe actually is? — and let the guesses run for a while before turning to the Scale of the Universe website to show them. Starting from a single person, then a house, the view pulled back through planets, then stars, then galaxies, each step dwarfing the one before it. It's a simple trick, zooming out, but it rarely fails: the questions came fast and mostly unprompted, and the room stayed loud in the way rooms get loud when nobody in it is bored.
 
