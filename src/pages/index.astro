@@ -9,6 +9,7 @@ import { withBase } from "../data/site-nav";
 import { getCollection } from "astro:content";
 import { isBanglaSeries } from "../data/bangla-series.ts";
 import { recentPublications } from "../data/recent-publications.ts";
+import { TDMMA_APPLY_CLOSES } from "../data/tdmma.ts";
 
 // The 7 most recent CASSA papers (same local ADS snapshot as /research/publications).
 // Each gets a plain one-sentence credit: "<lead> et al., CASSA author: <name>".
@@ -54,11 +55,16 @@ const fallbackSlides: Slide[] = [
 
 const monthYear = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", month: "long", year: "numeric" }).format(d);
+const dayMonthYear = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", day: "numeric", month: "long", year: "numeric" }).format(d);
 
-// The hero carousel is TDMMA plus the two most recent news stories (user,
-// 2026-08-14). It no longer merges opportunity circulars or flagged events —
-// those went stale on the front page as soon as a circular closed or an event
-// passed. `featured` stays in the schemas but no longer drives the hero.
+// ── Hero = the most recent OPEN call + the latest news, three stories total ──
+// (user, 2026-08-14). The slider itself enforces the shape: it shows the first
+// still-open `kind: "call"` slide, fills the rest with news, and caps at three.
+// Every call slide carries its deadline as `hideAfter`, so a call that closes
+// drops out client-side the moment the deadline passes — no rebuild needed —
+// and the third news story takes its place; a rebuild then bakes it out here
+// too. A new news entry pushes the oldest one off at the next build, as always.
 // Bangla series articles are outreach writing, not feature stories, so they are
 // excluded here as they are from /news.
 type DatedSlide = Slide & { date: Date };
@@ -75,24 +81,56 @@ const newsSlides: Slide[] = (
     href: withBase(`/news/${p.id}`),
   }))
   .sort((a, b) => +b.date - +a.date)
-  .slice(0, 2)
+  .slice(0, 3)
   .map(({ theme, eyebrow, title, excerpt, href }) => ({ theme, eyebrow, title, excerpt, href }));
 
-// TDMMA 2026 — a bespoke page, not a collection entry, so it can't carry a
-// `featured` flag; pinned here by hand as the lead slide while applications are
-// open (through 18 Aug 2026 — keep in step with APPLY_CLOSES on the TDMMA page
-// and the Deadline field on the Inside form). Remove after the workshop.
+// Open vacancy calls from the opportunities collection, newest circular first.
+// Rolling calls (no deadline) are excluded — with nothing to expire they would
+// pin the hero forever.
+const now = new Date();
+const CALL_EYEBROW = { job: "Vacancy", internship: "Internship", volunteer: "Volunteer call" } as const;
+const vacancySlides: Slide[] = (
+  await getCollection("opportunities", ({ data }) =>
+    data.status !== "draft" && data.lang !== "bn" && !data.outcome &&
+    data.deadline !== undefined && data.deadline > now)
+)
+  .sort((a, b) => +b.data.date - +a.data.date)
+  .map((o): Slide => ({
+    kind: "call",
+    theme: o.data.theme ?? "lensing",
+    eyebrow: `${CALL_EYEBROW[o.data.kind]} · apply by ${dayMonthYear(o.data.deadline!)}`,
+    title: o.data.title,
+    excerpt: o.data.summary ?? "",
+    href: withBase(`/opportunities/${o.id}`),
+    cta: "Read the circular & apply",
+    hideAfter: o.data.deadline!.toISOString(),
+  }));
+
+// TDMMA 2026 — a bespoke page, not a collection entry, so it can't join the
+// opportunities query above; pinned by hand as the leading call while its
+// applications are open. Its deadline is the shared TDMMA_APPLY_CLOSES
+// (src/data/tdmma.ts — the same instant as the Inside form's Deadline field),
+// so it expires from the hero exactly when the form shuts. Remove after the
+// workshop.
 const tdmmaSlide: Slide = {
+  kind: "call",
   theme: "merger",
   eyebrow: "Workshop · 7–11 September 2026",
   title: "Time-Domain & Multi-Messenger Astronomy",
   excerpt:
-    "Five days on the astronomy of a changing sky — lectures and hands-on tutorials at IUB, with visiting lecturer Andrew L. Miller. Applications close 18 August 2026.",
+    `Five days on the astronomy of a changing sky — lectures and hands-on tutorials at IUB, with visiting lecturer Andrew L. Miller. Applications close ${dayMonthYear(new Date(TDMMA_APPLY_CLOSES))}.`,
   href: withBase("/tdmma-2026"),
   cta: "Explore & apply",
+  hideAfter: TDMMA_APPLY_CLOSES,
 };
 
-const slides: Slide[] = [tdmmaSlide, ...(newsSlides.length > 0 ? newsSlides : fallbackSlides)];
+// Calls the build already knows are closed are dropped here; the ones passed on
+// still carry hideAfter so the client re-checks between builds.
+const callSlides: Slide[] = [tdmmaSlide, ...vacancySlides].filter(
+  (s) => new Date(s.hideAfter!) > now,
+);
+
+const slides: Slide[] = [...callSlides, ...(newsSlides.length > 0 ? newsSlides : fallbackSlides)];
 
 // ── Latest strip: 3 events (upcoming first, backfilled with recent) + latest 3 news ──
 const nowD = new Date();

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SkyCanvas, { type SkyTheme } from "./SkyCanvas.tsx";
+import { bstInstant } from "./Countdown.tsx";
 
 export type Slide = {
   theme: SkyTheme;
@@ -9,15 +10,53 @@ export type Slide = {
   href: string;
   /** CTA label — defaults to the news-story wording */
   cta?: string;
+  /** An open call (vacancy circular / workshop application) vs a news story.
+      At most ONE call is shown, ahead of the news — the first still-open one. */
+  kind?: "call" | "news";
+  /** Deadline instant (BST rules, see Countdown.bstInstant) after which the
+      slide drops out client-side — a closed call leaves the hero even if the
+      site hasn't been rebuilt since. Omit for slides that never expire. */
+  hideAfter?: string;
 };
 
 const DURATION = 7000; // ms each story holds — slow succession
+const MAX_SLIDES = 3; // one open call + news to fill, three stories total
 
 export default function FeatureSlider({ slides }: { slides: Slide[] }) {
-  const n = slides.length;
+  // null during SSR/static build AND the first client paint, so the server
+  // markup and hydration are identical; the real clock applies right after
+  // mount, and again at each hideAfter instant while the tab stays open.
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
+  useEffect(() => {
+    if (now === null) return;
+    const next = Math.min(
+      ...slides.map((s) => (s.hideAfter ? bstInstant(s.hideAfter) : Infinity)).filter((t) => t > now),
+    );
+    if (!Number.isFinite(next)) return;
+    // Clamp: setTimeout overflows past ~24.8 days; a far deadline just re-arms.
+    const id = window.setTimeout(() => setNow(Date.now()), Math.min(next - now + 1000, 2 ** 31 - 1));
+    return () => window.clearTimeout(id);
+  }, [now, slides]);
+
+  const visible = useMemo(() => {
+    const live = now === null ? slides : slides.filter((s) => !s.hideAfter || bstInstant(s.hideAfter) > now);
+    const call = live.find((s) => s.kind === "call");
+    const rest = live.filter((s) => s.kind !== "call");
+    return (call ? [call, ...rest] : rest).slice(0, MAX_SLIDES);
+  }, [slides, now]);
+
+  const n = visible.length;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduce, setReduce] = useState(false);
+
+  // If an expired slide just dropped out from under the pointer, restart.
+  useEffect(() => {
+    if (index >= n && n > 0) setIndex(0);
+  }, [n, index]);
 
   useEffect(() => {
     const mq = matchMedia("(prefers-reduced-motion: reduce)");
@@ -61,9 +100,9 @@ export default function FeatureSlider({ slides }: { slides: Slide[] }) {
         </div>
       </div>
 
-      {slides.map((s, i) => (
+      {visible.map((s, i) => (
         <article
-          key={i}
+          key={s.href}
           className={`fslide${i === index ? " is-active" : ""}`}
           aria-roledescription="slide"
           aria-label={`${i + 1} of ${n}: ${s.title}`}
@@ -90,9 +129,9 @@ export default function FeatureSlider({ slides }: { slides: Slide[] }) {
           </button>
 
           <div className="fslider__dots" role="tablist" aria-label="Choose a story">
-            {slides.map((s, i) => (
+            {visible.map((s, i) => (
               <button
-                key={i}
+                key={s.href}
                 className="fdot"
                 type="button"
                 role="tab"

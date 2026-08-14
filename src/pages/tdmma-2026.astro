@@ -5,6 +5,7 @@ import Reveal from "../components/immersive/Reveal.astro";
 import Prose from "../components/immersive/Prose.astro";
 import Countdown from "../components/Countdown.tsx";
 import { withBase } from "../data/site-nav.ts";
+import { TDMMA_APPLY_CLOSES } from "../data/tdmma.ts";
 
 const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3rem 0 0;color:var(--ink)";
 
@@ -245,10 +246,11 @@ const DEADLINES = [
 ];
 
 /* The same instant the inside-portal form closes on (end of 18 August, Dhaka) —
-   this mirrors the Deadline field in the form's Settings (inside.cassa.bd →
-   Forms → TDMMA Workshop 2026), which is what actually gates submission, so the
-   page counter and the form counter never disagree. */
-const APPLY_CLOSES = "2026-08-18T23:59:00+06:00";
+   now shared from src/data/tdmma.ts so this page's counter and the home-hero
+   slide expire together. It mirrors the Deadline field in the form's Settings
+   (inside.cassa.bd → Forms → TDMMA Workshop 2026), which is what actually gates
+   submission, so the page counter and the form counter never disagree. */
+const APPLY_CLOSES = TDMMA_APPLY_CLOSES;
 const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / hands-on", disc: "Discussion · panel", cer: "Ceremony · talks" };
 
 /* ── People: invited speakers (full-width, prominent) + the two committees ──
