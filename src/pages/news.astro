@@ -12,8 +12,12 @@ import { isBanglaSeries } from "../data/bangla-series.ts";
 // main news feed. (Their /news/<slug> detail pages still exist; that section
 // links to them.) Durbin posts were excluded here too until Durbin moved to
 // durbin.cc on 2026-08-11; they are no longer in this repo at all.
+// `lang !== "bn"` is the belt to isBanglaSeries's braces: a Bangla series that
+// nobody remembered to register in bangla-series.ts used to leak its articles
+// into this English feed (ক্লাসিকেল কথা did exactly that until 2026-08-14).
+// Bangla writing belongs on /outreach/bangla, registered or not.
 const all = (await getCollection("news", ({ data }) =>
-  data.status !== "draft" && !isBanglaSeries(data.category)))
+  data.status !== "draft" && data.lang !== "bn" && !isBanglaSeries(data.category)))
   .sort((a, b) => +b.data.date - +a.data.date);
 
 const TZ = "Asia/Dhaka";

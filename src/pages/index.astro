@@ -55,58 +55,44 @@ const fallbackSlides: Slide[] = [
 const monthYear = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", month: "long", year: "numeric" }).format(d);
 
-// Featured items feeding the hero carousel come from BOTH news and opportunities
-// (a flagged vacancy can headline the home page). Merge, newest-first, cap at 3.
-type FeaturedSlide = Slide & { date: Date };
-const featuredNews: FeaturedSlide[] = (
-  await getCollection("news", ({ data }) => data.status !== "draft" && data.featured === true)
-).map((p) => ({
-  date: p.data.date,
-  theme: p.data.theme ?? "cosmic",
-  eyebrow: `${p.data.category ?? "News"} · ${monthYear(p.data.date)}`,
-  title: p.data.title,
-  excerpt: p.data.summary ?? "",
-  href: withBase(`/news/${p.id}`),
-}));
-const featuredOpps: FeaturedSlide[] = (
-  await getCollection("opportunities", ({ data }) => data.status !== "draft" && data.featured === true)
-).map((o) => ({
-  date: o.data.date,
-  theme: o.data.theme ?? "cosmic",
-  eyebrow: `Opportunity · ${monthYear(o.data.date)}`,
-  title: o.data.title,
-  excerpt: o.data.summary ?? "",
-  href: withBase(`/opportunities/${o.id}`),
-}));
-// A flagged event (e.g. a marquee colloquium) can also headline the hero. Keyed
-// on the event's start date so an upcoming event sorts to the front.
-const featuredEventSlides: FeaturedSlide[] = (
-  await getCollection("events", ({ data }) => data.status !== "draft" && data.featured === true)
-).map((e) => ({
-  date: e.data.start,
-  theme: e.data.theme ?? "cosmic",
-  eyebrow: `${e.data.category ?? "Event"} · ${monthYear(e.data.start)}`,
-  title: e.data.title,
-  excerpt: e.data.summary ?? "",
-  href: withBase(`/events/${e.id}`),
-}));
-const featuredSlides: Slide[] = [...featuredNews, ...featuredOpps, ...featuredEventSlides]
+// The hero carousel is TDMMA plus the two most recent news stories (user,
+// 2026-08-14). It no longer merges opportunity circulars or flagged events —
+// those went stale on the front page as soon as a circular closed or an event
+// passed. `featured` stays in the schemas but no longer drives the hero.
+// Bangla series articles are outreach writing, not feature stories, so they are
+// excluded here as they are from /news.
+type DatedSlide = Slide & { date: Date };
+const newsSlides: Slide[] = (
+  await getCollection("news", ({ data }) =>
+    data.status !== "draft" && data.lang !== "bn" && !isBanglaSeries(data.category))
+)
+  .map((p): DatedSlide => ({
+    date: p.data.date,
+    theme: p.data.theme ?? "cosmic",
+    eyebrow: `${p.data.category ?? "News"} · ${monthYear(p.data.date)}`,
+    title: p.data.title,
+    excerpt: p.data.summary ?? "",
+    href: withBase(`/news/${p.id}`),
+  }))
   .sort((a, b) => +b.date - +a.date)
-  .slice(0, 3)
+  .slice(0, 2)
   .map(({ theme, eyebrow, title, excerpt, href }) => ({ theme, eyebrow, title, excerpt, href }));
+
 // TDMMA 2026 — a bespoke page, not a collection entry, so it can't carry a
-// `featured` flag; pinned here by hand as the lead slide while applications
-// are open (through 7 Aug 2026). Remove after the workshop.
+// `featured` flag; pinned here by hand as the lead slide while applications are
+// open (through 18 Aug 2026 — keep in step with APPLY_CLOSES on the TDMMA page
+// and the Deadline field on the Inside form). Remove after the workshop.
 const tdmmaSlide: Slide = {
   theme: "merger",
   eyebrow: "Workshop · 7–11 September 2026",
   title: "Time-Domain & Multi-Messenger Astronomy",
   excerpt:
-    "Five days on the astronomy of a changing sky — lectures and hands-on tutorials at IUB, with visiting lecturer Andrew L. Miller. Applications close 14 August 2026.",
+    "Five days on the astronomy of a changing sky — lectures and hands-on tutorials at IUB, with visiting lecturer Andrew L. Miller. Applications close 18 August 2026.",
   href: withBase("/tdmma-2026"),
   cta: "Explore & apply",
 };
-const slides: Slide[] = [tdmmaSlide, ...(featuredSlides.length > 0 ? featuredSlides : fallbackSlides)];
+
+const slides: Slide[] = [tdmmaSlide, ...(newsSlides.length > 0 ? newsSlides : fallbackSlides)];
 
 // ── Latest strip: 3 events (upcoming first, backfilled with recent) + latest 3 news ──
 const nowD = new Date();
