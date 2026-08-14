@@ -15,6 +15,9 @@ export type NavChild = { href: string; label: string; live?: boolean };
 export type NavGroup = { label: string; href?: string; children: NavChild[] };
 export type NavItem = { href: string; label: string; live: boolean; children?: NavChild[]; groups?: NavGroup[] };
 
+/* A top-level label is never a link — it only opens its dropdown. Every page in
+   a section, INCLUDING the section landing page, must therefore be listed as a
+   child (or a linked group head) so it stays reachable from the menu. */
 export const NAV: NavItem[] = [
   { href: "/", label: "Home", live: true },
   {
@@ -22,6 +25,7 @@ export const NAV: NavItem[] = [
     label: "About",
     live: true,
     children: [
+      { href: "/about", label: "About CASSA" },
       { href: "/constitution", label: "Constitution" },
       { href: "/coc", label: "Code of Conduct" },
       { href: "/sgp", label: "Safeguarding Policy" },
@@ -32,14 +36,15 @@ export const NAV: NavItem[] = [
     label: "People",
     live: true,
     children: [
+      { href: "/people", label: "Directory" },
       { href: "/people/director", label: "Office of the Director" },
       { href: "/people/core-members", label: "Core Members" },
       { href: "/people/associate-members", label: "Associate Members" },
       { href: "/people/affiliates", label: "Affiliates" },
       { href: "/people/research-assistants", label: "Research Assistants" },
-      { href: "/people/project-managers", label: "Project Managers" },
-      { href: "/people/students-on-duty", label: "Students on Duty" },
+      { href: "/people/undergraduate-ras", label: "Undergraduate RAs" },
       { href: "/people/research-interns", label: "Research Interns" },
+      { href: "/people/alumni", label: "Alumni" },
     ],
   },
   {
@@ -70,6 +75,8 @@ export const NAV: NavItem[] = [
     href: "/teaching",
     label: "Teaching",
     live: true,
+    // Menu only — the /teaching landing page was removed on 2026-08-14. Two
+    // columns, Courses and Workshops, are the whole section.
     groups: [
       {
         label: "Courses",
@@ -94,22 +101,21 @@ export const NAV: NavItem[] = [
     href: "/outreach",
     label: "Outreach",
     live: true,
-    groups: [
-      // Durbin moved to its own site (durbin.cc) on 2026-08-11; its pages, the
-      // astrophotography collection and its updates feed are no longer built
-      // here. The Outreach page still describes the programme in prose.
-      {
-        label: "BDOAA",
-        href: "/bdoaa",
-        children: [
-          { href: "/bdoaa#how", label: "How it works" },
-          { href: "/bdoaa#results", label: "On the world stage" },
-          { href: "https://bdoaa.org/", label: "bdoaa.org ↗" },
-        ],
-      },
+    // A plain dropdown, not a megamenu: one entry per outreach programme. Two
+    // of the four are their own sites — Durbin left this repo on 2026-08-11
+    // (durbin.cc) and SPARC has always been separate — so the menu is the only
+    // place the four sit together. /outreach still describes them all in prose.
+    children: [
+      { href: "/outreach", label: "CASSA Outreach" },
+      { href: "https://sparc.cassa.bd/", label: "SPARC ↗" },
+      { href: "https://durbin.cc/", label: "Durbin ↗" },
+      { href: "/bdoaa", label: "BDOAA" },
     ],
   },
   {
+    // Newsroom is a MENU ONLY — there is no /newsroom page (removed
+    // 2026-08-14); News and Events are the whole section. `href` here is just
+    // the section's identity for the active-state check.
     href: "/newsroom",
     label: "Newsroom",
     live: true,
@@ -119,13 +125,14 @@ export const NAV: NavItem[] = [
     ],
   },
   {
+    // Menu only — the "Join CASSA" landing page was removed on 2026-08-14, and
+    // Volunteerships went with Durbin to durbin.cc. These three are the section.
     href: "/opportunities",
     label: "Opportunities",
     live: true,
     children: [
       { href: "/opportunities/vacancies", label: "Vacancies" },
       { href: "/opportunities/internships", label: "Internships" },
-      { href: "/opportunities/volunteerships", label: "Volunteerships" },
       { href: "/opportunities/tra", label: "Tinsley RAship" },
     ],
   },
