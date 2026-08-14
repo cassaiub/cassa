@@ -86,7 +86,7 @@ const last = entry.data.name.split(/\s+/).at(-1);
 <BaseLayout
   title={`Teaching — ${entry.data.name}`}
   description={`Every course taught by ${entry.data.name} at IUB since ${yearMin}, with enrolment.`}
-  current="/people"
+  current={`/people/${entry.id}`}
 >
   <AnimatedHero
     theme="galaxy"

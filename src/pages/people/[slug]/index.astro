@@ -56,7 +56,7 @@ const personLd = personSchema({
 <BaseLayout
   title={`${entry.data.name} — CASSA People`}
   description={`${entry.data.name} — ${profile.headline}`}
-  current="/people"
+  current={`/people/${entry.id}`}
   ogType="profile"
   ogImage={ogImage}
   ogImageAlt={entry.data.name}
