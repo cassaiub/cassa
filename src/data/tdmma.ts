@@ -1,11 +1,19 @@
-// The instant TDMMA 2026 applications close — end of 18 August, Dhaka (BST).
-// This must equal CLOSES_AT in ../inside/scripts/create-tdmma-2026-form.ts,
-// the GOVERNING value: that script re-asserts the Inside form's deadline on
-// every inside deploy, so an extension made only in the form builder's
-// Settings is silently reverted (that is what ate the first 18-Aug edit,
-// 2026-08-14). To extend: change the script constant AND this one, deploy
-// inside, deploy cassa. Consumed by the TDMMA page's countdown and by the
-// home hero, which drops the TDMMA slide the moment this instant passes
-// (client-side, no rebuild needed).
+import { insideFormMetaUrl } from "./inside-forms.ts";
+
+// The TDMMA 2026 application form on Inside. The form builder's Settings there
+// (inside.cassa.bd → Forms → TDMMA Workshop 2026 — Application) is the
+// GOVERNING value for the deadline: editing it updates the public form
+// instantly, and this site follows on its own — the page countdown and the
+// home-hero slide fetch the live deadline from the form's /meta endpoint on
+// every page load (since 2026-08-14; before that, deploys of inside re-asserted
+// a constant from scripts/create-tdmma-2026-form.ts onto the form, which is
+// what kept reverting extensions).
+export const TDMMA_FORM_URL = "https://inside.cassa.bd/forms/event/2026-07-12-b";
+export const TDMMA_FORM_META_URL = insideFormMetaUrl(TDMMA_FORM_URL)!;
+
+// STATIC FALLBACK for that live value — end of 18 August, Dhaka (BST). Baked
+// into the page at build time and used whenever the /meta fetch fails (Inside
+// down, offline, no JS). Keep it in step with the form's Settings when the
+// deadline moves so the fallback never lies for long.
 // Extension history lives in src/pages/tdmma-2026.astro.
 export const TDMMA_APPLY_CLOSES = "2026-08-18T23:59:00+06:00";

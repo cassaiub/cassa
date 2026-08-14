@@ -17,6 +17,11 @@ export type Slide = {
       slide drops out client-side — a closed call leaves the hero even if the
       site hasn't been rebuilt since. Omit for slides that never expire. */
   hideAfter?: string;
+  /** Inside form /meta endpoint (src/data/inside-forms.ts) — when given, the
+      form's CURRENT deadline/openness overrides hideAfter after mount, so a
+      deadline moved in the Inside form builder reaches the hero on the next
+      page load with no rebuild. Fetch failure keeps the baked hideAfter. */
+  liveDeadlineUrl?: string;
 };
 
 const DURATION = 7000; // ms each story holds — slow succession
@@ -30,23 +35,59 @@ export default function FeatureSlider({ slides }: { slides: Slide[] }) {
   useEffect(() => {
     setNow(Date.now());
   }, []);
+
+  // Live deadline overrides: url → the form's current closesAt, or CLOSED for
+  // a form shut by hand on Inside. Fetched once per distinct endpoint.
+  const CLOSED = "closed";
+  const [liveDeadlines, setLiveDeadlines] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const urls = Array.from(new Set(slides.map((s) => s.liveDeadlineUrl).filter((u): u is string => !!u)));
+    if (urls.length === 0) return;
+    const ctl = new AbortController();
+    for (const u of urls) {
+      fetch(u, { signal: ctl.signal })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((m) => {
+          if (!m) return;
+          const v =
+            m.open === false
+              ? CLOSED
+              : typeof m.closesAt === "string" && Number.isFinite(bstInstant(m.closesAt))
+                ? m.closesAt
+                : null;
+          if (v) setLiveDeadlines((prev) => ({ ...prev, [u]: v }));
+        })
+        .catch(() => {});
+    }
+    return () => ctl.abort();
+  }, [slides]);
+
+  // When a slide stops being shown: its live deadline if known, else the baked
+  // hideAfter, else never.
+  const expiry = (s: Slide): number => {
+    const live = s.liveDeadlineUrl ? liveDeadlines[s.liveDeadlineUrl] : undefined;
+    if (live === CLOSED) return -Infinity;
+    const v = live ?? s.hideAfter;
+    return v ? bstInstant(v) : Infinity;
+  };
+
   useEffect(() => {
     if (now === null) return;
-    const next = Math.min(
-      ...slides.map((s) => (s.hideAfter ? bstInstant(s.hideAfter) : Infinity)).filter((t) => t > now),
-    );
+    const next = Math.min(...slides.map(expiry).filter((t) => Number.isFinite(t) && t > now));
     if (!Number.isFinite(next)) return;
     // Clamp: setTimeout overflows past ~24.8 days; a far deadline just re-arms.
     const id = window.setTimeout(() => setNow(Date.now()), Math.min(next - now + 1000, 2 ** 31 - 1));
     return () => window.clearTimeout(id);
-  }, [now, slides]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [now, slides, liveDeadlines]);
 
   const visible = useMemo(() => {
-    const live = now === null ? slides : slides.filter((s) => !s.hideAfter || bstInstant(s.hideAfter) > now);
+    const live = now === null ? slides : slides.filter((s) => expiry(s) > now);
     const call = live.find((s) => s.kind === "call");
     const rest = live.filter((s) => s.kind !== "call");
     return (call ? [call, ...rest] : rest).slice(0, MAX_SLIDES);
-  }, [slides, now]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slides, now, liveDeadlines]);
 
   const n = visible.length;
   const [index, setIndex] = useState(0);

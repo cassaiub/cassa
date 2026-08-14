@@ -6,6 +6,7 @@ import { getCollection, render } from "astro:content";
 import { withBase } from "../../data/site-nav.ts";
 import { categoryForKind, pathForKind } from "../../data/opportunities.ts";
 import Countdown from "../../components/Countdown.tsx";
+import { insideFormMetaUrl } from "../../data/inside-forms.ts";
 
 export async function getStaticPaths() {
   const opps = await getCollection("opportunities", ({ data }) => data.status !== "draft");
@@ -80,7 +81,7 @@ const categoryPath = pathForKind(d.kind);
           </div>
         )}
         {isOpen && d.deadline && (
-          <Countdown client:idle closesAt={d.deadline.toISOString()} />
+          <Countdown client:idle closesAt={d.deadline.toISOString()} liveUrl={insideFormMetaUrl(d.applyUrl)} />
         )}
         {isOpen && d.applyUrl && (
           <a class="od__apply" href={d.applyUrl} target="_blank" rel="noopener">Apply now →</a>

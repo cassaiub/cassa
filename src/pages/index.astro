@@ -9,7 +9,8 @@ import { withBase } from "../data/site-nav";
 import { getCollection } from "astro:content";
 import { isBanglaSeries } from "../data/bangla-series.ts";
 import { recentPublications } from "../data/recent-publications.ts";
-import { TDMMA_APPLY_CLOSES } from "../data/tdmma.ts";
+import { TDMMA_APPLY_CLOSES, TDMMA_FORM_META_URL } from "../data/tdmma.ts";
+import { insideFormMetaUrl } from "../data/inside-forms.ts";
 
 // The 7 most recent CASSA papers (same local ADS snapshot as /research/publications).
 // Each gets a plain one-sentence credit: "<lead> et al., CASSA author: <name>".
@@ -104,14 +105,17 @@ const vacancySlides: Slide[] = (
     href: withBase(`/opportunities/${o.id}`),
     cta: "Read the circular & apply",
     hideAfter: o.data.deadline!.toISOString(),
+    // Circulars that take applications through an Inside form follow that
+    // form's live deadline (builder Settings), not just the baked frontmatter.
+    liveDeadlineUrl: insideFormMetaUrl(o.data.applyUrl),
   }));
 
 // TDMMA 2026 — a bespoke page, not a collection entry, so it can't join the
 // opportunities query above; pinned by hand as the leading call while its
-// applications are open. Its deadline is the shared TDMMA_APPLY_CLOSES
-// (src/data/tdmma.ts — the same instant as the Inside form's Deadline field),
-// so it expires from the hero exactly when the form shuts. Remove after the
-// workshop.
+// applications are open. The slide follows the Inside form's LIVE deadline via
+// its /meta endpoint, with the baked TDMMA_APPLY_CLOSES (src/data/tdmma.ts) as
+// fallback — so it expires from the hero exactly when the form shuts. Remove
+// after the workshop.
 const tdmmaSlide: Slide = {
   kind: "call",
   theme: "merger",
@@ -122,6 +126,7 @@ const tdmmaSlide: Slide = {
   href: withBase("/tdmma-2026"),
   cta: "Explore & apply",
   hideAfter: TDMMA_APPLY_CLOSES,
+  liveDeadlineUrl: TDMMA_FORM_META_URL,
 };
 
 // Calls the build already knows are closed are dropped here; the ones passed on

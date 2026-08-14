@@ -21,8 +21,27 @@ export function bstInstant(value: string): number {
   return new Date(s).getTime();
 }
 
-export default function Countdown({ closesAt }: { closesAt: string }) {
-  const target = bstInstant(closesAt);
+export default function Countdown({ closesAt, liveUrl }: { closesAt: string; liveUrl?: string }) {
+  // closesAt is the value baked in at build time — the fallback. When liveUrl
+  // is given (the Inside form's /meta endpoint, see src/data/inside-forms.ts),
+  // the form's CURRENT deadline replaces it right after mount, so a deadline
+  // moved in the form builder's Settings reaches this counter on the next page
+  // load with no rebuild. Any fetch failure just keeps the baked value.
+  const [liveClosesAt, setLiveClosesAt] = useState<string | null>(null);
+  useEffect(() => {
+    if (!liveUrl) return;
+    const ctl = new AbortController();
+    fetch(liveUrl, { signal: ctl.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((m) => {
+        if (m && typeof m.closesAt === "string" && Number.isFinite(bstInstant(m.closesAt)))
+          setLiveClosesAt(m.closesAt);
+      })
+      .catch(() => {});
+    return () => ctl.abort();
+  }, [liveUrl]);
+
+  const target = bstInstant(liveClosesAt ?? closesAt);
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {

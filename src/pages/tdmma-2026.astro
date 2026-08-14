@@ -5,7 +5,7 @@ import Reveal from "../components/immersive/Reveal.astro";
 import Prose from "../components/immersive/Prose.astro";
 import Countdown from "../components/Countdown.tsx";
 import { withBase } from "../data/site-nav.ts";
-import { TDMMA_APPLY_CLOSES } from "../data/tdmma.ts";
+import { TDMMA_APPLY_CLOSES, TDMMA_FORM_URL, TDMMA_FORM_META_URL } from "../data/tdmma.ts";
 
 const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3rem 0 0;color:var(--ink)";
 
@@ -245,12 +245,11 @@ const DEADLINES = [
   ["Workshop begins", "7 September 2026"],
 ];
 
-/* The same instant the inside-portal form closes on (end of 18 August, Dhaka) —
+/* The instant the inside-portal form closes on (end of 18 August, Dhaka) —
    shared from src/data/tdmma.ts so this page's counter and the home-hero slide
-   expire together. The governing value is CLOSES_AT in
-   ../inside/scripts/create-tdmma-2026-form.ts (NOT the form builder's Settings,
-   which every inside deploy overwrites from that script) — see the note in
-   src/data/tdmma.ts. */
+   expire together. The GOVERNING value is the form builder's Settings on
+   Inside: the countdown fetches it live from the form's /meta endpoint and
+   uses this baked constant only as fallback — see src/data/tdmma.ts. */
 const APPLY_CLOSES = TDMMA_APPLY_CLOSES;
 const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / hands-on", disc: "Discussion · panel", cer: "Ceremony · talks" };
 
@@ -670,7 +669,7 @@ const SCIENCES = [
       </Reveal>
       <Reveal delay={115}>
         <div class="cta__count">
-          <Countdown client:idle closesAt={APPLY_CLOSES} />
+          <Countdown client:idle closesAt={APPLY_CLOSES} liveUrl={TDMMA_FORM_META_URL} />
         </div>
       </Reveal>
       <Reveal delay={130}>
@@ -690,7 +689,7 @@ const SCIENCES = [
       </Reveal>
       <Reveal delay={190}>
         <p class="cta__row">
-          <a class="btn" href="https://inside.cassa.bd/forms/event/2026-07-12-b">Apply now</a>
+          <a class="btn" href={TDMMA_FORM_URL}>Apply now</a>
           <a class="cta__mail" href="mailto:cassa@iub.edu.bd?subject=TDMMA%20Workshop%202026">Questions? cassa@iub.edu.bd</a>
         </p>
       </Reveal>
