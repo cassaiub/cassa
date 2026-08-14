@@ -222,6 +222,10 @@ const opportunities = defineCollection({
     hero: z.string().optional(),
     summary: z.string().optional(),
     outcome: z.enum(["filled", "closed"]).optional(), // explicit close before deadline
+    // People-collection slugs referenced by this circular (e.g. supervisors).
+    // The detail page renders a PersonDrawer for them, so any element in the
+    // body with data-person="<slug>" opens that person's card on click.
+    people: z.array(z.string()).optional(),
     // Eligible for the home hero carousel (mirrors news.featured). A flagged
     // vacancy is merged with featured news, newest-first, capped at 3 slides.
     featured: z.boolean().default(false),

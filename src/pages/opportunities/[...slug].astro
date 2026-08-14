@@ -7,6 +7,8 @@ import { withBase } from "../../data/site-nav.ts";
 import { categoryForKind, pathForKind } from "../../data/opportunities.ts";
 import Countdown from "../../components/Countdown.tsx";
 import { insideFormMetaUrl } from "../../data/inside-forms.ts";
+import PersonDrawer from "../../components/PersonDrawer.astro";
+import { personalSite } from "../../data/people/personal-site.ts";
 
 export async function getStaticPaths() {
   const opps = await getCollection("opportunities", ({ data }) => data.status !== "draft");
@@ -16,6 +18,21 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
+
+// People referenced by the circular (frontmatter `people: [slug, …]`): their
+// cards load into a PersonDrawer, so any `data-person="<slug>"` element in the
+// body opens the matching card — same mechanism as /people and /research.
+const personSlugs = new Set(d.people ?? []);
+const drawerPeople = personSlugs.size
+  ? (await getCollection("people", ({ data }) => data.status !== "draft"))
+      .filter((p) => personSlugs.has(p.id))
+      .map((p) => ({
+        slug: p.id, name: p.data.name, title: p.data.title, tier: p.data.tier,
+        interests: p.data.interests, institution: p.data.institution, education: p.data.education,
+        research: p.data.research, email: p.data.email, photo: p.data.photo, links: p.data.links,
+        website: personalSite(p.id, p.data),
+      }))
+  : [];
 
 const TZ = "Asia/Dhaka";
 const dateFull = (date: Date) =>
@@ -107,6 +124,8 @@ const categoryPath = pathForKind(d.kind);
       </div>
     </div>
   </section>
+
+  <PersonDrawer people={drawerPeople} />
 </BaseLayout>
 
 <style>
@@ -158,4 +177,41 @@ const categoryPath = pathForKind(d.kind);
     background: color-mix(in srgb, var(--accent) 9%, transparent);
     transform: translateY(-1px);
   }
+
+  /* The circular's h3s are its position/program segments (one per supervisor
+     on multi-position calls) — set them apart as numbered segment headers: an
+     accent index (01 / 02 / 03), a hairline above, and generous air, instead
+     of the default run-on prose heading. */
+  .od__content { counter-reset: seg; }
+  .od__content :global(.prose-cassa h3) {
+    counter-increment: seg;
+    display: flex; align-items: baseline; gap: .85rem;
+    margin-top: 3em; padding-top: 1.6em;
+    border-top: 1px solid var(--line);
+    font-size: 1.3rem; letter-spacing: .005em;
+  }
+  .od__content :global(.prose-cassa h3)::before {
+    content: counter(seg, decimal-leading-zero);
+    flex: none;
+    font-size: .8rem; font-weight: 700; color: var(--accent);
+    letter-spacing: .16em; font-variant-numeric: tabular-nums;
+  }
+  /* The bold project-title line straight after a segment header reads as its
+     subtitle — tuck it in and let the accent number carry the emphasis. */
+  .od__content :global(.prose-cassa h3 + p > strong:only-child) {
+    display: block; margin-top: -.35em;
+    font-size: .95rem; color: var(--ink-soft);
+    letter-spacing: .01em;
+  }
+
+  /* Clickable person names in the circular body (open the PersonDrawer card).
+     Rendered from inline HTML in the markdown: <button data-person="…">. */
+  .od__content :global(button[data-person]) {
+    appearance: none; background: none; border: 0; padding: 0; margin: 0;
+    font: inherit; color: var(--accent); font-weight: 600; cursor: pointer;
+    text-decoration: underline; text-decoration-style: dotted;
+    text-decoration-thickness: 1px; text-underline-offset: .22em;
+    transition: color .18s;
+  }
+  .od__content :global(button[data-person]:hover) { text-decoration-style: solid; }
 </style>

@@ -11,7 +11,9 @@ export type Slide = {
   /** CTA label — defaults to the news-story wording */
   cta?: string;
   /** An open call (vacancy circular / workshop application) vs a news story.
-      At most ONE call is shown, ahead of the news — the first still-open one. */
+      Calls and news compete on recency alone: the page passes the slides
+      newest-first and the first MAX_SLIDES still-open ones show — an expired
+      call drops out and the next story backfills. */
   kind?: "call" | "news";
   /** Deadline instant (BST rules, see Countdown.bstInstant) after which the
       slide drops out client-side — a closed call leaves the hero even if the
@@ -25,7 +27,7 @@ export type Slide = {
 };
 
 const DURATION = 7000; // ms each story holds — slow succession
-const MAX_SLIDES = 3; // one open call + news to fill, three stories total
+const MAX_SLIDES = 3; // the three most recent still-open stories, calls and news alike
 
 export default function FeatureSlider({ slides }: { slides: Slide[] }) {
   // null during SSR/static build AND the first client paint, so the server
@@ -83,9 +85,7 @@ export default function FeatureSlider({ slides }: { slides: Slide[] }) {
 
   const visible = useMemo(() => {
     const live = now === null ? slides : slides.filter((s) => expiry(s) > now);
-    const call = live.find((s) => s.kind === "call");
-    const rest = live.filter((s) => s.kind !== "call");
-    return (call ? [call, ...rest] : rest).slice(0, MAX_SLIDES);
+    return live.slice(0, MAX_SLIDES); // order = the page's (newest first)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slides, now, liveDeadlines]);
 

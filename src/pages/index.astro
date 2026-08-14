@@ -59,17 +59,18 @@ const monthYear = (d: Date) =>
 const dayMonthYear = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", day: "numeric", month: "long", year: "numeric" }).format(d);
 
-// ── Hero = the most recent OPEN call + the latest news, three stories total ──
-// (user, 2026-08-14). The slider itself enforces the shape: it shows the first
-// still-open `kind: "call"` slide, fills the rest with news, and caps at three.
-// Every call slide carries its deadline as `hideAfter`, so a call that closes
-// drops out client-side the moment the deadline passes — no rebuild needed —
-// and the third news story takes its place; a rebuild then bakes it out here
-// too. A new news entry pushes the oldest one off at the next build, as always.
-// Bangla series articles are outreach writing, not feature stories, so they are
-// excluded here as they are from /news.
+// ── Hero = news and open calls MERGED, the three most recent ── (user,
+// 2026-08-14, superseding the same-day one-call-then-news rule). Calls and
+// news compete on their dates alone: everything is sorted newest-first below
+// and the slider shows the first three still-open slides. Every call slide
+// still carries its deadline as `hideAfter` (plus the Inside form's live /meta
+// deadline), so a call that closes drops out client-side the moment the
+// deadline passes — no rebuild needed — and the next story below the fold
+// backfills (a fourth news slide is passed for exactly that); a rebuild then
+// bakes it out here too. Bangla series articles are outreach writing, not
+// feature stories, so they are excluded here as they are from /news.
 type DatedSlide = Slide & { date: Date };
-const newsSlides: Slide[] = (
+const newsSlides: DatedSlide[] = (
   await getCollection("news", ({ data }) =>
     data.status !== "draft" && data.lang !== "bn" && !isBanglaSeries(data.category))
 )
@@ -82,21 +83,21 @@ const newsSlides: Slide[] = (
     href: withBase(`/news/${p.id}`),
   }))
   .sort((a, b) => +b.date - +a.date)
-  .slice(0, 3)
-  .map(({ theme, eyebrow, title, excerpt, href }) => ({ theme, eyebrow, title, excerpt, href }));
+  .slice(0, 4);
 
 // Open vacancy calls from the opportunities collection, newest circular first.
 // Rolling calls (no deadline) are excluded — with nothing to expire they would
 // pin the hero forever.
 const now = new Date();
 const CALL_EYEBROW = { job: "Vacancy", internship: "Internship", volunteer: "Volunteer call" } as const;
-const vacancySlides: Slide[] = (
+const vacancySlides: DatedSlide[] = (
   await getCollection("opportunities", ({ data }) =>
     data.status !== "draft" && data.lang !== "bn" && !data.outcome &&
     data.deadline !== undefined && data.deadline > now)
 )
   .sort((a, b) => +b.data.date - +a.data.date)
-  .map((o): Slide => ({
+  .map((o): DatedSlide => ({
+    date: o.data.date,
     kind: "call",
     theme: o.data.theme ?? "lensing",
     eyebrow: `${CALL_EYEBROW[o.data.kind]} · apply by ${dayMonthYear(o.data.deadline!)}`,
@@ -116,7 +117,8 @@ const vacancySlides: Slide[] = (
 // its /meta endpoint, with the baked TDMMA_APPLY_CLOSES (src/data/tdmma.ts) as
 // fallback — so it expires from the hero exactly when the form shuts. Remove
 // after the workshop.
-const tdmmaSlide: Slide = {
+const tdmmaSlide: DatedSlide = {
+  date: new Date("2026-07-12T10:00:00+06:00"), // when its call opened (form 2026-07-12-b) — ranks it chronologically
   kind: "call",
   theme: "merger",
   eyebrow: "Workshop · 7–11 September 2026",
@@ -131,11 +133,15 @@ const tdmmaSlide: Slide = {
 
 // Calls the build already knows are closed are dropped here; the ones passed on
 // still carry hideAfter so the client re-checks between builds.
-const callSlides: Slide[] = [tdmmaSlide, ...vacancySlides].filter(
+const callSlides: DatedSlide[] = [tdmmaSlide, ...vacancySlides].filter(
   (s) => new Date(s.hideAfter!) > now,
 );
 
-const slides: Slide[] = [...callSlides, ...(newsSlides.length > 0 ? newsSlides : fallbackSlides)];
+// Newest first across both kinds; the slider shows the first three still open.
+const merged: Slide[] = [...callSlides, ...newsSlides]
+  .sort((a, b) => +b.date - +a.date)
+  .map(({ date: _date, ...s }) => s);
+const slides: Slide[] = merged.length > 0 ? merged : fallbackSlides;
 
 // ── Latest strip: 3 events (upcoming first, backfilled with recent) + latest 3 news ──
 const nowD = new Date();
