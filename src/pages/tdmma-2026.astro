@@ -246,10 +246,11 @@ const DEADLINES = [
 ];
 
 /* The same instant the inside-portal form closes on (end of 18 August, Dhaka) —
-   now shared from src/data/tdmma.ts so this page's counter and the home-hero
-   slide expire together. It mirrors the Deadline field in the form's Settings
-   (inside.cassa.bd → Forms → TDMMA Workshop 2026), which is what actually gates
-   submission, so the page counter and the form counter never disagree. */
+   shared from src/data/tdmma.ts so this page's counter and the home-hero slide
+   expire together. The governing value is CLOSES_AT in
+   ../inside/scripts/create-tdmma-2026-form.ts (NOT the form builder's Settings,
+   which every inside deploy overwrites from that script) — see the note in
+   src/data/tdmma.ts. */
 const APPLY_CLOSES = TDMMA_APPLY_CLOSES;
 const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / hands-on", disc: "Discussion · panel", cer: "Ceremony · talks" };
 
