@@ -19,22 +19,23 @@ type Person = (typeof allPeople)[number];
 
 /* The office/manager roles live in the `institution` role string. */
 const isScienceManager = (p: Person) => p.data.institution?.startsWith("Manager (Science)") ?? false;
-const isProjectManager = (p: Person) => !isScienceManager(p) && (p.data.institution?.includes("Project Manager") ?? false);
 
 /* The "CASSA Role" pill. "Director" is not a public label — the current holder
    of the Office of the Director is listed here by their substantive tier (Core
    Member); the office itself lives only on the Office of the Director page. */
 const roleLabel = (p: Person) => {
   if (isScienceManager(p)) return "Science Manager";
-  if (isProjectManager(p)) return "Project Manager";
   return p.data.tier;
 };
 
-/* Groups mirror the People subpages — same names, same order — except the
-   Science Manager, who gets his own group above the Research Assistants
-   (no "Office of the Director" group here). The trailing Staff group is a
-   safety net for future staff entries that are neither manager role (empty
-   today, so hidden). */
+/* Cohorts and their order mirror the Inside directory's tabs (Core → Associate
+   → Affiliate → Managers → RAs → Undergraduate RAs → Interns), minus the tabs
+   that are internal-only there (OOD, Archive, Guests, System). This table is
+   the ACTIVE roster: everyone whose CASSA engagement has ended is `draft` in
+   the collection and drops out here, and Alumni are excluded entirely (Inside
+   hides the alumni role from every directory surface) — they have their own
+   page, linked below. The trailing Staff group is a safety net for future
+   staff entries that hold no manager role (empty today, so hidden). */
 const grouped = [
   { label: "Core Members",
     people: allPeople.filter((p) => p.data.tier === "Core Member") },
@@ -46,22 +47,20 @@ const grouped = [
     people: allPeople.filter(isScienceManager) },
   { label: "Research Assistants",
     people: allPeople.filter((p) => p.data.tier === "Research Assistant") },
-  { label: "Project Managers",
-    people: allPeople.filter(isProjectManager) },
-  { label: "Students on Duty",
+  { label: "Undergraduate RAs",
     people: allPeople.filter((p) => p.data.tier === "Undergraduate Research Assistant" || p.data.tier === "Outreach Ambassador") },
   { label: "Research Interns",
     people: allPeople.filter((p) => p.data.tier === "Research Intern") },
   { label: "Staff",
-    people: allPeople.filter((p) => p.data.tier === "Staff" && !isScienceManager(p) && !isProjectManager(p)) },
-  { label: "Alumni",
-    people: allPeople.filter((p) => p.data.tier === "Alumni") },
+    people: allPeople.filter((p) => p.data.tier === "Staff" && !isScienceManager(p)) },
 ].filter((g) => g.people.length > 0);
 
-const hasAnyPeople = allPeople.length > 0;
+const hasAnyPeople = grouped.length > 0;
 
-/* Everyone in the directory gets a clickable name that opens their card in the drawer. */
-const drawerPeople = allPeople
+/* Everyone in the directory gets a clickable name that opens their card in the
+   drawer — sourced from `grouped`, so nobody the table omits ships in the payload. */
+const drawerPeople = grouped
+  .flatMap((g) => g.people)
   .map((p) => ({
     slug: p.id,
     name: p.data.name,
@@ -78,18 +77,18 @@ const drawerPeople = allPeople
   }));
 ---
 
-<BaseLayout title="People — CASSA" description="The Office of the Director, members, affiliates, managers, and student researchers — the community making CASSA's science happen." current="/people">
+<BaseLayout title="People Directory — CASSA" description="Everyone currently engaged at CASSA — the Office of the Director, members, affiliates, managers, and student researchers." current="/people">
 
   <AnimatedHero
     theme="galaxy"
     eyebrow="People"
-    title="The CASSA Community"
-    lede="The Office of the Director, members, affiliates, managers, and student researchers — the community making CASSA's science happen."
+    title="People Directory"
+    lede="Everyone currently engaged at CASSA — the Office of the Director, members, affiliates, managers, and student researchers."
   />
 
   <section class="section section--elev">
     <div class="wrap">
-      <Reveal><p class="eyebrow">Full directory</p></Reveal>
+      <Reveal><p class="eyebrow">Currently active</p></Reveal>
       <Reveal delay={60}>
         <h2 class="section-h2">All Personnel</h2>
       </Reveal>

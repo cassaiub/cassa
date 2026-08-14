@@ -22,8 +22,7 @@ const subNav = [
   { href: "/people/associate-members",    label: "Associate Members" },
   { href: "/people/affiliates",           label: "Affiliates" },
   { href: "/people/research-assistants",  label: "Research Assistants" },
-  { href: "/people/project-managers",     label: "Project Managers" },
-  { href: "/people/students-on-duty",     label: "Students on Duty" },
+  { href: "/people/undergraduate-ras",    label: "Undergraduate RAs" },
   { href: "/people/research-interns",     label: "Research Interns" },
 ];
 ---
@@ -31,7 +30,7 @@ const subNav = [
 <BaseLayout
   title="Research Assistants — CASSA People"
   description="Graduate and postbac researchers embedded in active CASSA projects — building the next generation of Bangladeshi astrophysicists."
-  current="/people"
+  current="/people/research-assistants"
 >
   <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
   <AnimatedHero
@@ -68,6 +67,7 @@ const subNav = [
         </h2>
       </Reveal>
 
+      {ras.length > 0 ? (
       <div class="pg">
         {ras.map((p, i) => (
           <Reveal delay={(i % 4) * 80}>
@@ -84,45 +84,16 @@ const subNav = [
           </Reveal>
         ))}
       </div>
+      ) : (
+        <Reveal delay={80}>
+          <p style="color:var(--ink-faint);font-size:.95rem;margin-top:2rem;max-width:60ch">
+            No Research Assistants are engaged at the moment — RA appointments are fixed-term and
+            the cohort turns over. Openings are posted under
+            <a href={withBase('/opportunities/vacancies')} style="color:var(--accent)">Vacancies</a>.
+          </p>
+        </Reveal>
+      )}
 
-      <Reveal delay={160}>
-        <div style="margin-top:3rem">
-          <p class="eyebrow" style="font-size:.7rem;margin-bottom:1rem">Active projects</p>
-          <div style="overflow-x:auto">
-            <table style="width:100%;border-collapse:collapse;font-size:.9rem;max-width:800px">
-              <thead>
-                <tr style="border-bottom:2px solid var(--line-strong)">
-                  <th style="text-align:left;padding:.6rem 1rem .6rem 0;color:var(--ink);font-weight:700">RA</th>
-                  <th style="text-align:left;padding:.6rem 1rem;color:var(--ink);font-weight:700">Project</th>
-                  <th style="text-align:left;padding:.6rem 0 .6rem 1rem;color:var(--ink);font-weight:700">Supervisor</th>
-                </tr>
-              </thead>
-              <tbody style="color:var(--ink-soft)">
-                <tr style="border-bottom:1px solid var(--line)">
-                  <td style="padding:.65rem 1rem .65rem 0">Ahmad Al-Imtiaz</td>
-                  <td style="padding:.65rem 1rem"><span class="pill" style="font-size:.75rem">Sparkler</span></td>
-                  <td style="padding:.65rem 0 .65rem 1rem">Dr. Lamiya Mowla</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--line)">
-                  <td style="padding:.65rem 1rem .65rem 0">Nafis Sadik Nihal</td>
-                  <td style="padding:.65rem 1rem"><span class="pill" style="font-size:.75rem">Dolphin</span></td>
-                  <td style="padding:.65rem 0 .65rem 1rem">Dr. Anowar Shajib</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--line)">
-                  <td style="padding:.65rem 1rem .65rem 0">Md Shahadat Hossain Shahal</td>
-                  <td style="padding:.65rem 1rem"><span class="pill" style="font-size:.75rem">RGC</span></td>
-                  <td style="padding:.65rem 0 .65rem 1rem">Dr. Khan Muhammad Bin Asad</td>
-                </tr>
-                <tr>
-                  <td style="padding:.65rem 1rem .65rem 0">Deba Priyo Guha</td>
-                  <td style="padding:.65rem 1rem"><span class="pill" style="font-size:.75rem">Supernova Cosmology</span></td>
-                  <td style="padding:.65rem 0 .65rem 1rem">Dr. Syed Ashraf Uddin</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </Reveal>
     </div>
   </section>
 </BaseLayout>

@@ -1,11 +1,12 @@
 ---
 name: "M.O.B. Jihad"
 tier: "Research Intern"
+photo: "/people/jihad.webp"
 interests: ["GATE", "Galaxies and environments"]
 institution: "Undergraduate Research Intern — CASSA · AIUB"
-duration: "Apr – Sep 2026"
+duration: "Jan – Aug 2026"
 order: 84
 status: "published"
 ---
 
-Undergraduate Research Intern working on the GATE research area under Dr. Khan Muhammad Bin Asad. Duration: Apr–Sep 2026.
+Undergraduate Research Intern working on the GATE research area under Dr. Khan Muhammad Bin Asad. Duration: Jan–Aug 2026.

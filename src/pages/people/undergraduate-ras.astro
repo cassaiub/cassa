@@ -14,35 +14,30 @@ const uras = allPeople
   .filter((p) => p.data.tier === "Undergraduate Research Assistant")
   .sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
 
-const ambassadors = allPeople
-  .filter((p) => p.data.tier === "Outreach Ambassador")
-  .sort((a, b) => lastName(a.data.name).localeCompare(lastName(b.data.name)));
-
 /* ── Subpage nav ──────────────────────────────────────────────────────── */
-const CURRENT_HREF = "/people/students-on-duty";
+const CURRENT_HREF = "/people/undergraduate-ras";
 const subNav = [
   { href: "/people/director",             label: "Office of the Director" },
   { href: "/people/core-members",         label: "Core Members" },
   { href: "/people/associate-members",    label: "Associate Members" },
   { href: "/people/affiliates",           label: "Affiliates" },
   { href: "/people/research-assistants",  label: "Research Assistants" },
-  { href: "/people/project-managers",     label: "Project Managers" },
-  { href: "/people/students-on-duty",     label: "Students on Duty" },
+  { href: "/people/undergraduate-ras",    label: "Undergraduate RAs" },
   { href: "/people/research-interns",     label: "Research Interns" },
 ];
 ---
 
 <BaseLayout
-  title="Students on Duty — CASSA People"
-  description="Undergraduate research assistants and outreach ambassadors on duty across CASSA's science and public engagement."
-  current="/people"
+  title="Undergraduate RAs — CASSA People"
+  description="The undergraduate research assistants on duty at CASSA — IUB's paid on-campus posts for currently enrolled undergraduates."
+  current="/people/undergraduate-ras"
 >
   <!-- ── Fullscreen hero ──────────────────────────────────────────────── -->
   <AnimatedHero
     theme="galaxy"
-    eyebrow="People · Students on Duty"
-    title="Students on Duty"
-    lede="Undergraduate research assistants and outreach ambassadors on duty across CASSA's science and public engagement."
+    eyebrow="People · Undergraduate RAs"
+    title="Undergraduate RAs"
+    lede="IUB's paid on-campus posts for currently enrolled undergraduates, working inside CASSA's research programmes."
   />
 
   <!-- ── Subpage navigation pill-strip ────────────────────────────────── -->
@@ -65,7 +60,7 @@ const subNav = [
   <!-- ── Section A: Undergraduate Research Assistants ─────────────────── -->
   <section class="section section--elev">
     <div class="wrap">
-      <Reveal><p class="eyebrow">Students on Duty</p></Reveal>
+      <Reveal><p class="eyebrow">Undergraduate RAs</p></Reveal>
       <Reveal delay={60}>
         <h2 style="font-size:clamp(1.6rem,3.4vw,2.3rem);letter-spacing:-.015em;margin:.3rem 0 0;color:var(--ink)">
           Undergraduate Research Assistants
@@ -92,7 +87,8 @@ const subNav = [
       ) : (
         <Reveal delay={80}>
           <p style="color:var(--ink-faint);font-size:.95rem;margin-top:2rem;max-width:60ch">
-            Undergraduate Research Assistant profiles will appear here once they are published.
+            No Undergraduate Research Assistants are on duty at the moment — the cohort turns over
+            each semester.
           </p>
         </Reveal>
       )}
@@ -105,42 +101,6 @@ const subNav = [
     </div>
   </section>
 
-  <!-- ── Section B: Outreach Ambassadors ──────────────────────────────── -->
-  <section class="section">
-    <div class="wrap">
-      <Reveal><p class="eyebrow">Students on Duty</p></Reveal>
-      <Reveal delay={60}>
-        <h2 style="font-size:clamp(1.6rem,3.4vw,2.3rem);letter-spacing:-.015em;margin:.3rem 0 0;color:var(--ink)">
-          Outreach Ambassadors
-        </h2>
-      </Reveal>
-
-      {ambassadors.length > 0 ? (
-        <div class="pg">
-          {ambassadors.map((p, i) => (
-            <Reveal delay={(i % 3) * 80}>
-              <PersonCard
-                name={p.data.name}
-                title={p.data.title}
-                tier={p.data.tier}
-                interests={p.data.interests}
-                institution={p.data.institution}
-                email={p.data.email}
-                photo={p.data.photo}
-                links={p.data.links}
-              />
-            </Reveal>
-          ))}
-        </div>
-      ) : (
-        <Reveal delay={80}>
-          <p style="color:var(--ink-faint);font-size:.95rem;margin-top:2rem;max-width:60ch">
-            Outreach Ambassador profiles will appear here once they are published.
-          </p>
-        </Reveal>
-      )}
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
