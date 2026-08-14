@@ -156,6 +156,23 @@ export default defineConfig({
     // The 2026 TRA circular was briefly live at this slug (12 Jul 2026)
     // before circulars moved under /opportunities/tra/<year>.
     '/opportunities/tinsley-ra-2026': '/opportunities/tra/2026',
+    // The Students on Duty cohort was renamed Undergraduate RAs (2026-08-14),
+    // matching the Inside directory's tab.
+    '/people/students-on-duty': '/people/undergraduate-ras',
+    // Project Managers moved to the Durbin site (durbin.cc); the cohort page is
+    // gone from here, so send the old URL to the directory.
+    '/people/project-managers': '/people',
+    // The Newsroom hub page was dropped (2026-08-14) — News and Events are the
+    // whole section now; "Newsroom" survives only as the menu that holds them.
+    '/newsroom': '/news',
+    // The "Join CASSA" landing page went the same way (2026-08-14) — the
+    // section is Vacancies · Internships · Tinsley RAship, nothing above them.
+    '/opportunities': '/opportunities/vacancies',
+    // Volunteerships is a Durbin programme and Durbin has its own site now.
+    '/opportunities/volunteerships': '/opportunities/vacancies',
+    // Same for Teaching (2026-08-14): Courses and Workshops are the section,
+    // and "Teaching" survives only as the menu that holds them.
+    '/teaching': '/courses',
   },
   build: {
     inlineStylesheets: 'auto',

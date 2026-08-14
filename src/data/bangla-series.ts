@@ -13,11 +13,16 @@ export type BanglaSeries = {
   roman: string;
   /** One-line description of the series. */
   desc: string;
+  /** Shown among the series cards on /outreach. Durer Kotha is off that page
+   *  (2026-08-14) because it ran as a Durbin activity and Durbin now has its
+   *  own site — its eight articles stay published under /outreach/bangla and
+   *  stay out of the main /news feed. */
+  onOutreachPage: boolean;
 };
 
 export const BANGLA_SERIES: BanglaSeries[] = [
-  { name: "নতুন কথা", id: "notun-kotha", roman: "Notun Kotha", desc: "Research-news explainers — new findings, in Bangla." },
-  { name: "দূরের কথা", id: "durer-kotha", roman: "Durer Kotha", desc: "Bangla translations of popular astronomy essays (e.g. AAS Nova) that explain published research." },
+  { name: "নতুন কথা", id: "notun-kotha", roman: "Notun Kotha", desc: "Research-news explainers — new findings, in Bangla.", onOutreachPage: true },
+  { name: "দূরের কথা", id: "durer-kotha", roman: "Durer Kotha", desc: "Bangla translations of popular astronomy essays (e.g. AAS Nova) that explain published research.", onOutreachPage: false },
 ];
 
 export const BANGLA_SERIES_NAMES: string[] = BANGLA_SERIES.map((s) => s.name);

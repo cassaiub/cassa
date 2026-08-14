@@ -24,15 +24,18 @@ export const OPP_CATEGORIES: OppCategory[] = [
     label: "Internships",
     blurb: "Research internships across the Center — the application pathway, eligibility, and current openings.",
   },
-  {
-    kind: "volunteer",
-    slug: "volunteerships",
-    label: "Volunteerships",
-    blurb: "Volunteer with Durbin and CASSA outreach — telescope operators, astronomy nights, and public science.",
-  },
+  // Volunteerships was retired on 2026-08-14: volunteering is a Durbin
+  // programme and Durbin has its own site (durbin.cc). `volunteer` stays a
+  // valid `kind` so historical circulars still parse — they are `draft`, so
+  // nothing routes to a category page that no longer exists.
 ];
 
-export const categoryForKind = (kind: OppKind): OppCategory =>
-  OPP_CATEGORIES.find((c) => c.kind === kind)!;
+export const categoryForKind = (kind: OppKind): OppCategory | undefined =>
+  OPP_CATEGORIES.find((c) => c.kind === kind);
 
-export const pathForKind = (kind: OppKind): string => `/opportunities/${categoryForKind(kind).slug}`;
+/** Path of the category page a circular belongs to — null for a retired
+ *  category (`volunteer`), so callers render no back-link instead of a 404. */
+export const pathForKind = (kind: OppKind): string | null => {
+  const c = categoryForKind(kind);
+  return c ? `/opportunities/${c.slug}` : null;
+};

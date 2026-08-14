@@ -79,14 +79,14 @@ import { BANGLA_SERIES } from "../data/bangla-series.ts";
       <Reveal delay={60}>
         <Prose>
           <p>
-            CASSA writes astronomy for a Bengali-reading public across two article series — from new
-            research explained simply, to popular-science writing. Read them all in the
+            CASSA writes astronomy for a Bengali-reading public — new research, explained simply.
+            Read the whole archive in the
             <a href={withBase('/outreach/bangla')}>Bangla section →</a>
           </p>
         </Prose>
       </Reveal>
       <div class="oa-series">
-        {BANGLA_SERIES.map((s, i) => (
+        {BANGLA_SERIES.filter((s) => s.onOutreachPage).map((s, i) => (
           <Reveal class="oa-series__card-wrap" delay={90 + i * 50}>
             <a class="oa-series__card" href={withBase(`/outreach/bangla#${s.id}`)}>
               <span class="oa-series__name" lang="bn">{s.name}</span>

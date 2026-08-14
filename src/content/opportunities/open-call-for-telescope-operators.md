@@ -6,6 +6,9 @@ kind: "volunteer"
 role: "Telescope Operator (×5)"
 compensation: "Volunteer"
 applyUrl: "https://forms.gle/Gq1QVsy6BSDdbEND6"
+# Durbin volunteering moved to its own site (durbin.cc) on 2026-08-14, and the
+# Volunteerships category went with it — off this site's listings.
+status: "draft"
 summary: "Durbin is pleased to announce an open call for 5 Telescope Operators (3 female and 2 male) who will volunteer during our regular Astronomy Nights."
 ---
 

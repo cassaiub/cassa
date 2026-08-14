@@ -35,7 +35,7 @@ const categoryPath = pathForKind(d.kind);
 <BaseLayout
   title={`${d.title} — CASSA Opportunities`}
   description={d.summary ?? d.title}
-  current={categoryPath}
+  current={categoryPath ?? "/opportunities"}
   ogImage={d.ogImage}
   ogImageAlt={d.ogImageAlt ?? d.title}
   ogType="article"
@@ -87,7 +87,9 @@ const categoryPath = pathForKind(d.kind);
         )}
         <nav class="od__back" aria-label="Related pages">
           {d.program && <a href={withBase(`/opportunities/${d.program}`)}>← The program page</a>}
-          <a href={withBase(categoryPath)}>← All {category.label.toLowerCase()}</a>
+          {categoryPath && category && (
+            <a href={withBase(categoryPath)}>← All {category.label.toLowerCase()}</a>
+          )}
         </nav>
       </div>
 
@@ -95,8 +97,9 @@ const categoryPath = pathForKind(d.kind);
         {!isOpen && (
           <p class="od__notice">
             This circular is closed{status === "filled" ? " — the position has been filled" : ""}. It is
-            kept here as a record of the kinds of roles CASSA recruits for. See the
-            <a href={withBase(`${categoryPath}#open`)}> open positions</a> for anything currently live.
+            kept here as a record of the kinds of roles CASSA recruits for.{categoryPath && (
+              <> See the <a href={withBase(`${categoryPath}#open`)}>open positions</a> for anything currently live.</>
+            )}
           </p>
         )}
         <Prose><Content /></Prose>

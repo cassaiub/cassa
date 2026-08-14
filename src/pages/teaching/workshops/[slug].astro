@@ -3,7 +3,6 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import AnimatedHero from "../../../components/immersive/AnimatedHero.astro";
 import Prose from "../../../components/immersive/Prose.astro";
 import { getCollection, render } from "astro:content";
-import { withBase } from "../../../data/site-nav.ts";
 
 export async function getStaticPaths() {
   const workshops = await getCollection("workshops", ({ data }) => data.status !== "draft");
@@ -20,7 +19,7 @@ const altHref = d.altSlug ? `/teaching/workshops/${d.altSlug}` : undefined;
 <BaseLayout
   title={`${d.title} — CASSA`}
   description={d.summary ?? d.title}
-  current="/teaching"
+  current={`/teaching/workshops/${entry.id}`}
   lang={d.lang}
   altHref={altHref}
 >
@@ -38,7 +37,6 @@ const altHref = d.altSlug ? `/teaching/workshops/${d.altSlug}` : undefined;
         <div lang={d.lang === "bn" ? "bn" : undefined}>
           <Prose class="prose-cassa--wide"><Content /></Prose>
         </div>
-        <p class="nd__back"><a href={withBase("/teaching")}>← Teaching</a></p>
       </div>
     </div>
   </section>
@@ -47,7 +45,4 @@ const altHref = d.altSlug ? `/teaching/workshops/${d.altSlug}` : undefined;
 <style>
   .nd-article { max-width: none; }
 
-  .nd__back { margin-top: 2rem; }
-  .nd__back a { color: var(--accent); }
-  .nd__back a:hover { opacity: .75; }
 </style>
