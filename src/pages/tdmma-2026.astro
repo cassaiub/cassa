@@ -22,11 +22,14 @@ type SType = "lec" | "tut" | "disc" | "cer" | "brk";
 /* t: short display title (the cell); d: the topics covered (the drawer);
    link: optional related page shown at the foot of the drawer */
 interface Session { s: string; e: string; t: string; k: SType; who?: string; d?: string[]; link?: { href: string; label: string } }
-interface Day { wd: string; date: string; short: string; theme: string; sessions: Session[] }
+/* venue: the building that day sits in — the week splits across two (user,
+   2026-08-28), so the calendar header carries it and the drawer repeats it. */
+interface Day { wd: string; date: string; short: string; theme: string; venue: string; sessions: Session[] }
 
 const DAYS: Day[] = [
   {
     wd: "Mon", date: "Sep 7", short: "Foundations",
+    venue: "Digital Classroom · IUB",
     theme: "Introduction & Foundations of Time-Domain Astronomy",
     sessions: [
       { s: "10:00", e: "10:30", t: "Opening & Welcome", k: "cer", d: [
@@ -60,6 +63,7 @@ const DAYS: Day[] = [
   },
   {
     wd: "Tue", date: "Sep 8", short: "Gravitational Waves",
+    venue: "Digital Classroom · IUB",
     theme: "Gravitational Waves & Multi-Messenger Events",
     sessions: [
       { s: "10:00", e: "10:45", t: "GW Sources", k: "lec", d: [
@@ -93,6 +97,7 @@ const DAYS: Day[] = [
   },
   {
     wd: "Wed", date: "Sep 9", short: "X-ray Binaries & TESS",
+    venue: "Digital Classroom · IUB",
     theme: "X-ray Binaries, Stellar Transients & TESS Exoplanet Follow-up",
     sessions: [
       { s: "10:00", e: "10:45", t: "X-ray Binaries", k: "lec", d: [
@@ -126,6 +131,7 @@ const DAYS: Day[] = [
   },
   {
     wd: "Thu", date: "Sep 10", short: "Transients & Data Science",
+    venue: "Digital Classroom · IUB",
     theme: "Stellar Transients & Data Science Methods",
     sessions: [
       { s: "10:00", e: "10:45", t: "Core-Collapse Supernovae", k: "lec", d: [
@@ -159,6 +165,7 @@ const DAYS: Day[] = [
   },
   {
     wd: "Fri", date: "Sep 11", short: "Future Facilities",
+    venue: "ACI Centre · Tejgaon",
     theme: "Future Facilities & Synthesis",
     sessions: [
       { s: "10:00", e: "10:45", t: "Next-Generation GW Detectors", k: "lec", d: [
@@ -235,17 +242,47 @@ const tbdRole: Record<string, string> = { lec: "Speaker", tut: "Moderator", disc
    the printed A5 brochure carries; the 7 August close had already passed, so
    this reopens applications for a further week. EXTENDED once more to 18 August
    (user, 2026-08-14) — read off the live form's Settings, which is the governing
-   value. The announcement and payment dates have never moved; the review window
-   narrows from three weeks to three days. */
+   value.
+   SECOND ROUND (user, 2026-08-28): the 18 August close and the 21 August
+   announcement both stand — round one ran its course and its participants are
+   selected. What reopens is a small remainder of seats, for university students
+   only and at the FULL fee (no waivers), until 3 September 2026; payment is now
+   part of registering rather than a later step, so the old "by 31 August"
+   payment milestone is folded into that date. Confirmed against the live form's
+   /meta the same day (closesAt 2026-09-02T17:59:00Z = 3 Sep 23:59 BST). */
 const DEADLINES = [
-  ["Application opens", "14 July 2026"],
-  ["Application closes", "18 August 2026"],
+  ["Round 1 applications", "closed 18 August 2026"],
   ["Participant list announced", "21 August 2026"],
-  ["Registration & payment", "by 31 August 2026"],
+  ["Round 2 · full-fee seats", "open until 3 September 2026"],
+  ["Registration & payment", "by 3 September 2026"],
   ["Workshop begins", "7 September 2026"],
 ];
 
-/* The instant the inside-portal form closes on (end of 18 August, Dhaka) —
+/* ── The two venues (user, 2026-08-28) ──────────────────────────────────
+   Days 1–4 in IUB's Digital Classroom; the final day at the ACI Centre in
+   Tejgaon, which ACI hosts and sponsors along with the workshop dinner. Map
+   links use the Google Maps URL API — a search by name + address rather than a
+   short link or a place id, so they keep resolving with nothing to maintain.
+   ACI Centre address confirmed from aci-bd.com (2026-08-28); the IUB line is
+   the one this page already carried. */
+const VENUES = [
+  {
+    days: "Days 1–4 · Mon 7 – Thu 10 September",
+    name: "Digital Classroom, Independent University, Bangladesh",
+    addr: "Plot 16, Block B, Aftabuddin Ahmed Road, Bashundhara Residential Area, Dhaka 1245",
+    map: "https://www.google.com/maps/search/?api=1&query=Independent+University+Bangladesh+Bashundhara+Dhaka",
+    note: "Home of CASSA. Lectures, tutorials and panels, 10:00 AM – 6:00 PM.",
+  },
+  {
+    days: "Day 5 · Friday 11 September",
+    name: "ACI Centre, Tejgaon",
+    addr: "245 Tejgaon Industrial Area, Dhaka 1208",
+    map: "https://www.google.com/maps/search/?api=1&query=ACI+Centre+245+Tejgaon+Industrial+Area+Dhaka+1208",
+    note: "Future facilities, participant talks, the closing panel and certificates — followed by the workshop dinner.",
+  },
+];
+
+/* The instant the inside-portal form closes on (end of 3 September, Dhaka) —
    shared from src/data/tdmma.ts so this page's counter and the home-hero slide
    expire together. The GOVERNING value is the form builder's Settings on
    Inside: the countdown fetches it live from the form's /meta endpoint and
@@ -263,13 +300,17 @@ const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / han
    personal site, portrait cropped from the full-length photo there (the
    brochure's own thumbnail is only 100px). He sits after the IUB faculty and
    before Ahmed, matching both the seniority order used here and the brochure's
-   Burke→Ahmed adjacency. */
+   Burke→Ahmed adjacency.
+   Jewel Kumar Ghosh replaced by Payaswini Saikia (user, 2026-08-28); she takes
+   his slot in the list and his sentence in the About lede. Her details come
+   from her own people-collection entry (src/content/people/saikia.md), so her
+   card links to the CASSA profile rather than out. */
 const SPEAKERS = [
   { name: "Andrew L. Miller", aff: "Assistant Professor, ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn", web: "https://andrew-l-miller.github.io", ext: true, photo: "/people/miller.webp" },
   { name: "M Arshad Momen", aff: "Professor, IUB · Core Member, CASSA", email: "arshad@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/arshad", ext: true, photo: "/people/momen.webp" },
   { name: "Syed Ashraf Uddin", aff: "Associate Professor, IUB · Core Member, CASSA", email: "uddinsa@iub.edu.bd", web: withBase("/people/uddin"), ext: false, photo: "/people/uddin.webp" },
   { name: "Khan Muhammad Bin Asad", aff: "Assistant Professor, IUB · Core Member, CASSA", email: "kasad@iub.edu.bd", web: withBase("/people/asad"), ext: false, photo: "/people/asad.webp" },
-  { name: "Jewel Kumar Ghosh", aff: "Assistant Professor, Department of Physical Sciences, IUB", email: "jewel.ghosh@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/jewel.ghosh", ext: true, photo: "/people/ghosh.webp" },
+  { name: "Payaswini Saikia", aff: "Associate Research Scientist, Department of Astronomy and Physics, Yale University · Associate Member, CASSA", email: "payaswini.saikia@yale.edu", web: withBase("/people/saikia"), ext: false, photo: "/people/saikia.jpg" },
   { name: "Colin J. Burke", aff: "NSF AAPF Postdoctoral Fellow, Department of Astronomy, Yale University · incoming Assistant Professor, University of North Texas", email: "colin.j.burke@yale.edu", web: "https://burke86.github.io", ext: true, photo: "/people/burke.webp" },
   { name: "Md Redyan Ahmed", aff: "PhD candidate, University of Sydney · Graduate Member, CASSA", email: "mahm0320@uni.sydney.edu.au", web: "https://sites.google.com/view/md-redyan-ahmed", ext: true, photo: "/people/ahmed.webp" },
 ];
@@ -332,7 +373,7 @@ const SCIENCES = [
     <Fragment slot="meta">
       <span>Sept 7–11, 2026</span><span aria-hidden="true">·</span>
       <span>10:00 AM – 6:00 PM</span><span aria-hidden="true">·</span>
-      <span>IUB, Dhaka</span><span aria-hidden="true">·</span>
+      <span>IUB · ACI Centre, Dhaka</span><span aria-hidden="true">·</span>
       <span>Lectures · Tutorials · Panels</span>
     </Fragment>
   </AnimatedHero>
@@ -358,6 +399,31 @@ const SCIENCES = [
       <a class="subnav__cta" href="#apply" data-sec="apply">Apply</a>
     </div>
   </nav>
+
+  <!-- ── Round-two notice ─────────────────────────────────────────────────
+       The first thing on the page after the hero (user, 2026-08-28), because
+       the only action left is the handful of remaining full-fee seats. It
+       jumps to #apply, the same anchor the subnav pill uses. Delete this whole
+       section once 3 September passes — the countdown below it will already
+       have flipped to "Applications have closed". -->
+  <section class="alert" aria-labelledby="alert-h">
+    <div class="wrap alert__row">
+      <div class="alert__body">
+        <p class="alert__tag"><span class="alert__dot" aria-hidden="true"></span>Round 1 closed · a few seats left</p>
+        <h2 class="alert__h" id="alert-h">
+          Full-fee registration stays open until <strong>3 September 2026</strong>
+        </h2>
+        <p class="alert__p">
+          The first round of applications closed on 18 August and its
+          participants have been selected. A few seats remain — open to
+          <strong>university students</strong> and to
+          <strong>fully paid participants only</strong>, at the full
+          BDT&nbsp;5,000 fee, with no waiver.
+        </p>
+      </div>
+      <a class="btn alert__btn" href="#apply">Apply &amp; pay <span aria-hidden="true">↓</span></a>
+    </div>
+  </section>
 
   <!-- ── Overview ─────────────────────────────────────────────────────── -->
   <!-- Sections alternate plain / elevated down the page: about · programme ·
@@ -400,10 +466,11 @@ const SCIENCES = [
                 standard candles to probe dark energy and the Hubble tension,
                 formerly of the Carnegie Supernova Project and a member of the
                 Dark Energy Survey;
-                <strong>Dr.&nbsp;Jewel&nbsp;Kumar&nbsp;Ghosh</strong>, a
-                theoretical physicist at IUB working on string theory and
-                gravity, who brings the theory of black holes and compact
-                objects to the gravitational-wave sessions; and
+                <strong>Dr.&nbsp;Payaswini&nbsp;Saikia</strong>, an
+                associate research scientist at Yale University and a CASSA
+                Associate Member, who tracks accretion onto black holes and
+                neutron stars and the jets they launch, from radio to X-ray;
+                and
                 <strong>Dr.&nbsp;Khan&nbsp;Muhammad&nbsp;Bin&nbsp;Asad</strong>
                 on the radio time domain — pulsars and fast radio bursts with
                 MeerKAT and LOFAR. Session speakers and further facilitators
@@ -444,7 +511,7 @@ const SCIENCES = [
         {[
           ["Dates", "September 7–11, 2026 (Mon–Fri)"],
           ["Hours", "10:00 AM – 6:00 PM · lunch 1:00–2:30 PM"],
-          ["Venue", "Independent University, Bangladesh — Bashundhara, Dhaka"],
+          ["Venue", "Digital Classroom, IUB (days 1–4) · ACI Centre, Tejgaon (day 5)"],
           ["Format", "Lectures · Tutorials · Panel Discussions"],
           ["Certificates", "Awarded at the closing ceremony"],
         ].map(([k, v], i) => (
@@ -484,6 +551,7 @@ const SCIENCES = [
               <span class="cal__wd">{d.wd} · {d.date}</span>
               <span class="cal__short">{d.short}</span>
               <span class="cal__theme">{d.theme}</span>
+              <span class="cal__venue"><span aria-hidden="true">◉</span> {d.venue}</span>
             </div>
           ))}
 
@@ -511,7 +579,7 @@ const SCIENCES = [
                 style={`grid-column:${di + 2};grid-row:${row(x.s)} / ${row(x.e)};--d:${di * 70 + si * 45}ms`}
                 data-session
                 data-title={x.t}
-                data-day={`${d.wd} · ${d.date} — ${d.theme}`}
+                data-day={`${d.wd} · ${d.date} — ${d.theme} · ${d.venue}`}
                 data-time={`${x.s}–${x.e}`}
                 data-type={typeLabel[x.k]}
                 data-role={tbdRole[x.k] ?? ""}
@@ -584,15 +652,40 @@ const SCIENCES = [
         <Prose>
           <h2>Where the week happens</h2>
           <p>
-            The workshop runs at <strong>Independent University, Bangladesh</strong>
-            — Plot 16, Block B, Aftabuddin Ahmed Road, Bashundhara Residential
-            Area, Dhaka 1245 — home of CASSA. Sessions run 10:00 AM to 6:00 PM
-            with a 90-minute lunch break; the exact room will be announced to
-            registered participants. The week falls in the semester break, and
-            participants completing the workshop receive certificates at the
-            closing ceremony.
+            The workshop runs across <strong>two venues</strong>. The first four
+            days are held in the <strong>Digital Classroom</strong> at
+            <strong>Independent University, Bangladesh</strong>, home of CASSA;
+            the final day moves across town to the <strong>ACI Centre</strong> in
+            Tejgaon. Sessions run 10:00 AM to 6:00 PM with a 90-minute lunch
+            break. The week falls in the semester break, and participants
+            completing the workshop receive certificates at the closing ceremony.
           </p>
         </Prose>
+      </Reveal>
+      <div class="vn">
+        {VENUES.map((v, i) => (
+          <Reveal delay={120 + i * 70}>
+            <article class="vn__card">
+              <p class="vn__days">{v.days}</p>
+              <h3 class="vn__name">{v.name}</h3>
+              <p class="vn__addr">{v.addr}</p>
+              <p class="vn__note">{v.note}</p>
+              <a class="vn__map" href={v.map} target="_blank" rel="noopener">
+                Open in Google&nbsp;Maps <span aria-hidden="true">↗</span>
+              </a>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+      <Reveal delay={270}>
+        <p class="vn__spon">
+          <span class="vn__spon-k">Sponsor</span>
+          <span>
+            <strong>ACI</strong> is kindly sponsoring the final day of the
+            workshop at the ACI Centre, and the workshop dinner with special
+            guests.
+          </span>
+        </p>
       </Reveal>
     </div>
   </section>
@@ -658,13 +751,18 @@ const SCIENCES = [
       <Reveal delay={60}><h2 style={h2}>Applications & registration</h2></Reveal>
       <Reveal delay={100}>
         <p class="cta__p">
-          Applications are open until <strong>18 August 2026</strong> — the workshop
-          is designed for
-          <strong> university students from Bangladesh and beyond</strong>, and a
-          few seats may go to exceptional high-school applicants, subject to
-          availability. Selected participants confirm their seat by paying a
-          registration fee of <strong>BDT&nbsp;5,000 online</strong>; waivers of
-          <strong>20% or 50%</strong> are available on the basis of merit and need.
+          <strong>The first round is done.</strong> Applications closed on
+          <strong>18 August 2026</strong> and the selected participants were
+          announced on 21 August. What is left is a small block of seats, held
+          open until <strong>3 September 2026</strong> for
+          <strong>university students from Bangladesh and beyond</strong>.
+        </p>
+        <p class="cta__p">
+          These remaining seats are for <strong>fully paid participants
+          only</strong>: the <strong>BDT&nbsp;5,000</strong> registration fee is
+          paid online with the application, and a seat is confirmed once that
+          payment clears. The <strong>20% and 50%</strong> merit- and need-based
+          waivers belonged to the first round and are no longer available.
         </p>
       </Reveal>
       <Reveal delay={115}>
@@ -684,7 +782,8 @@ const SCIENCES = [
       </Reveal>
       <Reveal delay={160}>
         <p class="cta__p cta__p--note">
-          A second sponsor and host of the event will be announced soon.
+          The final day is hosted and sponsored by <strong>ACI</strong>, at the
+          ACI Centre in Tejgaon — see <a href="#venue">Venue</a>.
         </p>
       </Reveal>
       <Reveal delay={190}>
@@ -1061,6 +1160,13 @@ const SCIENCES = [
     font-weight: 700; color: var(--accent);
   }
   .cal__theme { margin-top: 0.3rem; font-size: 0.78rem; line-height: 1.4; color: var(--ink-soft); }
+  /* The building that day sits in — the week splits after Thursday. */
+  .cal__venue {
+    margin-top: 0.4rem; display: flex; align-items: center; gap: 0.3rem;
+    font-size: 0.66rem; letter-spacing: 0.05em; font-weight: 600;
+    color: var(--ink-faint);
+  }
+  .cal__venue span { color: var(--accent-2); font-size: 0.55rem; }
 
   .cal__rule { grid-column: 1 / -1; border-top: 1px solid color-mix(in srgb, var(--ink) 5%, transparent); z-index: 0; pointer-events: none; }
   .cal__time {
@@ -1260,9 +1366,89 @@ const SCIENCES = [
   .org__mail { font-size: 0.78rem; color: var(--accent-2); width: fit-content; }
   .org__mail:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+  /* ── Venue cards — one per building, side by side ── */
+  .vn {
+    display: grid; gap: 1rem; margin-top: 2.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    max-width: 62rem;
+  }
+  .vn__card {
+    height: 100%;
+    display: flex; flex-direction: column; gap: 0.35rem;
+    background: var(--bg-elev); border: 1px solid var(--line);
+    border-radius: 16px; padding: 1.3rem 1.4rem 1.4rem;
+  }
+  .vn__days {
+    margin: 0; font-size: 0.64rem; text-transform: uppercase;
+    letter-spacing: 0.16em; font-weight: 700; color: var(--accent);
+  }
+  .vn__name {
+    margin: 0.15rem 0 0; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.08rem; line-height: 1.3; letter-spacing: -0.015em; color: var(--ink);
+  }
+  .vn__addr { margin: 0.2rem 0 0; font-size: 0.86rem; line-height: 1.5; color: var(--ink-soft); }
+  .vn__note { margin: 0.55rem 0 0; font-size: 0.84rem; line-height: 1.55; color: var(--ink-faint); }
+  .vn__map {
+    margin-top: auto; padding-top: 0.9rem;
+    font-size: 0.83rem; font-weight: 600; color: var(--accent-2);
+    width: fit-content;
+  }
+  .vn__map:hover { text-decoration: underline; text-underline-offset: 3px; }
+  /* Sponsor credit for the final day — a quiet rule-led line under the cards */
+  .vn__spon {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem 0.9rem;
+    max-width: 62rem; margin: 1.4rem 0 0; padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.92rem; line-height: 1.65; color: var(--ink-soft);
+  }
+  .vn__spon-k {
+    flex-shrink: 0; font-size: 0.62rem; text-transform: uppercase;
+    letter-spacing: 0.16em; font-weight: 700; color: var(--accent);
+  }
+  .vn__spon span:last-child { flex: 1 1 22rem; }
+
+  /* ── Round-two notice ──
+     An accent band pinned directly beneath the subnav: loud enough to be the
+     first thing read after the hero, quiet enough not to fight it. */
+  .alert {
+    background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+    padding-block: clamp(1.25rem, 3vw, 2rem);
+  }
+  .alert__row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: clamp(1rem, 3vw, 2.5rem);
+  }
+  .alert__body { min-width: 0; max-width: 64ch; }
+  .alert__tag {
+    display: flex; align-items: center; gap: 0.5rem; margin: 0;
+    font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 700; color: var(--accent);
+  }
+  .alert__dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+    animation: alert-pulse 2.4s ease-out infinite;
+  }
+  @keyframes alert-pulse {
+    70% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 0%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+  }
+  .alert__h {
+    margin: 0.4rem 0 0; font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.5vw, 1.6rem); line-height: 1.25;
+    letter-spacing: -0.015em; color: var(--ink);
+  }
+  .alert__p {
+    margin: 0.55rem 0 0; color: var(--ink-soft);
+    font-size: 0.95rem; line-height: 1.6;
+  }
+  .alert__btn { flex-shrink: 0; }
+
   /* ── CTA ── */
   .cta__p { color: var(--ink-soft); max-width: 58ch; margin: 1.1rem 0 0; font-size: 1.05rem; line-height: 1.7; }
   .cta__p--note { font-size: 0.92rem; color: var(--ink-faint); }
+  .cta__p--note a { color: var(--accent-2); text-decoration: underline; text-underline-offset: 3px; }
   /* Live counter to the application deadline — the island styles itself off the
      theme tokens, so this only has to place and bound it. */
   .cta__count { margin-top: 1.7rem; max-width: 30rem; }
@@ -1301,6 +1487,7 @@ const SCIENCES = [
   .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 30%, transparent); }
 
   @media (prefers-reduced-motion: reduce) {
+    .alert__dot { animation: none; }
     .s, .btn { transition: none; }
     .s:hover, .btn:hover { transform: none; }
     .s { opacity: 1; animation: none !important; }

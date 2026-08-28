@@ -11,9 +11,11 @@ import { insideFormMetaUrl } from "./inside-forms.ts";
 export const TDMMA_FORM_URL = "https://inside.cassa.bd/forms/event/2026-07-12-b";
 export const TDMMA_FORM_META_URL = insideFormMetaUrl(TDMMA_FORM_URL)!;
 
-// STATIC FALLBACK for that live value — end of 18 August, Dhaka (BST). Baked
+// STATIC FALLBACK for that live value — end of 3 September, Dhaka (BST), the
+// close of the SECOND, full-fee-only round (round one closed 18 August). Baked
 // into the page at build time and used whenever the /meta fetch fails (Inside
 // down, offline, no JS). Keep it in step with the form's Settings when the
-// deadline moves so the fallback never lies for long.
+// deadline moves so the fallback never lies for long. Verified against the live
+// /meta on 2026-08-28: closesAt 2026-09-02T17:59:00Z == 3 Sep 23:59 BST.
 // Extension history lives in src/pages/tdmma-2026.astro.
-export const TDMMA_APPLY_CLOSES = "2026-08-18T23:59:00+06:00";
+export const TDMMA_APPLY_CLOSES = "2026-09-03T23:59:00+06:00";
