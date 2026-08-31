@@ -14,10 +14,12 @@ const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3
    SA Uddin, 14 Jul 2026). Cell titles are shortened for the calendar; each
    drawer carries the exact PDF session title. The PDF assigns no session
    speakers, so cells carry no speaker line; the drawer shows "to be
-   announced". Exception: the neutrino astrophysics session, dropped by the
-   SOC on 14 Jul, was restored in the updated PDF (user, 16 Jul 2026) with
-   M Arshad Momen as its speaker; the user renamed the PDF's "astronomy"
-   to "astrophysics" (2026-07-16). */
+   announced". The neutrino astrophysics session was dropped by the SOC on
+   14 Jul and restored in the updated PDF (user, 16 Jul 2026); the user
+   renamed the PDF's "astronomy" to "astrophysics" (2026-07-16). It briefly
+   carried M Arshad Momen as its speaker — he was removed from this page
+   entirely on 2026-09-01 (user, acting on SA Uddin's PDF markup), so the
+   session now shows "to be announced" like every other. */
 type SType = "lec" | "tut" | "disc" | "cer" | "brk";
 /* t: short display title (the cell); d: the topics covered (the drawer);
    link: optional related page shown at the foot of the drawer */
@@ -76,7 +78,7 @@ const DAYS: Day[] = [
       { s: "11:45", e: "12:30", t: "GW170817", k: "lec", d: [
         "GW170817 — Anatomy of the First Binary Neutron Star Multi-Messenger Event",
       ] },
-      { s: "12:30", e: "13:00", t: "Neutrino Astrophysics", k: "lec", who: "M Arshad Momen", d: [
+      { s: "12:30", e: "13:00", t: "Neutrino Astrophysics", k: "lec", d: [
         "High-Energy Neutrino Astrophysics — IceCube, Sources, and Multi-Messenger Connections",
       ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
@@ -304,10 +306,14 @@ const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / han
    Jewel Kumar Ghosh replaced by Payaswini Saikia (user, 2026-08-28); she takes
    his slot in the list and his sentence in the About lede. Her details come
    from her own people-collection entry (src/content/people/saikia.md), so her
-   card links to the CASSA profile rather than out. */
+   card links to the CASSA profile rather than out.
+   M Arshad Momen removed 2026-09-01 (user, from SA Uddin's PDF markup) — off
+   the page entirely: this list, the About lede and the neutrino session's
+   speaker line. These cards are now the ONLY place affiliations and CASSA
+   memberships appear; the lede names each speaker's subject, not their
+   institution, so the two never drift out of sync. */
 const SPEAKERS = [
   { name: "Andrew L. Miller", aff: "Assistant Professor, ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn", web: "https://andrew-l-miller.github.io", ext: true, photo: "/people/miller.webp" },
-  { name: "M Arshad Momen", aff: "Professor, IUB · Core Member, CASSA", email: "arshad@iub.edu.bd", web: "https://iub.ac.bd/academics/departments/ps/faculty-and-staff/arshad", ext: true, photo: "/people/momen.webp" },
   { name: "Syed Ashraf Uddin", aff: "Associate Professor, IUB · Core Member, CASSA", email: "uddinsa@iub.edu.bd", web: withBase("/people/uddin"), ext: false, photo: "/people/uddin.webp" },
   { name: "Khan Muhammad Bin Asad", aff: "Assistant Professor, IUB · Core Member, CASSA", email: "kasad@iub.edu.bd", web: withBase("/people/asad"), ext: false, photo: "/people/asad.webp" },
   { name: "Payaswini Saikia", aff: "Associate Research Scientist, Department of Astronomy and Physics, Yale University · Associate Member, CASSA", email: "payaswini.saikia@yale.edu", web: withBase("/people/saikia"), ext: false, photo: "/people/saikia.jpg" },
@@ -434,52 +440,68 @@ const SCIENCES = [
       <Reveal><p class="eyebrow">About the workshop</p></Reveal>
       <div class="about">
         <Reveal delay={70}>
+          <!-- The lede was rewritten 2026-09-01 from SA Uddin's markup on a
+               print of this page ("TDMMA Workshop 2026 — CASSA.pdf", 31 Aug
+               2026): "still"→"static", the GW clause →"the ripples of
+               spacetime", the closing clause →"multiple messengers providing
+               crucial information…", a new capacity/infrastructure paragraph,
+               "The workshop features local and foreign experts.", Uddin named
+               convener, Saikia's line cut to the science, "participants
+               leave"→"participants who complete this workshop will be", and
+               "science"→"astrophysics". Momen struck out. Speaker order and
+               the affiliation-free phrasing are the user's (2026-09-01):
+               Miller · Uddin · Asad, then Burke · Saikia, each described by
+               what they work on — titles, institutions and CASSA memberships
+               belong to the speaker cards below and are not repeated here. -->
           <div class="about__lede">
             <Prose>
               <h2>One sky, many messengers</h2>
               <p>
-                Astronomy no longer watches a still sky. Surveys like ZTF and the
-                upcoming Rubin&nbsp;LSST catch the universe changing night by
-                night, while gravitational-wave detectors listen to it through
-                an entirely different
-                messenger. <strong>Time-Domain and Multi-Messenger Astronomy
-                (TDMMA)</strong> is where those signals meet. The <strong>time
-                domain is this workshop's centre of gravity</strong> — the
-                changing sky, and everything we learn by watching it change —
-                with the other messengers entering as the sky's most violent
-                events demand them.
+                Astronomy no longer watches a static sky. Surveys like ZTF and
+                the upcoming Rubin&nbsp;LSST catch the universe changing night
+                by night, while gravitational-wave detectors listen to the
+                ripples of spacetime. <strong>Time-Domain and Multi-Messenger
+                Astronomy (TDMMA)</strong> is where those signals meet. The
+                <strong>time domain is this workshop's centre of
+                gravity</strong> — the changing sky, and everything we learn by
+                watching it change — with multiple messengers providing crucial
+                information to understand the astrophysics of these objects.
               </p>
               <p>
-                The visiting lecturer for the week is
-                <strong>Dr.&nbsp;Andrew&nbsp;L. Miller</strong> — assistant
-                professor at the International Centre for Theoretical Physics
-                Asia-Pacific (ICTP-AP, UCAS Beijing) and a member of the
-                LIGO/Virgo collaboration — who comes to CASSA for the
+                With the growing demand to follow up these transients, CASSA is
+                building the infrastructure to do it — manpower and observing
+                facilities alike. This workshop aims to build a cohort of
+                dedicated people who want to contribute to TDMMA.
+              </p>
+              <p>
+                The workshop features local and foreign experts. The visiting
+                lecturer for the week is
+                <strong>Dr.&nbsp;Andrew&nbsp;L. Miller</strong>, who searches
+                gravitational-wave data for the signals of compact objects and
+                of dark matter, and who comes to CASSA for the
                 gravitational-wave portion of the programme. He is joined by
-                <strong>Prof.&nbsp;M&nbsp;Arshad&nbsp;Momen</strong>, a
-                theoretical physicist at IUB working on quantum field theory,
-                gravitation and particle physics, who takes the programme's
-                high-energy neutrino astrophysics session;
-                <strong>Dr.&nbsp;Syed&nbsp;Ashraf&nbsp;Uddin</strong>, a
-                supernova cosmologist who uses Type&nbsp;Ia supernovae as
-                standard candles to probe dark energy and the Hubble tension,
-                formerly of the Carnegie Supernova Project and a member of the
-                Dark Energy Survey;
-                <strong>Dr.&nbsp;Payaswini&nbsp;Saikia</strong>, an
-                associate research scientist at Yale University and a CASSA
-                Associate Member, who tracks accretion onto black holes and
-                neutron stars and the jets they launch, from radio to X-ray;
-                and
+                <strong>Dr.&nbsp;Syed&nbsp;Ashraf&nbsp;Uddin</strong>, the
+                convener of this workshop, whose expertise is Type&nbsp;Ia
+                supernova cosmology and observational astronomy — he uses
+                Type&nbsp;Ia supernovae as standard candles to probe dark energy
+                and the Hubble tension;
                 <strong>Dr.&nbsp;Khan&nbsp;Muhammad&nbsp;Bin&nbsp;Asad</strong>
                 on the radio time domain — pulsars and fast radio bursts with
-                MeerKAT and LOFAR. Session speakers and further facilitators
-                will be announced before the workshop.
+                MeerKAT and LOFAR;
+                <strong>Dr.&nbsp;Colin&nbsp;J. Burke</strong>, who hunts
+                massive black holes in the variability of wide-field time-domain
+                surveys; and
+                <strong>Dr.&nbsp;Payaswini&nbsp;Saikia</strong>, who studies
+                accretion onto black holes and neutron stars and the jets they
+                launch, from radio to X-ray. Session speakers and further
+                facilitators will be announced before the workshop.
               </p>
               <p>
-                The goal is capacity building: participants leave able to read a
-                transient light curve, follow a gravitational-wave alert, and
-                start research in time-domain astronomy and the multi-messenger
-                science that grows out of it.
+                The goal is capacity building: participants who complete this
+                workshop will be able to read a transient light curve, follow a
+                gravitational-wave alert, and start research in time-domain
+                astronomy and the multi-messenger astrophysics that grows out of
+                it.
               </p>
             </Prose>
           </div>
