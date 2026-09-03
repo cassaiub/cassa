@@ -248,15 +248,20 @@ const tbdRole: Record<string, string> = { lec: "Speaker", tut: "Moderator", disc
    SECOND ROUND (user, 2026-08-28): the 18 August close and the 21 August
    announcement both stand — round one ran its course and its participants are
    selected. What reopens is a small remainder of seats, for university students
-   only and at the FULL fee (no waivers), until 3 September 2026; payment is now
-   part of registering rather than a later step, so the old "by 31 August"
-   payment milestone is folded into that date. Confirmed against the live form's
-   /meta the same day (closesAt 2026-09-02T17:59:00Z = 3 Sep 23:59 BST). */
+   only and at the FULL fee (no waivers); payment is now part of registering
+   rather than a later step, so the old "by 31 August" payment milestone is
+   folded into that date.
+   EXTENDED to 5 September 2026 (user, 2026-09-03), strictly — the round-two
+   close is now the eve of the workshop. Note the live form's stored
+   closesAt 2026-09-02T17:59:00Z was 2 Sep 23:59 BST, NOT the 3 September the
+   2026-08-28 note claimed (17:59Z + 6h = 2 Sep 23:59), so the form had already
+   shut when this extension was made. The governing value is the form's
+   Settings on Inside; this page and src/data/tdmma.ts follow it. */
 const DEADLINES = [
   ["Round 1 applications", "closed 18 August 2026"],
   ["Participant list announced", "21 August 2026"],
-  ["Round 2 · full-fee seats", "open until 3 September 2026"],
-  ["Registration & payment", "by 3 September 2026"],
+  ["Round 2 · full-fee seats", "open until 5 September 2026"],
+  ["Registration & payment", "by 5 September 2026"],
   ["Workshop begins", "7 September 2026"],
 ];
 
@@ -284,7 +289,7 @@ const VENUES = [
   },
 ];
 
-/* The instant the inside-portal form closes on (end of 3 September, Dhaka) —
+/* The instant the inside-portal form closes on (end of 5 September, Dhaka) —
    shared from src/data/tdmma.ts so this page's counter and the home-hero slide
    expire together. The GOVERNING value is the form builder's Settings on
    Inside: the countdown fetches it live from the form's /meta endpoint and
@@ -409,14 +414,14 @@ const SCIENCES = [
        The first thing on the page after the hero (user, 2026-08-28), because
        the only action left is the handful of remaining full-fee seats. It
        jumps to #apply, the same anchor the subnav pill uses. Delete this whole
-       section once 3 September passes — the countdown below it will already
+       section once 5 September passes — the countdown below it will already
        have flipped to "Applications have closed". -->
   <section class="alert" aria-labelledby="alert-h">
     <div class="wrap alert__row">
       <div class="alert__body">
         <p class="alert__tag"><span class="alert__dot" aria-hidden="true"></span>Round 1 closed · a few seats left</p>
         <h2 class="alert__h" id="alert-h">
-          Full-fee registration stays open until <strong>3 September 2026</strong>
+          Full-fee registration stays open until <strong>5 September 2026</strong>
         </h2>
         <p class="alert__p">
           The first round of applications closed on 18 August and its
@@ -775,7 +780,7 @@ const SCIENCES = [
           <strong>The first round is done.</strong> Applications closed on
           <strong>18 August 2026</strong> and the selected participants were
           announced on 21 August. What is left is a small block of seats, held
-          open until <strong>3 September 2026</strong> for
+          open until <strong>5 September 2026</strong> for
           <strong>university students from Bangladesh and beyond</strong>.
         </p>
         <p class="cta__p">
