@@ -19,7 +19,17 @@ const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3
    renamed the PDF's "astronomy" to "astrophysics" (2026-07-16). It briefly
    carried M Arshad Momen as its speaker — he was removed from this page
    entirely on 2026-09-01 (user, acting on SA Uddin's PDF markup), so the
-   session now shows "to be announced" like every other. */
+   session now shows "to be announced" like every other.
+   REVISED from a new TDMMA_Workshop_Schedule_2026.pdf (user, 2026-09-05).
+   Four session changes, all times and every other session unchanged:
+   Day 2 15:15 pulsars → r-process nucleosynthesis; Day 4 10:00 core-collapse
+   SNe → the gamma-ray universe, with core-collapse SNe moving to the 17:15
+   closing slot, which drops the Big Data Astronomy discussion; Day 5 12:30
+   the TART ionosphere lecture → a CTA/Fermi discussion (so the programme no
+   longer links out to /research/tart). The new PDF spells the Day 2 neutrino
+   session "astronomy" again — kept as "astrophysics" per the user's
+   2026-07-16 rename. Venues are this page's own (user, 2026-08-28); the PDF
+   carries none. */
 type SType = "lec" | "tut" | "disc" | "cer" | "brk";
 /* t: short display title (the cell); d: the topics covered (the drawer);
    link: optional related page shown at the foot of the drawer */
@@ -85,8 +95,8 @@ const DAYS: Day[] = [
       { s: "14:30", e: "15:15", t: "Kilonovae", k: "lec", d: [
         "Kilonovae — Observations and Theoretical Models",
       ] },
-      { s: "15:15", e: "16:00", t: "Pulsar in the Time Domain", k: "lec", d: [
-        "Pulsar in the Time Domain",
+      { s: "15:15", e: "16:00", t: "r-process Nucleosynthesis", k: "lec", d: [
+        "r-process Nucleosynthesis and Heavy Element Production in Mergers",
       ] },
       { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
       { s: "16:15", e: "17:00", t: "Gap Transients", k: "lec", d: [
@@ -136,8 +146,8 @@ const DAYS: Day[] = [
     venue: "Digital Classroom · IUB",
     theme: "Stellar Transients & Data Science Methods",
     sessions: [
-      { s: "10:00", e: "10:45", t: "Core-Collapse Supernovae", k: "lec", d: [
-        "Core-Collapse Supernovae — Explosion Mechanisms and Multi-Messenger Signatures",
+      { s: "10:00", e: "10:45", t: "The Gamma-ray Universe", k: "lec", d: [
+        "The Gamma-ray Universe — Blazars, GRBs, and TeV Astrophysics",
       ] },
       { s: "10:45", e: "11:30", t: "Type Ia Supernovae", k: "lec", d: [
         "Type Ia Supernovae as Cosmological Standard Candles",
@@ -160,8 +170,8 @@ const DAYS: Day[] = [
       { s: "16:15", e: "17:15", t: "Hands-on: ML Classification", k: "tut", d: [
         "Hands-on ML Light Curve Classification with ParSNIP / RAPID",
       ] },
-      { s: "17:15", e: "18:00", t: "Big Data Astronomy", k: "disc", d: [
-        "Challenges and Opportunities in Big Data Astronomy",
+      { s: "17:15", e: "18:00", t: "Core-Collapse Supernovae", k: "lec", d: [
+        "Core-Collapse Supernovae — Explosion Mechanisms and Multi-Messenger Signatures",
       ] },
     ],
   },
@@ -180,9 +190,9 @@ const DAYS: Day[] = [
       { s: "11:45", e: "12:30", t: "Rubin LSST", k: "lec", d: [
         "Rubin LSST — Science Drivers, Data Products, and Community Access",
       ] },
-      { s: "12:30", e: "13:00", t: "The Ionosphere with TART", k: "lec", d: [
-        "The Ionosphere as Foreground: TEC and Scintillation with TART",
-      ], link: { href: "/research/tart", label: "TART at IUB" } },
+      { s: "12:30", e: "13:00", t: "High-Energy MMA with CTA & Fermi", k: "disc", d: [
+        "High-Energy Multi-Messenger Astronomy with CTA and Fermi",
+      ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
       { s: "14:30", e: "15:15", t: "Space-Based Observatories", k: "lec", d: [
         "Space-Based Observatories — SVOM, THESEUS, and Beyond",
@@ -316,14 +326,52 @@ const typeLabel: Record<string, string> = { lec: "Lecture", tut: "Tutorial / han
    the page entirely: this list, the About lede and the neutrino session's
    speaker line. These cards are now the ONLY place affiliations and CASSA
    memberships appear; the lede names each speaker's subject, not their
-   institution, so the two never drift out of sync. */
-const SPEAKERS = [
-  { name: "Andrew L. Miller", aff: "Assistant Professor, ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn", web: "https://andrew-l-miller.github.io", ext: true, photo: "/people/miller.webp" },
-  { name: "Syed Ashraf Uddin", aff: "Associate Professor, IUB · Core Member, CASSA", email: "uddinsa@iub.edu.bd", web: withBase("/people/uddin"), ext: false, photo: "/people/uddin.webp" },
-  { name: "Khan Muhammad Bin Asad", aff: "Assistant Professor, IUB · Core Member, CASSA", email: "kasad@iub.edu.bd", web: withBase("/people/asad"), ext: false, photo: "/people/asad.webp" },
-  { name: "Payaswini Saikia", aff: "Associate Research Scientist, Department of Astronomy and Physics, Yale University · Associate Member, CASSA", email: "payaswini.saikia@yale.edu", web: withBase("/people/saikia"), ext: false, photo: "/people/saikia.jpg" },
-  { name: "Colin J. Burke", aff: "NSF AAPF Postdoctoral Fellow, Department of Astronomy, Yale University · incoming Assistant Professor, University of North Texas", email: "colin.j.burke@yale.edu", web: "https://burke86.github.io", ext: true, photo: "/people/burke.webp" },
-  { name: "Md Redyan Ahmed", aff: "PhD candidate, University of Sydney · Graduate Member, CASSA", email: "mahm0320@uni.sydney.edu.au", web: "https://sites.google.com/view/md-redyan-ahmed", ext: true, photo: "/people/ahmed.webp" },
+   institution, so the two never drift out of sync.
+   Dipen Bhattacharya added 2026-09-05 (user). The only source given was his
+   Daily Star author page, which is therefore what his card links to and where
+   the affiliation and portrait come from (cropped square from the full-res
+   author avatar there). That bio is written in the past tense — "later worked
+   as a gamma-ray astronomer at UC Riverside, while also teaching physics at
+   Moreno Valley College" — so this card states his field and those two
+   institutions rather than a current title, which the source does not give.
+   No email is published there, so his card shows none (the render already
+   treats email as optional; the field is "" to keep the array's type uniform).
+   He sits after the IUB faculty and before Saikia on the seniority order used
+   here (PhD 1990), and takes the matching position in the About lede — after
+   Asad, before Burke (user, 2026-09-05). His lede sentence stays inside what
+   the Daily Star bio supports: balloon-borne gamma-ray observing and the
+   Bengali science fiction, no session claim. The programme still attributes no
+   session to him — Day 4's new gamma-ray lecture would fit his field, but the
+   PDF names no speakers at all, so leave that to the SOC.
+   Md Redyan Ahmed gained a lede sentence in the same edit: the split gave the
+   online paragraph three names and he was the one speaker the lede had never
+   described. His subject comes from his own people-collection entry
+   (src/content/people/ahmed.md — "Radio astronomy", "Galaxy evolution"), not
+   from anything invented here. */
+/* Split into who is in the room and who joins by video (user, 2026-09-05).
+   Mode is the ONLY thing this split encodes — within each group the previous
+   seniority order is kept, so the cards move but never reorder among
+   themselves. The About lede carries the same two groups as two paragraphs,
+   in the same order, so the section and the lede can be checked against each
+   other at a glance. */
+const SPEAKER_GROUPS = [
+  {
+    mode: "In person",
+    people: [
+      { name: "Andrew L. Miller", aff: "Assistant Professor, ICTP-AP · University of Chinese Academy of Sciences, Beijing", email: "andrew.miller.ligo@ucas.ac.cn", web: "https://andrew-l-miller.github.io", ext: true, photo: "/people/miller.webp" },
+      { name: "Syed Ashraf Uddin", aff: "Associate Professor, IUB · Core Member, CASSA", email: "uddinsa@iub.edu.bd", web: withBase("/people/uddin"), ext: false, photo: "/people/uddin.webp" },
+      { name: "Khan Muhammad Bin Asad", aff: "Assistant Professor, IUB · Core Member, CASSA", email: "kasad@iub.edu.bd", web: withBase("/people/asad"), ext: false, photo: "/people/asad.webp" },
+      { name: "Colin J. Burke", aff: "NSF AAPF Postdoctoral Fellow, Department of Astronomy, Yale University · incoming Assistant Professor, University of North Texas", email: "colin.j.burke@yale.edu", web: "https://burke86.github.io", ext: true, photo: "/people/burke.webp" },
+    ],
+  },
+  {
+    mode: "Online",
+    people: [
+      { name: "Dipen Bhattacharya", aff: "Gamma-ray astronomer · University of California, Riverside and Moreno Valley College, California", email: "", web: "https://www.thedailystar.net/author/dipen-bhattacharya", ext: true, photo: "/people/dipen.webp" },
+      { name: "Payaswini Saikia", aff: "Associate Research Scientist, Department of Astronomy and Physics, Yale University · Associate Member, CASSA", email: "payaswini.saikia@yale.edu", web: withBase("/people/saikia"), ext: false, photo: "/people/saikia.jpg" },
+      { name: "Md Redyan Ahmed", aff: "PhD candidate, University of Sydney · Graduate Member, CASSA", email: "mahm0320@uni.sydney.edu.au", web: "https://sites.google.com/view/md-redyan-ahmed", ext: true, photo: "/people/ahmed.webp" },
+    ],
+  },
 ];
 
 const COMMITTEES = [
@@ -354,7 +402,7 @@ const SCIENCES = [
   {
     day: "Day 2 · Tue Sep 8",
     t: "Gravitational waves & multi-messenger events",
-    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae, neutrino astrophysics, pulsars and gap transients.",
+    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae, r-process nucleosynthesis, neutrino astrophysics and gap transients.",
   },
   {
     day: "Day 3 · Wed Sep 9",
@@ -364,7 +412,7 @@ const SCIENCES = [
   {
     day: "Day 4 · Thu Sep 10",
     t: "Stellar transients & data-science methods",
-    d: "Core-collapse and thermonuclear supernovae, fast radio bursts, machine learning for transient classification and real-time pipelines.",
+    d: "Gamma-ray astronomy, core-collapse and thermonuclear supernovae, fast radio bursts, machine learning for transient classification and real-time pipelines.",
   },
 ];
 ---
@@ -479,8 +527,9 @@ const SCIENCES = [
                 dedicated people who want to contribute to TDMMA.
               </p>
               <p>
-                The workshop features local and foreign experts. The visiting
-                lecturer for the week is
+                The workshop features local and foreign experts, some in the
+                room and some joining online. In person, the visiting lecturer
+                for the week is
                 <strong>Dr.&nbsp;Andrew&nbsp;L. Miller</strong>, who searches
                 gravitational-wave data for the signals of compact objects and
                 of dark matter, and who comes to CASSA for the
@@ -492,14 +541,24 @@ const SCIENCES = [
                 and the Hubble tension;
                 <strong>Dr.&nbsp;Khan&nbsp;Muhammad&nbsp;Bin&nbsp;Asad</strong>
                 on the radio time domain — pulsars and fast radio bursts with
-                MeerKAT and LOFAR;
+                MeerKAT and LOFAR; and
                 <strong>Dr.&nbsp;Colin&nbsp;J. Burke</strong>, who hunts
                 massive black holes in the variability of wide-field time-domain
-                surveys; and
+                surveys.
+              </p>
+              <p>
+                Joining online are
+                <strong>Dr.&nbsp;Dipen&nbsp;Bhattacharya</strong>, a gamma-ray
+                astronomer who has observed the high-energy sky with
+                balloon-borne telescopes flown above the atmosphere, and a
+                Bengali science-fiction writer;
                 <strong>Dr.&nbsp;Payaswini&nbsp;Saikia</strong>, who studies
                 accretion onto black holes and neutron stars and the jets they
-                launch, from radio to X-ray. Session speakers and further
-                facilitators will be announced before the workshop.
+                launch, from radio to X-ray; and
+                <strong>Md&nbsp;Redyan&nbsp;Ahmed</strong>, a doctoral
+                researcher in radio astronomy and galaxy evolution. Session
+                speakers and further facilitators will be announced before the
+                workshop.
               </p>
               <p>
                 The goal is capacity building: participants who complete this
@@ -526,8 +585,8 @@ const SCIENCES = [
             </ol>
             <p class="sci__coda">
               The fifth day looks outward — Einstein Telescope, SKA,
-              Rubin&nbsp;LSST, CTA and TART — and closes with participant talks
-              and a panel.
+              Rubin&nbsp;LSST and CTA — and closes with participant talks and a
+              panel.
             </p>
           </aside>
         </Reveal>
@@ -721,26 +780,31 @@ const SCIENCES = [
     <div class="wrap">
       <Reveal><p class="eyebrow">Resource people</p></Reveal>
       <Reveal delay={60}><h2 style={h2}>Invited speakers</h2></Reveal>
-      <div class="spk">
-        {SPEAKERS.map((p, i) => (
-          <Reveal delay={100 + i * 50}>
-            <article class="spk__card">
-              <img class="spk__photo" src={withBase(p.photo)} alt={p.name} width="480" height="480" loading="lazy" />
-              <div class="spk__body">
-                <h3 class="spk__name">
-                  <a
-                    href={p.web}
-                    target={p.ext ? "_blank" : undefined}
-                    rel={p.ext ? "noopener" : undefined}
-                  >{p.name}{p.ext && <span class="spk__ext" aria-hidden="true"> ↗</span>}</a>
-                </h3>
-                <p class="spk__aff">{p.aff}</p>
-                {p.email && <a class="spk__mail" href={`mailto:${p.email}`}>{p.email}</a>}
-              </div>
-            </article>
-          </Reveal>
-        ))}
-      </div>
+      {SPEAKER_GROUPS.map((g) => (
+        <div class="spk-group">
+          <Reveal delay={80}><h3 class="spk-group__h">{g.mode}</h3></Reveal>
+          <div class="spk">
+            {g.people.map((p, i) => (
+              <Reveal delay={100 + i * 50}>
+                <article class="spk__card">
+                  <img class="spk__photo" src={withBase(p.photo)} alt={p.name} width="480" height="480" loading="lazy" />
+                  <div class="spk__body">
+                    <h4 class="spk__name">
+                      <a
+                        href={p.web}
+                        target={p.ext ? "_blank" : undefined}
+                        rel={p.ext ? "noopener" : undefined}
+                      >{p.name}{p.ext && <span class="spk__ext" aria-hidden="true"> ↗</span>}</a>
+                    </h4>
+                    <p class="spk__aff">{p.aff}</p>
+                    {p.email && <a class="spk__mail" href={`mailto:${p.email}`}>{p.email}</a>}
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 
@@ -1366,6 +1430,18 @@ const SCIENCES = [
   .spk__aff { margin: 0.3rem 0 0; font-size: 0.8rem; line-height: 1.5; color: var(--ink-faint); }
   .spk__mail { display: inline-block; margin-top: 0.35rem; font-size: 0.78rem; color: var(--accent-2); }
   .spk__mail:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Speakers split by attendance mode — the group label reuses the
+     accent-ruled title idiom of the committee rails below. */
+  .spk-group:first-of-type { margin-top: 2.4rem; }
+  .spk-group + .spk-group { margin-top: clamp(2.2rem, 4.5vw, 3.2rem); }
+  .spk-group__h {
+    margin: 0; padding-bottom: 0.7rem;
+    border-bottom: 2px solid var(--accent);
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 700; color: var(--accent);
+  }
+  .spk-group .spk { margin-top: 1.5rem; }
 
   /* ── Organisers — boxless committee rails under an accent-ruled title ── */
   .orgs {
