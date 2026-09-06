@@ -23,8 +23,10 @@ const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3
 
    What changed against the 2026-09-05 PDF, day by day:
    · Day 1 — unchanged in shape; every session 10:30 onward is SA Uddin's
-     except the 15:15 GW introduction (Miller). The 17:00 lab has a student
-     TA, N. Hafsa.
+     except the GW introduction (Miller). The three afternoon lectures were
+     reordered on 2026-09-06 (user) to run Stellar Evolution Endpoints 14:30,
+     Compact Object Physics 15:15, then Miller's GW introduction at 16:15
+     after the coffee break. The 17:00 lab has a student TA, N. Hafsa.
    · Day 2 — Miller now takes only the two pre-coffee lectures; GW170817 is
      dropped and Burke's AGN variability lecture moves here from Day 4 to
      fill 11:45–13:00 (as a lecture, not the discussion it was on Day 4).
@@ -97,15 +99,15 @@ const DAYS: Day[] = [
         "Modern Survey Astronomy — ZTF, Rubin/LSST, and Alert Brokers",
       ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
-      { s: "14:30", e: "15:15", t: "Compact Object Physics", k: "lec", who: UDDIN, d: [
+      { s: "14:30", e: "15:15", t: "Stellar Evolution Endpoints", k: "lec", who: UDDIN, d: [
+        "Stellar Evolution Endpoints and Observational Signatures",
+      ] },
+      { s: "15:15", e: "16:00", t: "Compact Object Physics", k: "lec", who: UDDIN, d: [
         "Compact Object Physics — Neutron Stars and Black Holes",
       ] },
-      { s: "15:15", e: "16:00", t: "Intro to GW Detection", k: "lec", who: MILLER, d: [
-        "Introduction to Gravitational Wave Detection: LIGO / Virgo / KAGRA",
-      ] },
       { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
-      { s: "16:15", e: "17:00", t: "Stellar Evolution Endpoints", k: "lec", who: UDDIN, d: [
-        "Stellar Evolution Endpoints and Observational Signatures",
+      { s: "16:15", e: "17:00", t: "Intro to GW Detection", k: "lec", who: MILLER, d: [
+        "Introduction to Gravitational Wave Detection: LIGO / Virgo / KAGRA",
       ] },
       { s: "17:00", e: "18:00", t: "Hands-on: Alert Brokers", k: "tut", who: UDDIN, ta: "N. Hafsa", d: [
         "Navigating Alert Brokers — Hands-on with ALeRCE and Fink",
