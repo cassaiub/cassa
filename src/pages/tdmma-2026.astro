@@ -10,30 +10,69 @@ import { TDMMA_APPLY_CLOSES, TDMMA_FORM_URL, TDMMA_FORM_META_URL } from "../data
 const h2 = "font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em;margin:.3rem 0 0;color:var(--ink)";
 
 /* ── Programme data ───────────────────────────────────────────────────────
-   Verbatim from the FINAL schedule (TDMMA_Workshop_Schedule_2026.pdf,
-   SA Uddin, 14 Jul 2026). Cell titles are shortened for the calendar; each
-   drawer carries the exact PDF session title. The PDF assigns no session
-   speakers, so cells carry no speaker line; the drawer shows "to be
-   announced". The neutrino astrophysics session was dropped by the SOC on
-   14 Jul and restored in the updated PDF (user, 16 Jul 2026); the user
-   renamed the PDF's "astronomy" to "astrophysics" (2026-07-16). It briefly
-   carried M Arshad Momen as its speaker — he was removed from this page
-   entirely on 2026-09-01 (user, acting on SA Uddin's PDF markup), so the
-   session now shows "to be announced" like every other.
-   REVISED from a new TDMMA_Workshop_Schedule_2026.pdf (user, 2026-09-05).
-   Four session changes, all times and every other session unchanged:
-   Day 2 15:15 pulsars → r-process nucleosynthesis; Day 4 10:00 core-collapse
-   SNe → the gamma-ray universe, with core-collapse SNe moving to the 17:15
-   closing slot, which drops the Big Data Astronomy discussion; Day 5 12:30
-   the TART ionosphere lecture → a CTA/Fermi discussion (so the programme no
-   longer links out to /research/tart). The new PDF spells the Day 2 neutrino
-   session "astronomy" again — kept as "astrophysics" per the user's
-   2026-07-16 rename. Venues are this page's own (user, 2026-08-28); the PDF
-   carries none. */
+   Originally verbatim from TDMMA_Workshop_Schedule_2026.pdf (SA Uddin,
+   14 Jul 2026), revised 2026-09-05 from a second PDF. Cell titles are
+   shortened for the calendar; each drawer carries the full session title.
+
+   REBUILT 2026-09-06 (user), the day before the workshop — this is now the
+   running order the SOC will actually teach, and it supersedes both PDFs.
+   Every session carries its instructor, and the instructor is shown IN the
+   calendar cell as well as in the drawer (reversing the 2026-07-16 rule that
+   kept speaker names out of the cells — the names are settled now, so the
+   calendar can carry them).
+
+   What changed against the 2026-09-05 PDF, day by day:
+   · Day 1 — unchanged in shape; every session 10:30 onward is SA Uddin's
+     except the 15:15 GW introduction (Miller). The 17:00 lab has a student
+     TA, N. Hafsa.
+   · Day 2 — Miller now takes only the two pre-coffee lectures; GW170817 is
+     dropped and Burke's AGN variability lecture moves here from Day 4 to
+     fill 11:45–13:00 (as a lecture, not the discussion it was on Day 4).
+     r-process nucleosynthesis is dropped entirely, and so — in a second pass
+     the same day — are kilonovae and neutrino astrophysics, whose two slots
+     become KMB Asad's hour on TART, the Transient Array Radio Telescope (the
+     one session that links out to /research/tart). Gap transients keeps the
+     15:30 half-hour, so the afternoon still ends at 16:00 and frees 16:15 for
+     Md Redyan Ahmed's new "Introduction to Exoplanet Science". Miller runs the
+     17:00 lab.
+   · Day 3 — the two TESS sessions (mission, follow-up programmes) are
+     dropped and KMB Asad's "Pulsars in the Time Domain" takes 11:45–13:00.
+     The 16:15 ground-based follow-up lecture and the 17:00 TESS lab merge
+     into a single 16:15–18:00 hands-on, Uddin with TA M. S. H. Shahal.
+   · Day 4 — AGN variability having moved to Day 2, Asad's FRB lecture grows
+     to 11:45–13:00. Core-collapse SNe comes back up to 15:15, and the
+     real-time-pipelines lecture merges with the ML lab into one 16:15–18:00
+     hands-on, Uddin with TA A. Imtiaz. The gamma-ray lecture is Dipen
+     Bhattacharya's (online), matching his field.
+   · Day 5 — CTA/Fermi, the space-based-observatories and synergies lectures
+     and the closing panel are all dropped. Three morning lectures only, then
+     lunch at 12:30, a 14:00 coach from IUB to the ACI Centre, participant
+     short talks at 15:00 and the closing ceremony 16:00–18:00, followed by the
+     workshop dinner at 19:00 — which is why the grid runs past 18:00 on this
+     day alone. The day therefore SPLITS across two venues —
+     the morning is still at IUB — which is why sessions can override the
+     day's venue.
+
+   Ambiguities in the user's markup were settled by asking (2026-09-06):
+   Burke takes the whole 11:45–13:00 block on Day 2 with GW170817 dropped;
+   Day 4's FRB lecture starts at 11:45, keeping Thursday's morning coffee;
+   and A. Imtiaz is the TA of Day 4's lab, with Uddin instructing. */
 type SType = "lec" | "tut" | "disc" | "cer" | "brk";
-/* t: short display title (the cell); d: the topics covered (the drawer);
-   link: optional related page shown at the foot of the drawer */
-interface Session { s: string; e: string; t: string; k: SType; who?: string; d?: string[]; link?: { href: string; label: string } }
+/* Short forms used in the calendar cells — the full names, affiliations and
+   in-person/online mode live in SPEAKER_GROUPS below, which stays the single
+   source for who these people are. */
+const UDDIN = "S. A. Uddin";
+const MILLER = "A. L. Miller";
+const ASAD = "K. M. B. Asad";
+const BURKE = "C. J. Burke";
+const DIPEN = "D. Bhattacharya";
+const SAIKIA = "P. Saikia";
+const REDYAN = "M. R. Ahmed";
+/* t: short display title (the cell); who: instructor, shown in the cell and
+   the drawer; ta: student teaching assistant on the hands-on sessions;
+   d: the topics covered (the drawer); v: venue override (Day 5 only, which
+   moves buildings at lunch); link: optional related page shown in the drawer */
+interface Session { s: string; e: string; t: string; k: SType; who?: string; ta?: string; d?: string[]; v?: string; link?: { href: string; label: string } }
 /* venue: the building that day sits in — the week splits across two (user,
    2026-08-28), so the calendar header carries it and the drawer repeats it. */
 interface Day { wd: string; date: string; short: string; theme: string; venue: string; sessions: Session[] }
@@ -47,28 +86,28 @@ const DAYS: Day[] = [
       { s: "10:00", e: "10:30", t: "Opening & Welcome", k: "cer", d: [
         "Opening Ceremony & Welcome Address",
       ] },
-      { s: "10:30", e: "11:15", t: "Overview of TDMMA", k: "lec", d: [
+      { s: "10:30", e: "11:15", t: "Overview of TDMMA", k: "lec", who: UDDIN, d: [
         "Overview of Time-Domain and Multi-Messenger Astronomy",
       ] },
       { s: "11:15", e: "11:30", t: "Coffee Break", k: "brk" },
-      { s: "11:30", e: "12:15", t: "The EM Transient Sky", k: "lec", d: [
+      { s: "11:30", e: "12:15", t: "The EM Transient Sky", k: "lec", who: UDDIN, d: [
         "The Electromagnetic Transient Sky — Variables, Novae, and Explosions",
       ] },
-      { s: "12:15", e: "13:00", t: "Modern Survey Astronomy", k: "lec", d: [
+      { s: "12:15", e: "13:00", t: "Modern Survey Astronomy", k: "lec", who: UDDIN, d: [
         "Modern Survey Astronomy — ZTF, Rubin/LSST, and Alert Brokers",
       ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
-      { s: "14:30", e: "15:15", t: "Compact Object Physics", k: "lec", d: [
+      { s: "14:30", e: "15:15", t: "Compact Object Physics", k: "lec", who: UDDIN, d: [
         "Compact Object Physics — Neutron Stars and Black Holes",
       ] },
-      { s: "15:15", e: "16:00", t: "Intro to GW Detection", k: "lec", d: [
+      { s: "15:15", e: "16:00", t: "Intro to GW Detection", k: "lec", who: MILLER, d: [
         "Introduction to Gravitational Wave Detection: LIGO / Virgo / KAGRA",
       ] },
       { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
-      { s: "16:15", e: "17:00", t: "Stellar Evolution Endpoints", k: "lec", d: [
+      { s: "16:15", e: "17:00", t: "Stellar Evolution Endpoints", k: "lec", who: UDDIN, d: [
         "Stellar Evolution Endpoints and Observational Signatures",
       ] },
-      { s: "17:00", e: "18:00", t: "Hands-on: Alert Brokers", k: "tut", d: [
+      { s: "17:00", e: "18:00", t: "Hands-on: Alert Brokers", k: "tut", who: UDDIN, ta: "N. Hafsa", d: [
         "Navigating Alert Brokers — Hands-on with ALeRCE and Fink",
       ] },
     ],
@@ -78,65 +117,57 @@ const DAYS: Day[] = [
     venue: "Digital Classroom · IUB",
     theme: "Gravitational Waves & Multi-Messenger Events",
     sessions: [
-      { s: "10:00", e: "10:45", t: "GW Sources", k: "lec", d: [
+      { s: "10:00", e: "10:45", t: "GW Sources", k: "lec", who: MILLER, d: [
         "GW Sources — Binary Neutron Star and Black Hole Mergers",
       ] },
-      { s: "10:45", e: "11:30", t: "GW Data Analysis", k: "lec", d: [
+      { s: "10:45", e: "11:30", t: "GW Data Analysis", k: "lec", who: MILLER, d: [
         "GW Data Analysis Pipeline and Parameter Estimation",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "12:30", t: "GW170817", k: "lec", d: [
-        "GW170817 — Anatomy of the First Binary Neutron Star Multi-Messenger Event",
-      ] },
-      { s: "12:30", e: "13:00", t: "Neutrino Astrophysics", k: "lec", d: [
-        "High-Energy Neutrino Astrophysics — IceCube, Sources, and Multi-Messenger Connections",
+      { s: "11:45", e: "13:00", t: "AGN Variability", k: "lec", who: BURKE, d: [
+        "AGN Variability and Changing-Look AGN",
       ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
-      { s: "14:30", e: "15:15", t: "Kilonovae", k: "lec", d: [
-        "Kilonovae — Observations and Theoretical Models",
-      ] },
-      { s: "15:15", e: "16:00", t: "r-process Nucleosynthesis", k: "lec", d: [
-        "r-process Nucleosynthesis and Heavy Element Production in Mergers",
-      ] },
-      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
-      { s: "16:15", e: "17:00", t: "Gap Transients", k: "lec", d: [
+      { s: "14:30", e: "15:30", t: "TART: Transient Array Radio Telescope", k: "lec", who: ASAD, d: [
+        "TART: the Transient Array Radio Telescope",
+      ], link: { href: "/research/tart", label: "TART at IUB" } },
+      { s: "15:30", e: "16:00", t: "Gap Transients", k: "lec", who: UDDIN, d: [
         "Gap Transients — Luminosity Gap Events Between Novae and Supernovae",
       ] },
-      { s: "17:00", e: "18:00", t: "Hands-on: GW Sky Localization", k: "tut", d: [
+      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
+      { s: "16:15", e: "17:00", t: "Intro to Exoplanet Science", k: "lec", who: REDYAN, d: [
+        "Introduction to Exoplanet Science",
+      ] },
+      { s: "17:00", e: "18:00", t: "Hands-on: GW Sky Localization", k: "tut", who: MILLER, d: [
         "GW Sky Localization and EM Follow-up Strategies with LIGO Alerts",
       ] },
     ],
   },
   {
-    wd: "Wed", date: "Sep 9", short: "X-ray Binaries & TESS",
+    wd: "Wed", date: "Sep 9", short: "X-ray, Pulsars & Exoplanets",
     venue: "Digital Classroom · IUB",
-    theme: "X-ray Binaries, Stellar Transients & TESS Exoplanet Follow-up",
+    theme: "X-ray Binaries, Pulsars & Exoplanet Science",
     sessions: [
-      { s: "10:00", e: "10:45", t: "X-ray Binaries", k: "lec", d: [
+      { s: "10:00", e: "10:45", t: "X-ray Binaries", k: "lec", who: SAIKIA, d: [
         "X-ray Binaries — Accretion Physics, Outbursts, and Jet Formation",
       ] },
-      { s: "10:45", e: "11:30", t: "Tidal Disruption Events", k: "lec", d: [
+      { s: "10:45", e: "11:30", t: "Tidal Disruption Events", k: "lec", who: UDDIN, d: [
         "Tidal Disruption Events — Theory and Multiwavelength Observations",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "12:30", t: "The TESS Mission", k: "lec", d: [
-        "TESS Mission — Survey Design, Photometry Pipeline, and Planet Detection",
-      ] },
-      { s: "12:30", e: "13:00", t: "TESS Follow-up Programs", k: "disc", d: [
-        "TESS Follow-up Programs and the Community Alert Ecosystem",
+      { s: "11:45", e: "13:00", t: "Pulsars in the Time Domain", k: "lec", who: ASAD, d: [
+        "Pulsars in the Time Domain — Timing, Variability, and Transient Radio Emission",
       ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
-      { s: "14:30", e: "15:15", t: "Exoplanet Transit Photometry", k: "lec", d: [
+      { s: "14:30", e: "15:15", t: "Exoplanet Transit Photometry", k: "lec", who: UDDIN, d: [
         "Exoplanet Transit Photometry — Light Curve Modeling and Parameter Estimation",
       ] },
-      { s: "15:15", e: "16:00", t: "Atmospheric Characterization", k: "lec", d: [
+      { s: "15:15", e: "16:00", t: "Atmospheric Characterization", k: "lec", who: UDDIN, d: [
         "Atmospheric Characterization — Transmission Spectroscopy with JWST and HST",
       ] },
       { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
-      { s: "16:15", e: "17:00", t: "Ground-Based Follow-up", k: "lec", d: [
+      { s: "16:15", e: "18:00", t: "Hands-on: Follow-up & TESS Light Curves", k: "tut", who: UDDIN, ta: "M. S. H. Shahal", d: [
         "Ground-Based Follow-up Strategies — Radial Velocity, Imaging, and Transit Confirmation",
-      ] },
-      { s: "17:00", e: "18:00", t: "Hands-on: TESS Light Curves", k: "tut", d: [
         "TESS Light Curve Analysis with Lightkurve — Hands-on Exoplanet Transit Fitting",
       ] },
     ],
@@ -146,104 +177,115 @@ const DAYS: Day[] = [
     venue: "Digital Classroom · IUB",
     theme: "Stellar Transients & Data Science Methods",
     sessions: [
-      { s: "10:00", e: "10:45", t: "The Gamma-ray Universe", k: "lec", d: [
+      { s: "10:00", e: "10:45", t: "The Gamma-ray Universe", k: "lec", who: DIPEN, d: [
         "The Gamma-ray Universe — Blazars, GRBs, and TeV Astrophysics",
       ] },
-      { s: "10:45", e: "11:30", t: "Type Ia Supernovae", k: "lec", d: [
+      { s: "10:45", e: "11:30", t: "Type Ia Supernovae", k: "lec", who: UDDIN, d: [
         "Type Ia Supernovae as Cosmological Standard Candles",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "12:30", t: "Fast Radio Bursts", k: "lec", d: [
+      { s: "11:45", e: "13:00", t: "Fast Radio Bursts", k: "lec", who: ASAD, d: [
         "Fast Radio Bursts — Phenomenology, Localizations, and Progenitor Models",
       ] },
-      { s: "12:30", e: "13:00", t: "AGN Variability", k: "disc", d: [
-        "AGN Variability and Changing-Look AGN",
-      ] },
       { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
-      { s: "14:30", e: "15:15", t: "ML for Transient Classification", k: "lec", d: [
+      { s: "14:30", e: "15:15", t: "ML for Transient Classification", k: "lec", who: UDDIN, d: [
         "Machine Learning for Transient Classification — Methods and Applications",
       ] },
-      { s: "15:15", e: "16:00", t: "Real-Time Pipelines", k: "lec", d: [
-        "Real-Time Pipelines and Photometric Classification in the LSST Era",
+      { s: "15:15", e: "16:00", t: "Core-Collapse Supernovae", k: "lec", who: UDDIN, d: [
+        "Core-Collapse Supernovae — Explosion Mechanisms and Multi-Messenger Signatures",
       ] },
       { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
-      { s: "16:15", e: "17:15", t: "Hands-on: ML Classification", k: "tut", d: [
+      { s: "16:15", e: "18:00", t: "Hands-on: Pipelines & ML Classification", k: "tut", who: UDDIN, ta: "A. Imtiaz", d: [
+        "Real-Time Pipelines and Photometric Classification in the LSST Era",
         "Hands-on ML Light Curve Classification with ParSNIP / RAPID",
-      ] },
-      { s: "17:15", e: "18:00", t: "Core-Collapse Supernovae", k: "lec", d: [
-        "Core-Collapse Supernovae — Explosion Mechanisms and Multi-Messenger Signatures",
       ] },
     ],
   },
   {
     wd: "Fri", date: "Sep 11", short: "Future Facilities",
-    venue: "ACI Centre · Tejgaon",
-    theme: "Future Facilities & Synthesis",
+    venue: "IUB, then ACI Centre",
+    theme: "Future Facilities, Participant Talks & Closing",
     sessions: [
-      { s: "10:00", e: "10:45", t: "Next-Generation GW Detectors", k: "lec", d: [
+      { s: "10:00", e: "10:45", t: "Next-Generation GW Detectors", k: "lec", who: MILLER, v: "Digital Classroom · IUB", d: [
         "Next-Generation GW Detectors — Einstein Telescope, Cosmic Explorer, and LISA",
       ] },
-      { s: "10:45", e: "11:30", t: "Future Radio Facilities", k: "lec", d: [
+      { s: "10:45", e: "11:30", t: "Future Radio Facilities", k: "lec", who: ASAD, v: "Digital Classroom · IUB", d: [
         "Future Radio Facilities — SKA and ngVLA for Transient Science",
       ] },
       { s: "11:30", e: "11:45", t: "Coffee Break", k: "brk" },
-      { s: "11:45", e: "12:30", t: "Rubin LSST", k: "lec", d: [
+      { s: "11:45", e: "12:30", t: "Rubin LSST", k: "lec", who: UDDIN, v: "Digital Classroom · IUB", d: [
         "Rubin LSST — Science Drivers, Data Products, and Community Access",
       ] },
-      { s: "12:30", e: "13:00", t: "High-Energy MMA with CTA & Fermi", k: "disc", d: [
-        "High-Energy Multi-Messenger Astronomy with CTA and Fermi",
-      ] },
-      { s: "13:00", e: "14:30", t: "Lunch Break", k: "brk" },
-      { s: "14:30", e: "15:15", t: "Space-Based Observatories", k: "lec", d: [
-        "Space-Based Observatories — SVOM, THESEUS, and Beyond",
-      ] },
-      { s: "15:15", e: "16:00", t: "Synergies Across Messengers", k: "lec", d: [
-        "Synergies Across Messengers — Integrated Science Cases for the 2030s",
-      ] },
-      { s: "16:00", e: "16:15", t: "Coffee Break", k: "brk" },
-      { s: "16:15", e: "17:00", t: "Participant Short Talks", k: "cer", d: [
+      { s: "12:30", e: "14:00", t: "Lunch Break", k: "brk" },
+      { s: "14:00", e: "15:00", t: "Travel · IUB → ACI Centre", k: "brk" },
+      { s: "15:00", e: "16:00", t: "Participant Short Talks", k: "cer", who: "Participants", v: "ACI Centre · Tejgaon", d: [
         "Participant Short Talks",
       ] },
-      { s: "17:00", e: "17:45", t: "Panel: The Future of TDMMA", k: "disc", d: [
-        "Panel Discussion: The Future of TDMMA — Open Questions and Opportunities",
+      { s: "16:00", e: "18:00", t: "Closing Ceremony", k: "cer", v: "ACI Centre · Tejgaon", d: [
+        "Closing Ceremony",
       ] },
-      { s: "17:45", e: "18:00", t: "Closing & Certificates", k: "cer", d: [
-        "Closing Remarks & Certificate Distribution",
-      ] },
+      { s: "19:00", e: "20:00", t: "Workshop Dinner · hosted by ACI", k: "brk" },
     ],
   },
 ];
 
-/* Calendar geometry: 10:00–18:00 in 15-min grid rows (row 1 = day headers). */
+/* Calendar geometry: 10:00 to the last thing that happens all week, in 15-min
+   grid rows (row 1 = day headers). The end is derived rather than fixed at
+   18:00, because Friday's dinner sits at 19:00 (user, 2026-09-06). */
 const mins = (hm: string) => { const [h, m] = hm.split(":").map(Number); return h * 60 + m; };
 const row = (hm: string) => (mins(hm) - 600) / 15 + 2;
 
-/* Breaks shared by all five days render once, spanning the full week. */
-const isCommonBreak = (x: Session) =>
-  x.k === "brk" && DAYS.every((d) => d.sessions.some((y) => y.k === "brk" && y.s === x.s && y.e === x.e));
-const commonBreaks = DAYS[0].sessions.filter(isCommonBreak);
+/* A break that several adjacent days share renders ONCE as a band across just
+   those columns, instead of five identical cells. Since 2026-09-06 the week no
+   longer breaks in step — Friday lunches early at 12:30 and has no afternoon
+   coffee — so the span is computed per break over the run of days that carry
+   it, rather than assuming all five. A break only one day has (Monday's 11:15
+   coffee, Friday's early lunch and its coach to ACI) falls through to the
+   normal per-day cell path below. */
+const brKey = (x: Session) => `${x.s}|${x.e}|${x.t}`;
+const BREAK_SPANS = [...new Map(
+  DAYS.flatMap((d) => d.sessions).filter((x) => x.k === "brk").map((x) => [brKey(x), x] as const),
+).values()]
+  .map((b) => {
+    const on = DAYS.map((d, i) => (d.sessions.some((y) => brKey(y) === brKey(b)) ? i : -1)).filter((i) => i >= 0);
+    return { b, from: on[0], to: on[on.length - 1], n: on.length };
+  })
+  .filter((x) => x.n > 1 && x.to - x.from + 1 === x.n);
+const isSpannedBreak = (x: Session) => x.k === "brk" && BREAK_SPANS.some((sp) => brKey(sp.b) === brKey(x));
 
 const all = DAYS.flatMap((d) => d.sessions);
 const nSes = all.filter((x) => x.k !== "brk").length;
 const nLec = all.filter((x) => x.k === "lec").length;
 const nTut = all.filter((x) => x.k === "tut").length;
 
-/* The time rail carries one label per slot boundary (every distinct session
-   start plus the closing 18:00), each spanning down to the next boundary. */
-const BOUNDS = [...new Set([...all.map((x) => x.s), "18:00"])].sort((a, b) => mins(a) - mins(b));
+const END = all.map((x) => x.e).reduce((a, b) => (mins(b) > mins(a) ? b : a));
+const NROWS = (mins(END) - 600) / 15;
+
+/* The time rail carries one label per slot boundary — every distinct start AND
+   end, each spanning down to the next boundary. Ends matter because a few are
+   nobody's start: 18:00, where Mon–Thu finish, and 20:00 at the foot. */
+const BOUNDS = [...new Set(all.flatMap((x) => [x.s, x.e]))].sort((a, b) => mins(a) - mins(b));
 const boundSpan = (i: number) => (i === BOUNDS.length - 1 ? 1 : (mins(BOUNDS[i + 1]) - mins(BOUNDS[i])) / 15);
 
-/* Lunch is indicative, not proportional: its 15-min grid rows get a compressed
-   height so the 90-min band renders as a slim strip. */
-const LUNCH = DAYS[0].sessions.find((x) => x.k === "brk" && mins(x.e) - mins(x.s) > 30)!;
-const rowsTemplate = Array.from({ length: 32 }, (_, i) => {
-  const m = 600 + i * 15;
-  return m >= mins(LUNCH.s) && m < mins(LUNCH.e) ? "var(--unit-lunch)" : "var(--unit)";
-}).join(" ");
+/* Lunch is indicative, not proportional: a 15-min row in which NO day is
+   teaching gets a compressed height, so the long midday band renders as a slim
+   strip. Stated as "nobody is in session" rather than "this is lunch" because
+   the five days no longer break together — Friday lunches 12:30–14:00 and then
+   travels 14:00–15:00 while the others are still at lunch, and only the rows
+   every day has free may be squeezed. */
+const idle = (m: number) =>
+  !DAYS.some((d) => d.sessions.some((x) => x.k !== "brk" && mins(x.s) <= m && mins(x.e) > m));
+const rowsTemplate = Array.from({ length: NROWS }, (_, i) =>
+  idle(600 + i * 15) ? "var(--unit-lunch)" : "var(--unit)",
+).join(" ");
 
-/* Speaker names stay out of the calendar cells (user, 2026-07-16) — the
-   drawer alone carries the attribution. */
-const tbdRole: Record<string, string> = { lec: "Speaker", tut: "Moderator", disc: "Moderator", cer: "Speaker" };
+/* Instructors now ride in the calendar cells as well as the drawer (user,
+   2026-09-06) — the 2026-07-16 rule that kept names out of the cells was for
+   a programme whose speakers were unassigned. tbdRole labels the drawer's
+   attribution row, and still reads "to be announced" for the few sessions with
+   nobody attached (the opening ceremony). */
+const tbdRole: Record<string, string> = { lec: "Instructor", tut: "Instructor", disc: "Moderator", cer: "Speaker" };
+const venueOf = (d: Day, x: Session) => x.v ?? d.venue;
 
 /* Registration milestones — opening date set by the SOC (user, 2026-07-12);
    the intermediate dates are reasonable placeholders pending confirmation.
@@ -284,18 +326,18 @@ const DEADLINES = [
    the one this page already carried. */
 const VENUES = [
   {
-    days: "Days 1–4 · Mon 7 – Thu 10 September",
+    days: "Days 1–4 · Mon 7 – Thu 10 September, and Friday morning",
     name: "Digital Classroom, Independent University, Bangladesh",
     addr: "Plot 16, Block B, Aftabuddin Ahmed Road, Bashundhara Residential Area, Dhaka 1245",
     map: "https://www.google.com/maps/search/?api=1&query=Independent+University+Bangladesh+Bashundhara+Dhaka",
-    note: "Home of CASSA. Lectures, tutorials and panels, 10:00 AM – 6:00 PM.",
+    note: "Home of CASSA. Lectures and hands-on tutorials, 10:00 AM – 6:00 PM; on Friday until 12:30 PM.",
   },
   {
-    days: "Day 5 · Friday 11 September",
+    days: "Day 5 · Friday 11 September, from 3:00 PM",
     name: "ACI Centre, Tejgaon",
     addr: "245 Tejgaon Industrial Area, Dhaka 1208",
     map: "https://www.google.com/maps/search/?api=1&query=ACI+Centre+245+Tejgaon+Industrial+Area+Dhaka+1208",
-    note: "Future facilities, participant talks, the closing panel and certificates — followed by the workshop dinner.",
+    note: "Participant short talks from 3:00 PM and the closing ceremony 4:00–6:00 PM — followed by the workshop dinner at 7:00 PM.",
   },
 ];
 
@@ -402,12 +444,12 @@ const SCIENCES = [
   {
     day: "Day 2 · Tue Sep 8",
     t: "Gravitational waves & multi-messenger events",
-    d: "Binary mergers, gravitational-wave data analysis, GW170817, kilonovae, r-process nucleosynthesis, neutrino astrophysics and gap transients.",
+    d: "Binary mergers, gravitational-wave data analysis, AGN variability, TART — the Transient Array Radio Telescope — gap transients and an introduction to exoplanet science.",
   },
   {
     day: "Day 3 · Wed Sep 9",
-    t: "X-ray binaries, stellar transients & TESS exoplanet follow-up",
-    d: "X-ray binaries, tidal disruption events, the TESS mission, exoplanet transit photometry, atmospheric characterization and ground-based follow-up strategies.",
+    t: "X-ray binaries, pulsars & exoplanet science",
+    d: "X-ray binaries, tidal disruption events, pulsars in the time domain, exoplanet transit photometry, atmospheric characterization and ground-based follow-up strategies.",
   },
   {
     day: "Day 4 · Thu Sep 10",
@@ -419,7 +461,7 @@ const SCIENCES = [
 
 <BaseLayout
   title="TDMMA Workshop 2026 — CASSA"
-  description="CASSA's workshop on Time-Domain and Multi-Messenger Astronomy (TDMMA), 7–11 September 2026 at Independent University, Bangladesh — five days of lectures, hands-on tutorials and panels on the changing sky: transients and surveys, gravitational waves, TESS exoplanet follow-up, and future facilities."
+  description="CASSA's workshop on Time-Domain and Multi-Messenger Astronomy (TDMMA), 7–11 September 2026 at Independent University, Bangladesh — five days of lectures and hands-on tutorials on the changing sky: transients and surveys, gravitational waves, pulsars and fast radio bursts, exoplanet follow-up, and future facilities."
   current="/tdmma-2026"
 >
   <AnimatedHero
@@ -432,7 +474,7 @@ const SCIENCES = [
       <span>Sept 7–11, 2026</span><span aria-hidden="true">·</span>
       <span>10:00 AM – 6:00 PM</span><span aria-hidden="true">·</span>
       <span>IUB · ACI Centre, Dhaka</span><span aria-hidden="true">·</span>
-      <span>Lectures · Tutorials · Panels</span>
+      <span>Lectures · Tutorials · Participant talks</span>
     </Fragment>
   </AnimatedHero>
 
@@ -584,9 +626,9 @@ const SCIENCES = [
               ))}
             </ol>
             <p class="sci__coda">
-              The fifth day looks outward — Einstein Telescope, SKA,
-              Rubin&nbsp;LSST and CTA — and closes with participant talks and a
-              panel.
+              The fifth day looks outward — Einstein Telescope, SKA and
+              Rubin&nbsp;LSST — then crosses town to the ACI&nbsp;Centre for
+              participant talks, the closing ceremony and the workshop dinner.
             </p>
           </aside>
         </Reveal>
@@ -596,8 +638,8 @@ const SCIENCES = [
         {[
           ["Dates", "September 7–11, 2026 (Mon–Fri)"],
           ["Hours", "10:00 AM – 6:00 PM · lunch 1:00–2:30 PM"],
-          ["Venue", "Digital Classroom, IUB (days 1–4) · ACI Centre, Tejgaon (day 5)"],
-          ["Format", "Lectures · Tutorials · Panel Discussions"],
+          ["Venue", "Digital Classroom, IUB (days 1–4 and Friday morning) · ACI Centre, Tejgaon (Friday afternoon)"],
+          ["Format", "Lectures · Hands-on tutorials · Participant talks"],
           ["Certificates", "Awarded at the closing ceremony"],
         ].map(([k, v], i) => (
           <Reveal delay={100 + i * 60}>
@@ -648,34 +690,53 @@ const SCIENCES = [
             </Fragment>
           ))}
 
-          {/* week-wide breaks (identical across all five days) */}
-          {commonBreaks.map((b) => (
-            <div class="s s--brk s--span" style={`grid-row:${row(b.s)} / ${row(b.e)}`}>
-              <span class="s__title">{b.t}</span>
+          {/* breaks shared by a run of days — one band across those columns */}
+          {BREAK_SPANS.map((sp) => (
+            <div class="s s--brk s--span" style={`grid-column:${sp.from + 2} / ${sp.to + 3};grid-row:${row(sp.b.s)} / ${row(sp.b.e)}`}>
+              <span class="s__title">{sp.b.t}</span>
             </div>
           ))}
 
           {/* sessions, one column per day — click opens the detail drawer */}
           {DAYS.map((d, di) =>
-            d.sessions.filter((x) => !isCommonBreak(x)).map((x, si) => (
+            d.sessions.filter((x) => !isSpannedBreak(x)).map((x, si) => (
+              x.k === "brk" ? (
+                /* a break only this day has (Mon's 11:15 coffee, Fri's early
+                   lunch and its coach) — a quiet label, not a clickable cell */
+                <div
+                  class="s s--brk"
+                  style={`grid-column:${di + 2};grid-row:${row(x.s)} / ${row(x.e)};--d:${di * 70 + si * 45}ms`}
+                >
+                  <span class="s__title">{x.t}</span>
+                </div>
+              ) : (
               <button
                 type="button"
-                class:list={["s", `s--${x.k}`, x.k !== "brk" && { "s--sm": mins(x.e) - mins(x.s) <= 30, "s--xs": mins(x.e) - mins(x.s) <= 15 }]}
+                class:list={["s", `s--${x.k}`, { "s--sm": mins(x.e) - mins(x.s) <= 30, "s--xs": mins(x.e) - mins(x.s) <= 15 }]}
                 style={`grid-column:${di + 2};grid-row:${row(x.s)} / ${row(x.e)};--d:${di * 70 + si * 45}ms`}
                 data-session
                 data-title={x.t}
-                data-day={`${d.wd} · ${d.date} — ${d.theme} · ${d.venue}`}
+                data-day={`${d.wd} · ${d.date} — ${d.theme} · ${venueOf(d, x)}`}
                 data-time={`${x.s}–${x.e}`}
                 data-type={typeLabel[x.k]}
                 data-role={tbdRole[x.k] ?? ""}
                 data-who={x.who ?? ""}
+                data-ta={x.ta ?? ""}
                 data-topics={(x.d ?? []).join("¦")}
                 data-link={x.link ? withBase(x.link.href) : ""}
                 data-link-label={x.link?.label ?? ""}
                 aria-haspopup="dialog"
               >
                 <span class="s__title">{x.t}</span>
+                {x.who && (
+                  <span class="s__who">
+                    <span class="s__dot" aria-hidden="true"></span>
+                    <span class="s__name">{x.who}</span>
+                    {x.ta && <span class="s__ta">TA {x.ta}</span>}
+                  </span>
+                )}
               </button>
+              )
             ))
           )}
         </div>
@@ -698,7 +759,9 @@ const SCIENCES = [
       <Reveal delay={160}>
         <p class="cal-note">
           Click a session for details; on phones, swipe the calendar sideways.
-          Session speakers will be announced before the workshop.
+          Friday lunches early and moves across town: a coach leaves IUB at
+          2:00&nbsp;PM for the ACI Centre, and the day closes with the workshop
+          dinner at 7:00&nbsp;PM.
         </p>
       </Reveal>
     </div>
@@ -716,7 +779,8 @@ const SCIENCES = [
       <dl class="sdrawer__meta">
         <div><dt>Day</dt><dd data-sd="day"></dd></div>
         <div><dt>Time</dt><dd data-sd="time"></dd></div>
-        <div data-sd-role-row><dt data-sd="role">Speaker</dt><dd data-sd="who">To be announced</dd></div>
+        <div data-sd-role-row><dt data-sd="role">Instructor</dt><dd data-sd="who">To be announced</dd></div>
+        <div data-sd-ta-row hidden><dt>Teaching assistant</dt><dd data-sd="ta"></dd></div>
       </dl>
       <div class="sdrawer__topics">
         <p class="sdrawer__topics-h">In this session</p>
@@ -738,12 +802,15 @@ const SCIENCES = [
           <h2>Where the week happens</h2>
           <p>
             The workshop runs across <strong>two venues</strong>. The first four
-            days are held in the <strong>Digital Classroom</strong> at
-            <strong>Independent University, Bangladesh</strong>, home of CASSA;
-            the final day moves across town to the <strong>ACI Centre</strong> in
-            Tejgaon. Sessions run 10:00 AM to 6:00 PM with a 90-minute lunch
-            break. The week falls in the semester break, and participants
-            completing the workshop receive certificates at the closing ceremony.
+            days — and Friday morning — are held in the
+            <strong>Digital Classroom</strong> at
+            <strong>Independent University, Bangladesh</strong>, home of CASSA.
+            On Friday the workshop lunches early and moves across town: a coach
+            leaves IUB at 2:00 PM for the <strong>ACI Centre</strong> in
+            Tejgaon, where the afternoon runs from 3:00 PM. Sessions run 10:00 AM
+            to 6:00 PM with a 90-minute lunch break, and Friday closes with the
+            workshop dinner at 7:00 PM. The week falls in the semester break,
+            and participants completing the workshop receive certificates.
           </p>
         </Prose>
       </Reveal>
@@ -939,6 +1006,7 @@ const SCIENCES = [
     var panel = drawer.querySelector(".sdrawer__panel");
     var closeBtn = drawer.querySelector(".sdrawer__close");
     var roleRow = drawer.querySelector("[data-sd-role-row]");
+    var taRow = drawer.querySelector("[data-sd-ta-row]");
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     var lastFocus = null;
     function fill(name, value) {
@@ -954,6 +1022,9 @@ const SCIENCES = [
       if (roleRow) roleRow.hidden = !role;
       if (role) fill("role", role);
       fill("who", btn.getAttribute("data-who") || "To be announced");
+      var ta = btn.getAttribute("data-ta") || "";
+      if (taRow) taRow.hidden = !ta;
+      if (ta) fill("ta", ta);
       var list = drawer.querySelector("[data-sd-topics]");
       if (list) {
         list.textContent = "";
@@ -1197,16 +1268,16 @@ const SCIENCES = [
   }
 
   /* ── The calendar grid ──
-     Days on columns, 10:00–18:00 on rows in 15-min units (32 rows + header).
+     Days on columns, 10:00 to the week's last event on rows in 15-min units.
      Sessions are grid-placed by time, so the irregular slots (Day 1's 10:30
      start, Day 4's 17:15 split, Day 5's closing trio) land exactly. */
   .cal-scroll { overflow-x: auto; margin-top: 2rem; -webkit-overflow-scrolling: touch; }
   .cal {
-    --unit: 1.35rem; /* 45-min sessions span 3 units — roomy enough for a two-line title */
+    --unit: 1.5rem; /* 45-min sessions span 3 units — a two-line title plus the instructor line */
     --unit-lunch: 0.38rem; /* lunch rows compressed — the band is indicative */
     display: grid;
     grid-template-columns: 3.6rem repeat(5, minmax(158px, 1fr));
-    grid-template-rows: auto repeat(32, var(--unit)); /* overridden inline with lunch-aware rows */
+    grid-template-rows: auto repeat(32, var(--unit)); /* always overridden inline: derived row count, lunch-aware heights */
     gap: 0.2rem 0.4rem;
     min-width: 940px;
     position: relative;
@@ -1292,13 +1363,40 @@ const SCIENCES = [
   }
   .s__title { font-size: 0.82rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.008em; color: var(--ink); }
 
-  /* Compact variants — 30-min slots get tighter padding and smaller type;
-     the lone 15-min slot (Day 5 closing) centres a single ellipsised line
-     so nothing ever crops mid-glyph. */
-  .s--sm { padding: 0.28rem 0.65rem; gap: 0.08rem; justify-content: center; }
+  /* Instructor footer (user, 2026-09-06) — every teaching cell names who is
+     leading it. Pinned to the bottom of the cell by margin-top:auto so the
+     names line up along the foot of a row of cells however tall each is, and
+     separated from the title by a hairline in the session-type colour. The TA,
+     where there is one, wraps onto its own quieter line. */
+  .s__who {
+    margin-top: auto; padding-top: 0.3rem;
+    border-top: 1px solid color-mix(in srgb, var(--sc) 24%, transparent);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.34rem;
+    min-width: 0;
+  }
+  .s__dot { width: 0.36rem; height: 0.36rem; border-radius: 50%; background: var(--sc); flex-shrink: 0; }
+  .s__name {
+    font-size: 0.69rem; font-weight: 700; letter-spacing: 0.005em; color: var(--ink-soft);
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .s__ta {
+    flex-basis: 100%; padding-left: 0.7rem;
+    font-size: 0.62rem; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-faint);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .s:hover .s__name, .s:focus-visible .s__name { color: var(--ink); }
+
+  /* Compact variants — 30-min slots get tighter padding and smaller type, and
+     drop the hairline so title and instructor still both fit; the 15-min case
+     centres a single ellipsised line so nothing ever crops mid-glyph. */
+  .s--sm { padding: 0.28rem 0.65rem; gap: 0.08rem; }
   .s--sm .s__title { font-size: 0.72rem; line-height: 1.25; }
-  .s--xs { padding: 0.1rem 0.6rem; }
+  .s--sm .s__who { padding-top: 0.12rem; border-top: 0; gap: 0 0.28rem; }
+  .s--sm .s__name { font-size: 0.63rem; font-weight: 600; }
+  .s--sm .s__dot { width: 0.3rem; height: 0.3rem; }
+  .s--xs { padding: 0.1rem 0.6rem; justify-content: center; }
   .s--xs .s__title { font-size: 0.66rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .s--xs .s__who { display: none; }
 
   /* Staggered entrance — cells cascade in when the calendar's Reveal fires */
   .s { opacity: 0; }
@@ -1319,8 +1417,9 @@ const SCIENCES = [
     text-transform: uppercase; letter-spacing: 0.2em;
   }
   .s--brk:hover { transform: none; box-shadow: none; background: transparent; }
+  /* A break shared by a run of days — the columns it spans are set inline,
+     since the week no longer breaks in step (see BREAK_SPANS). */
   .s--span {
-    grid-column: 2 / -1;
     flex-direction: row; align-items: center; justify-content: center; text-align: center;
     gap: 1rem;
   }
